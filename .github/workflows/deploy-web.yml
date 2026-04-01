@@ -28,5 +28,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
+          publish_dir: ./published/web
           force_orphan: true          # ทำให้ branch gh-pages สะอาด
