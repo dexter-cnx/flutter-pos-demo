@@ -8,8 +8,11 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../../../../app/layout/responsive_layout.dart';
 import '../../../orders/data/models/order_model.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
+import '../../../settings/domain/entities/store_profile.dart';
+import '../../../settings/presentation/providers/settings_providers.dart';
 import '../providers/receipt_actions_providers.dart';
 import '../services/desktop_file_actions.dart';
 
@@ -24,6 +27,7 @@ class ReceiptPreviewPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final orderAsync = ref.watch(orderReceiptProvider(orderId));
+    final storeProfileAsync = ref.watch(storeProfileProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,14 +43,21 @@ class ReceiptPreviewPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: orderAsync.when(
-        data: (order) {
-          if (order == null) {
-            return _MissingReceiptState(orderId: orderId);
-          }
+      body: storeProfileAsync.when(
+        data: (storeProfile) => orderAsync.when(
+          data: (order) {
+            if (order == null) {
+              return _MissingReceiptState(orderId: orderId);
+            }
 
-          return _ReceiptContent(order: order);
-        },
+            return _ReceiptContent(
+              order: order,
+              storeProfile: storeProfile,
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => Center(child: Text(error.toString())),
+        ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text(error.toString())),
       ),
@@ -55,9 +66,13 @@ class ReceiptPreviewPage extends ConsumerWidget {
 }
 
 class _ReceiptContent extends ConsumerWidget {
-  const _ReceiptContent({required this.order});
+  const _ReceiptContent({
+    required this.order,
+    required this.storeProfile,
+  });
 
   final OrderModel order;
+  final StoreProfile storeProfile;
 
   String _currency(double value) => '\u0E3F${value.toStringAsFixed(2)}';
 
@@ -108,11 +123,21 @@ class _ReceiptContent extends ConsumerWidget {
         build: (context) => [
           pw.Center(
             child: pw.Text(
-              'receipt.title'.tr(),
+              storeProfile.storeName,
               style: pw.TextStyle(font: boldFont, fontSize: 18),
             ),
           ),
           pw.SizedBox(height: 6),
+          pw.Center(child: pw.Text(storeProfile.storeAddress)),
+          pw.Center(
+            child:
+                pw.Text('${'receipt.tax_id'.tr()}: ${storeProfile.storeTaxId}'),
+          ),
+          pw.Center(
+            child:
+                pw.Text('${'receipt.phone'.tr()}: ${storeProfile.storePhone}'),
+          ),
+          pw.SizedBox(height: 8),
           pw.Center(child: pw.Text('receipt.thank_you'.tr())),
           pw.SizedBox(height: 20),
           pw.Text('${'receipt.order_no'.tr()}: #${order.id}'),
@@ -164,7 +189,7 @@ class _ReceiptContent extends ConsumerWidget {
               'payment.change'.tr(), _currency(order.changeAmount), baseFont),
           pw.SizedBox(height: 20),
           pw.Divider(),
-          pw.Center(child: pw.Text('receipt.footer'.tr())),
+          pw.Center(child: pw.Text(storeProfile.receiptFooter)),
         ],
       ),
     );
@@ -325,7 +350,7 @@ class _ReceiptContent extends ConsumerWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isWide = constraints.maxWidth >= 1100;
+        final responsive = ResponsiveLayout.fromConstraints(constraints);
         final summary = SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Card(
@@ -338,8 +363,17 @@ class _ReceiptContent extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'receipt.title'.tr(),
+                    storeProfile.storeName,
                     style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(storeProfile.storeAddress),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${'receipt.tax_id'.tr()}: ${storeProfile.storeTaxId}',
+                  ),
+                  Text(
+                    '${'receipt.phone'.tr()}: ${storeProfile.storePhone}',
                   ),
                   const SizedBox(height: 8),
                   Text('receipt.thank_you'.tr()),
@@ -409,6 +443,13 @@ class _ReceiptContent extends ConsumerWidget {
                   _DetailRow(
                     label: 'payment.change'.tr(),
                     value: _currency(order.changeAmount),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    storeProfile.receiptFooter,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                   const SizedBox(height: 24),
                   Wrap(
@@ -511,7 +552,7 @@ class _ReceiptContent extends ConsumerWidget {
           ),
         );
 
-        if (isWide) {
+        if (responsive.isSplitView) {
           return Row(
             children: [
               Expanded(flex: 2, child: summary),

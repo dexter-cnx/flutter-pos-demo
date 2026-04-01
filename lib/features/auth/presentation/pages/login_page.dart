@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../app/layout/responsive_layout.dart';
 import '../providers/auth_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -48,94 +50,114 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
 
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'app.title'.tr(),
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.bold,
+      body: SafeArea(
+        minimum: const EdgeInsets.all(16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final responsive = ResponsiveLayout.fromConstraints(constraints);
+            final compact = responsive.isCompactForm;
+            final maxWidth = constraints.maxWidth * (compact ? 0.42 : 0.3);
+            final indicatorSize = compact ? 16.0 : 20.0;
+            final indicatorGap = compact ? 8.0 : 12.0;
+            final sectionGap = compact ? 28.0 : 48.0;
+            final pinPadGap = compact ? 12.0 : 16.0;
+            final pinPadRatio = compact ? 1.0 : 1.2;
+
+            return Center(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(vertical: compact ? 8 : 24),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: maxWidth.clamp(320.0, 430.0),
+                    minHeight: constraints.maxHeight - (compact ? 16 : 48),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'login.subtitle'.tr(),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 48),
-                // PIN Indicators
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(4, (index) {
-                    final filled = index < _pin.length;
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: filled
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.surfaceContainerHigh,
-                        boxShadow: filled
-                            ? [
-                                BoxShadow(
-                                  color: theme.colorScheme.primary.withValues(
-                                    alpha: 0.5,
-                                  ),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                ),
-                              ]
-                            : null,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'app.title'.tr(),
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    );
-                  }),
-                ),
-                const SizedBox(height: 48),
-                if (authState.hasError)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Text(
-                      authState.error.toString(),
-                      style: TextStyle(color: theme.colorScheme.error),
-                    ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'login.subtitle'.tr(),
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      SizedBox(height: sectionGap),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(4, (index) {
+                          final filled = index < _pin.length;
+                          return Container(
+                            margin:
+                                EdgeInsets.symmetric(horizontal: indicatorGap),
+                            width: indicatorSize,
+                            height: indicatorSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: filled
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.surfaceContainerHigh,
+                              boxShadow: filled
+                                  ? [
+                                      BoxShadow(
+                                        color: theme.colorScheme.primary
+                                            .withValues(alpha: 0.5),
+                                        blurRadius: 10,
+                                        spreadRadius: 2,
+                                      ),
+                                    ]
+                                  : null,
+                            ),
+                          );
+                        }),
+                      ),
+                      SizedBox(height: sectionGap),
+                      if (authState.hasError)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Text(
+                            authState.error.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: theme.colorScheme.error),
+                          ),
+                        ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: pinPadGap,
+                          crossAxisSpacing: pinPadGap,
+                          childAspectRatio: pinPadRatio,
+                        ),
+                        itemCount: 12,
+                        itemBuilder: (context, index) {
+                          if (index == 9) return const SizedBox.shrink();
+                          if (index == 10) return _buildPinButton('0');
+                          if (index == 11) {
+                            return _buildActionButton(
+                              Icons.backspace_rounded,
+                              _onDelete,
+                              color: theme.colorScheme.surfaceContainerHigh,
+                            );
+                          }
+                          return _buildPinButton('${index + 1}');
+                        },
+                      ),
+                    ],
                   ),
-                // PIN Pad
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1.2,
-                  ),
-                  itemCount: 12,
-                  itemBuilder: (context, index) {
-                    if (index == 9) return const SizedBox.shrink();
-                    if (index == 10) return _buildPinButton('0');
-                    if (index == 11) {
-                      return _buildActionButton(
-                        Icons.backspace_rounded,
-                        _onDelete,
-                        color: theme.colorScheme.surfaceContainerHigh,
-                      );
-                    }
-                    return _buildPinButton('${index + 1}');
-                  },
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

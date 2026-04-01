@@ -17,6 +17,8 @@ class ProductModel {
 
   late String sku;
 
+  late int stockQuantity;
+
   final category = IsarLink<CategoryModel>();
 
   late bool isAvailable;

@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/checkout/presentation/pages/checkout_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/inventory/presentation/pages/inventory_page.dart';
 import '../../features/orders/presentation/pages/order_history_page.dart';
 import '../../features/pos/presentation/pages/pos_page.dart';
 import '../../features/receipt/presentation/pages/receipt_preview_page.dart';
@@ -29,6 +30,11 @@ final appRouter = GoRouter(
       path: '/history',
       name: 'history',
       builder: (context, state) => const OrderHistoryPage(),
+    ),
+    GoRoute(
+      path: '/inventory',
+      name: 'inventory',
+      builder: (context, state) => const InventoryPage(),
     ),
     GoRoute(
       path: '/receipt/:orderId',

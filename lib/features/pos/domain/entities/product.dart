@@ -10,6 +10,7 @@ class Product with _$Product {
     required String name,
     required double price,
     required String sku,
+    @Default(0) int stockQuantity,
     @Default(true) bool isAvailable,
     String? imageUrl,
     Category? category,

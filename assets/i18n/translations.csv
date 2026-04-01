@@ -5,6 +5,14 @@ login.subtitle,Standard Thai POS,ระบบ POS ร้านค้าไทย
 dashboard.title,Dashboard,แดชบอร์ด
 pos.title,Point of Sale,ขายหน้าร้าน
 inventory.title,Inventory,คลังสินค้า
+inventory.low_stock_count,{0} low stock items,{0} รายการใกล้หมด
+inventory.low_stock,Low stock,ใกล้หมด
+inventory.out_of_stock,Out of stock,สินค้าหมด
+inventory.stock_remaining,{0} left,คงเหลือ {0}
+inventory.restock,Restock,เติมสต็อก
+inventory.restock_quantity,Restock quantity,จำนวนที่เติม
+inventory.restock_success,Restocked {0} successfully.,เติมสต็อก {0} เรียบร้อยแล้ว
+inventory.warning_summary,{0} items are below the warning threshold of {1}.,มี {0} รายการที่ต่ำกว่าค่าเตือนสต็อก {1}
 history.title,Order History,ประวัติการขาย
 history.empty,No orders yet,ยังไม่มีประวัติการขาย
 history.empty_hint,Completed orders will appear here after checkout.,รายการที่ชำระแล้วจะแสดงที่นี่หลังจากเช็คเอาต์
@@ -22,8 +30,18 @@ settings.data_summary,Data Summary,สรุปข้อมูล
 settings.categories_count,Categories,หมวดสินค้า
 settings.products_count,Products,สินค้า
 settings.orders_count,Saved Orders,ออเดอร์ที่บันทึก
+settings.low_stock_items,Low stock items,รายการใกล้หมด
 settings.latest_order,Latest Order,ออเดอร์ล่าสุด
 settings.no_orders,No saved orders yet,ยังไม่มีออเดอร์ที่บันทึก
+settings.store_profile,Store Profile,ข้อมูลร้าน
+settings.store_name,Store name,ชื่อร้าน
+settings.store_address,Store address,ที่อยู่ร้าน
+settings.store_tax_id,Tax ID,เลขประจำตัวผู้เสียภาษี
+settings.store_phone,Phone,เบอร์โทรร้าน
+settings.receipt_footer,Receipt footer,ข้อความท้ายใบเสร็จ
+settings.low_stock_threshold,Low stock threshold,จำนวนเตือนสต็อกต่ำ
+settings.save_profile,Save Profile,บันทึกข้อมูลร้าน
+settings.save_profile_success,Store profile saved successfully.,บันทึกข้อมูลร้านเรียบร้อยแล้ว
 settings.management,Management,การจัดการ
 settings.clear_orders,Clear Order History,ล้างประวัติการขาย
 settings.clear_orders_hint,Remove saved orders from local storage while keeping products and categories intact.,ลบออเดอร์ที่บันทึกไว้ในเครื่องโดยไม่กระทบสินค้าและหมวดสินค้า
@@ -63,6 +81,8 @@ receipt.title,Receipt Preview,ตัวอย่างใบเสร็จ
 receipt.thank_you,Thank you for your purchase!,ขอบคุณที่อุดหนุน
 receipt.order_no,Order No.,เลขที่ใบเสร็จ
 receipt.date,Date,วันที่
+receipt.tax_id,Tax ID,เลขผู้เสียภาษี
+receipt.phone,Phone,เบอร์โทร
 receipt.qty,Qty,จำนวน
 receipt.view,View Receipt,ดูใบเสร็จ
 receipt.view_history,View History,ดูประวัติการขาย

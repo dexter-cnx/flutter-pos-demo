@@ -6,7 +6,7 @@ part of 'pos_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$posRepositoryHash() => r'6f3287f403649654c51f8ad7c33fde8ac0edbdb0';
+String _$posRepositoryHash() => r'68b6531588ac1f209270a7c19eb78f6b3e77b132';
 
 /// See also [posRepository].
 @ProviderFor(posRepository)
@@ -64,7 +64,23 @@ final productsProvider = AutoDisposeFutureProvider<List<Product>>.internal(
 );
 
 typedef ProductsRef = AutoDisposeFutureProviderRef<List<Product>>;
-String _$productCountHash() => r'd80df356e149f2dffc61d2da59694774c8dd4128';
+String _$inventoryProductsHash() => r'7ed0fad9f7b1b1904a3447f7b19538260f35e38b';
+
+/// See also [inventoryProducts].
+@ProviderFor(inventoryProducts)
+final inventoryProductsProvider =
+    AutoDisposeFutureProvider<List<Product>>.internal(
+  inventoryProducts,
+  name: r'inventoryProductsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$inventoryProductsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef InventoryProductsRef = AutoDisposeFutureProviderRef<List<Product>>;
+String _$productCountHash() => r'66ea9c8698b0200c05cee799703499985f2fa261';
 
 /// See also [productCount].
 @ProviderFor(productCount)
@@ -78,6 +94,21 @@ final productCountProvider = AutoDisposeFutureProvider<int>.internal(
 );
 
 typedef ProductCountRef = AutoDisposeFutureProviderRef<int>;
+String _$lowStockCountHash() => r'b270f677938bfe45c4b1fea9ce566f3d6f21a3a9';
+
+/// See also [lowStockCount].
+@ProviderFor(lowStockCount)
+final lowStockCountProvider = AutoDisposeFutureProvider<int>.internal(
+  lowStockCount,
+  name: r'lowStockCountProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$lowStockCountHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef LowStockCountRef = AutoDisposeFutureProviderRef<int>;
 String _$selectedCategoryIdHash() =>
     r'e200877d189e9efa39b0a04655f56101e28aaf21';
 
@@ -95,5 +126,21 @@ final selectedCategoryIdProvider =
 );
 
 typedef _$SelectedCategoryId = AutoDisposeNotifier<String?>;
+String _$inventoryActionsHash() => r'6c63633ebb460dde0d1efbfad883815879faa12b';
+
+/// See also [InventoryActions].
+@ProviderFor(InventoryActions)
+final inventoryActionsProvider =
+    AutoDisposeAsyncNotifierProvider<InventoryActions, void>.internal(
+  InventoryActions.new,
+  name: r'inventoryActionsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$inventoryActionsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$InventoryActions = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

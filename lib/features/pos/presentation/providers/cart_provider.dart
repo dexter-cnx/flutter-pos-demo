@@ -22,7 +22,8 @@ class CartState with _$CartState {
 
   const CartState._();
 
-  double get subtotal => items.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
+  double get subtotal =>
+      items.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
   double get taxAmount => subtotal * taxRate;
   double get total => subtotal + taxAmount;
   int get totalItems => items.fold(0, (sum, item) => sum + item.quantity);
@@ -34,15 +35,22 @@ class Cart extends _$Cart {
   CartState build() => const CartState();
 
   void addItem(Product product) {
-    final existingIndex = state.items.indexWhere((item) => item.product.id == product.id);
+    if (!product.isAvailable || product.stockQuantity <= 0) return;
+
+    final existingIndex =
+        state.items.indexWhere((item) => item.product.id == product.id);
     if (existingIndex != -1) {
+      final nextQuantity = state.items[existingIndex].quantity + 1;
+      if (nextQuantity > product.stockQuantity) return;
+
       final updatedItems = List<CartItem>.from(state.items);
       updatedItems[existingIndex] = updatedItems[existingIndex].copyWith(
-        quantity: updatedItems[existingIndex].quantity + 1,
+        quantity: nextQuantity,
       );
       state = state.copyWith(items: updatedItems);
     } else {
-      state = state.copyWith(items: [...state.items, CartItem(product: product)]);
+      state =
+          state.copyWith(items: [...state.items, CartItem(product: product)]);
     }
   }
 
@@ -53,7 +61,8 @@ class Cart extends _$Cart {
   }
 
   void updateQuantity(String productId, int delta) {
-    final itemIndex = state.items.indexWhere((item) => item.product.id == productId);
+    final itemIndex =
+        state.items.indexWhere((item) => item.product.id == productId);
     if (itemIndex == -1) return;
 
     final currentQuantity = state.items[itemIndex].quantity;
@@ -61,9 +70,12 @@ class Cart extends _$Cart {
 
     if (newQuantity <= 0) {
       removeItem(productId);
+    } else if (newQuantity > state.items[itemIndex].product.stockQuantity) {
+      return;
     } else {
       final updatedItems = List<CartItem>.from(state.items);
-      updatedItems[itemIndex] = updatedItems[itemIndex].copyWith(quantity: newQuantity);
+      updatedItems[itemIndex] =
+          updatedItems[itemIndex].copyWith(quantity: newQuantity);
       state = state.copyWith(items: updatedItems);
     }
   }

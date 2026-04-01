@@ -20,6 +20,7 @@ mixin _$Product {
   String get name => throw _privateConstructorUsedError;
   double get price => throw _privateConstructorUsedError;
   String get sku => throw _privateConstructorUsedError;
+  int get stockQuantity => throw _privateConstructorUsedError;
   bool get isAvailable => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
   Category? get category => throw _privateConstructorUsedError;
@@ -38,6 +39,7 @@ abstract class $ProductCopyWith<$Res> {
       String name,
       double price,
       String sku,
+      int stockQuantity,
       bool isAvailable,
       String? imageUrl,
       Category? category});
@@ -62,6 +64,7 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? name = null,
     Object? price = null,
     Object? sku = null,
+    Object? stockQuantity = null,
     Object? isAvailable = null,
     Object? imageUrl = freezed,
     Object? category = freezed,
@@ -83,6 +86,10 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
           ? _value.sku
           : sku // ignore: cast_nullable_to_non_nullable
               as String,
+      stockQuantity: null == stockQuantity
+          ? _value.stockQuantity
+          : stockQuantity // ignore: cast_nullable_to_non_nullable
+              as int,
       isAvailable: null == isAvailable
           ? _value.isAvailable
           : isAvailable // ignore: cast_nullable_to_non_nullable
@@ -123,6 +130,7 @@ abstract class _$$ProductImplCopyWith<$Res> implements $ProductCopyWith<$Res> {
       String name,
       double price,
       String sku,
+      int stockQuantity,
       bool isAvailable,
       String? imageUrl,
       Category? category});
@@ -146,6 +154,7 @@ class __$$ProductImplCopyWithImpl<$Res>
     Object? name = null,
     Object? price = null,
     Object? sku = null,
+    Object? stockQuantity = null,
     Object? isAvailable = null,
     Object? imageUrl = freezed,
     Object? category = freezed,
@@ -167,6 +176,10 @@ class __$$ProductImplCopyWithImpl<$Res>
           ? _value.sku
           : sku // ignore: cast_nullable_to_non_nullable
               as String,
+      stockQuantity: null == stockQuantity
+          ? _value.stockQuantity
+          : stockQuantity // ignore: cast_nullable_to_non_nullable
+              as int,
       isAvailable: null == isAvailable
           ? _value.isAvailable
           : isAvailable // ignore: cast_nullable_to_non_nullable
@@ -191,6 +204,7 @@ class _$ProductImpl implements _Product {
       required this.name,
       required this.price,
       required this.sku,
+      this.stockQuantity = 0,
       this.isAvailable = true,
       this.imageUrl,
       this.category});
@@ -205,6 +219,9 @@ class _$ProductImpl implements _Product {
   final String sku;
   @override
   @JsonKey()
+  final int stockQuantity;
+  @override
+  @JsonKey()
   final bool isAvailable;
   @override
   final String? imageUrl;
@@ -213,7 +230,7 @@ class _$ProductImpl implements _Product {
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, price: $price, sku: $sku, isAvailable: $isAvailable, imageUrl: $imageUrl, category: $category)';
+    return 'Product(id: $id, name: $name, price: $price, sku: $sku, stockQuantity: $stockQuantity, isAvailable: $isAvailable, imageUrl: $imageUrl, category: $category)';
   }
 
   @override
@@ -225,6 +242,8 @@ class _$ProductImpl implements _Product {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.sku, sku) || other.sku == sku) &&
+            (identical(other.stockQuantity, stockQuantity) ||
+                other.stockQuantity == stockQuantity) &&
             (identical(other.isAvailable, isAvailable) ||
                 other.isAvailable == isAvailable) &&
             (identical(other.imageUrl, imageUrl) ||
@@ -234,8 +253,8 @@ class _$ProductImpl implements _Product {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, price, sku, isAvailable, imageUrl, category);
+  int get hashCode => Object.hash(runtimeType, id, name, price, sku,
+      stockQuantity, isAvailable, imageUrl, category);
 
   @JsonKey(ignore: true)
   @override
@@ -250,6 +269,7 @@ abstract class _Product implements Product {
       required final String name,
       required final double price,
       required final String sku,
+      final int stockQuantity,
       final bool isAvailable,
       final String? imageUrl,
       final Category? category}) = _$ProductImpl;
@@ -262,6 +282,8 @@ abstract class _Product implements Product {
   double get price;
   @override
   String get sku;
+  @override
+  int get stockQuantity;
   @override
   bool get isAvailable;
   @override

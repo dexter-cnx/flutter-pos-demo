@@ -1,14 +1,20 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../../app/bootstrap.dart';
+import '../../data/repositories/local_pos_repository.dart';
 import '../../data/repositories/mock_pos_repository.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/pos_repository.dart';
+import '../../../settings/presentation/providers/settings_providers.dart';
 
 part 'pos_providers.g.dart';
 
 @riverpod
 PosRepository posRepository(PosRepositoryRef ref) {
-  // For now, always use Mock. Later can switch based on kIsWeb or config.
+  if (isar != null) {
+    return LocalPosRepository();
+  }
+
   return MockPosRepository();
 }
 
@@ -38,7 +44,46 @@ Future<List<Product>> products(ProductsRef ref) {
 }
 
 @riverpod
+Future<List<Product>> inventoryProducts(InventoryProductsRef ref) {
+  return ref.watch(posRepositoryProvider).getProducts();
+}
+
+@riverpod
 Future<int> productCount(ProductCountRef ref) async {
-  final products = await ref.watch(posRepositoryProvider).getProducts();
+  final products = await ref.watch(inventoryProductsProvider.future);
   return products.length;
+}
+
+@riverpod
+Future<int> lowStockCount(LowStockCountRef ref) async {
+  final threshold = await ref.watch(lowStockThresholdProvider.future);
+  final products = await ref.watch(inventoryProductsProvider.future);
+  return products
+      .where((product) =>
+          product.stockQuantity > 0 && product.stockQuantity <= threshold)
+      .length;
+}
+
+@riverpod
+class InventoryActions extends _$InventoryActions {
+  @override
+  FutureOr<void> build() {}
+
+  Future<void> deductStock(Map<String, int> quantitiesByProductId) async {
+    await ref.watch(posRepositoryProvider).deductStock(quantitiesByProductId);
+    _invalidateInventoryViews();
+  }
+
+  Future<void> restockProduct(String productId, int quantity) async {
+    await ref.watch(posRepositoryProvider).restockProduct(productId, quantity);
+    _invalidateInventoryViews();
+  }
+
+  void _invalidateInventoryViews() {
+    ref.invalidate(productsProvider);
+    ref.invalidate(inventoryProductsProvider);
+    ref.invalidate(productCountProvider);
+    ref.invalidate(lowStockCountProvider);
+    state = const AsyncData(null);
+  }
 }

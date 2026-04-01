@@ -20,6 +20,7 @@ class MockPosRepository implements PosRepository {
         name: 'ผัดไทย',
         price: 85.0,
         sku: 'MAIN-001',
+        stockQuantity: 18,
         category: _categories[0],
       ),
       Product(
@@ -27,6 +28,7 @@ class MockPosRepository implements PosRepository {
         name: 'ส้มตำ',
         price: 60.0,
         sku: 'MAIN-002',
+        stockQuantity: 12,
         category: _categories[0],
       ),
       Product(
@@ -34,6 +36,7 @@ class MockPosRepository implements PosRepository {
         name: 'ต้มยำกุ้ง',
         price: 150.0,
         sku: 'MAIN-003',
+        stockQuantity: 8,
         category: _categories[0],
       ),
       Product(
@@ -41,6 +44,7 @@ class MockPosRepository implements PosRepository {
         name: 'แกงเขียวหวาน',
         price: 120.0,
         sku: 'MAIN-004',
+        stockQuantity: 9,
         category: _categories[0],
       ),
       Product(
@@ -48,6 +52,7 @@ class MockPosRepository implements PosRepository {
         name: 'ข้าวผัดกะเพรา',
         price: 75.0,
         sku: 'MAIN-005',
+        stockQuantity: 14,
         category: _categories[0],
       ),
       Product(
@@ -55,6 +60,7 @@ class MockPosRepository implements PosRepository {
         name: 'ชาไทย',
         price: 45.0,
         sku: 'DRINK-001',
+        stockQuantity: 25,
         category: _categories[1],
       ),
       Product(
@@ -62,6 +68,7 @@ class MockPosRepository implements PosRepository {
         name: 'น้ำมะพร้าว',
         price: 50.0,
         sku: 'DRINK-002',
+        stockQuantity: 16,
         category: _categories[1],
       ),
       Product(
@@ -69,6 +76,7 @@ class MockPosRepository implements PosRepository {
         name: 'ชามะนาว',
         price: 40.0,
         sku: 'DRINK-003',
+        stockQuantity: 20,
         category: _categories[1],
       ),
       Product(
@@ -76,6 +84,7 @@ class MockPosRepository implements PosRepository {
         name: 'ข้าวเหนียวมะม่วง',
         price: 90.0,
         sku: 'DESS-001',
+        stockQuantity: 7,
         category: _categories[2],
       ),
       Product(
@@ -83,6 +92,7 @@ class MockPosRepository implements PosRepository {
         name: 'กล้วยบวชชีน',
         price: 45.0,
         sku: 'DESS-002',
+        stockQuantity: 11,
         category: _categories[2],
       ),
       Product(
@@ -90,6 +100,7 @@ class MockPosRepository implements PosRepository {
         name: 'ปอเปี๊ยะทอด',
         price: 55.0,
         sku: 'APP-001',
+        stockQuantity: 15,
         category: _categories[0],
       ),
       Product(
@@ -97,6 +108,7 @@ class MockPosRepository implements PosRepository {
         name: 'สะเต๊ะไก่',
         price: 80.0,
         sku: 'APP-002',
+        stockQuantity: 13,
         category: _categories[0],
       ),
       Product(
@@ -104,6 +116,7 @@ class MockPosRepository implements PosRepository {
         name: 'ข้าวผัดปู',
         price: 95.0,
         sku: 'MAIN-006',
+        stockQuantity: 10,
         category: _categories[0],
       ),
       Product(
@@ -111,6 +124,7 @@ class MockPosRepository implements PosRepository {
         name: 'น้ำเก๊กฮวย',
         price: 30.0,
         sku: 'DRINK-004',
+        stockQuantity: 30,
         category: _categories[1],
       ),
       Product(
@@ -118,6 +132,7 @@ class MockPosRepository implements PosRepository {
         name: 'กาแฟเย็น',
         price: 45.0,
         sku: 'DRINK-005',
+        stockQuantity: 18,
         category: _categories[1],
       ),
     ];
@@ -133,8 +148,16 @@ class MockPosRepository implements PosRepository {
   Future<List<Product>> getProducts({String? categoryId}) async {
     await Future.delayed(const Duration(milliseconds: 500));
     if (categoryId != null) {
-      return _products.where((p) => p.category?.id == categoryId).toList();
+      return _products
+          .where((product) => product.category?.id == categoryId)
+          .toList();
     }
     return _products;
   }
+
+  @override
+  Future<void> deductStock(Map<String, int> quantitiesByProductId) async {}
+
+  @override
+  Future<void> restockProduct(String productId, int quantity) async {}
 }

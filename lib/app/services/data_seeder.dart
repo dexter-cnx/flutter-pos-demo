@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:isar/isar.dart';
+
 import '../../features/auth/data/models/user_model.dart';
 import '../../features/pos/data/models/category_model.dart';
 import '../../features/pos/data/models/product_model.dart';
+import '../../features/settings/data/models/app_settings_model.dart';
 
 class DataSeeder {
   static Future<void> seed(Isar isar) async {
@@ -23,6 +25,7 @@ class DataSeeder {
     }
 
     await _seedOrUpgradeCatalog(isar);
+    await _seedSettings(isar);
   }
 
   static Future<void> _upgradeUsers(Isar isar) async {
@@ -37,67 +40,118 @@ class DataSeeder {
   }
 
   static Future<void> _seedOrUpgradeCatalog(Isar isar) async {
-    final categorySpecs = <_CategorySeed>[
-      const _CategorySeed(sortOrder: 1, name: 'อาหารจานหลัก'),
-      const _CategorySeed(sortOrder: 2, name: 'เครื่องดื่ม'),
-      const _CategorySeed(sortOrder: 3, name: 'ของหวาน'),
+    const categorySpecs = <_CategorySeed>[
+      _CategorySeed(sortOrder: 1, name: 'อาหารจานหลัก'),
+      _CategorySeed(sortOrder: 2, name: 'เครื่องดื่ม'),
+      _CategorySeed(sortOrder: 3, name: 'ของหวาน'),
     ];
 
-    final productSpecs = <_ProductSeed>[
-      const _ProductSeed(
-          name: 'ผัดไทย', price: 85.0, sku: 'MAIN-001', categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'ส้มตำ', price: 60.0, sku: 'MAIN-002', categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'ต้มยำกุ้ง',
-          price: 150.0,
-          sku: 'MAIN-003',
-          categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'แกงเขียวหวาน',
-          price: 120.0,
-          sku: 'MAIN-004',
-          categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'ข้าวเหนียวมะม่วง',
-          price: 90.0,
-          sku: 'DESS-001',
-          categorySortOrder: 3),
-      const _ProductSeed(
-          name: 'ชาไทย', price: 45.0, sku: 'DRINK-001', categorySortOrder: 2),
-      const _ProductSeed(
-          name: 'น้ำมะพร้าว',
-          price: 50.0,
-          sku: 'DRINK-002',
-          categorySortOrder: 2),
-      const _ProductSeed(
-          name: 'ข้าวผัดกะเพรา',
-          price: 75.0,
-          sku: 'MAIN-005',
-          categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'ปอเปี๊ยะทอด',
-          price: 55.0,
-          sku: 'APP-001',
-          categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'สะเต๊ะไก่', price: 80.0, sku: 'APP-002', categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'ส้มตำปู', price: 65.0, sku: 'MAIN-006', categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'หมูทอด', price: 70.0, sku: 'MAIN-007', categorySortOrder: 1),
-      const _ProductSeed(
-          name: 'ชามะนาว', price: 40.0, sku: 'DRINK-003', categorySortOrder: 2),
-      const _ProductSeed(
-          name: 'น้ำเปล่า',
-          price: 15.0,
-          sku: 'DRINK-004',
-          categorySortOrder: 2),
-      const _ProductSeed(
-          name: 'กล้วยบวชชีน',
-          price: 45.0,
-          sku: 'DESS-002',
-          categorySortOrder: 3),
+    const productSpecs = <_ProductSeed>[
+      _ProductSeed(
+        name: 'ผัดไทย',
+        price: 85,
+        sku: 'MAIN-001',
+        categorySortOrder: 1,
+        stockQuantity: 18,
+      ),
+      _ProductSeed(
+        name: 'ส้มตำ',
+        price: 60,
+        sku: 'MAIN-002',
+        categorySortOrder: 1,
+        stockQuantity: 12,
+      ),
+      _ProductSeed(
+        name: 'ต้มยำกุ้ง',
+        price: 150,
+        sku: 'MAIN-003',
+        categorySortOrder: 1,
+        stockQuantity: 8,
+      ),
+      _ProductSeed(
+        name: 'แกงเขียวหวาน',
+        price: 120,
+        sku: 'MAIN-004',
+        categorySortOrder: 1,
+        stockQuantity: 9,
+      ),
+      _ProductSeed(
+        name: 'ข้าวผัดกะเพรา',
+        price: 75,
+        sku: 'MAIN-005',
+        categorySortOrder: 1,
+        stockQuantity: 14,
+      ),
+      _ProductSeed(
+        name: 'ส้มตำปู',
+        price: 65,
+        sku: 'MAIN-006',
+        categorySortOrder: 1,
+        stockQuantity: 10,
+      ),
+      _ProductSeed(
+        name: 'หมูทอด',
+        price: 70,
+        sku: 'MAIN-007',
+        categorySortOrder: 1,
+        stockQuantity: 11,
+      ),
+      _ProductSeed(
+        name: 'ปอเปี๊ยะทอด',
+        price: 55,
+        sku: 'APP-001',
+        categorySortOrder: 1,
+        stockQuantity: 15,
+      ),
+      _ProductSeed(
+        name: 'สะเต๊ะไก่',
+        price: 80,
+        sku: 'APP-002',
+        categorySortOrder: 1,
+        stockQuantity: 13,
+      ),
+      _ProductSeed(
+        name: 'ชาไทย',
+        price: 45,
+        sku: 'DRINK-001',
+        categorySortOrder: 2,
+        stockQuantity: 25,
+      ),
+      _ProductSeed(
+        name: 'น้ำมะพร้าว',
+        price: 50,
+        sku: 'DRINK-002',
+        categorySortOrder: 2,
+        stockQuantity: 16,
+      ),
+      _ProductSeed(
+        name: 'ชามะนาว',
+        price: 40,
+        sku: 'DRINK-003',
+        categorySortOrder: 2,
+        stockQuantity: 20,
+      ),
+      _ProductSeed(
+        name: 'น้ำเปล่า',
+        price: 15,
+        sku: 'DRINK-004',
+        categorySortOrder: 2,
+        stockQuantity: 30,
+      ),
+      _ProductSeed(
+        name: 'ข้าวเหนียวมะม่วง',
+        price: 90,
+        sku: 'DESS-001',
+        categorySortOrder: 3,
+        stockQuantity: 7,
+      ),
+      _ProductSeed(
+        name: 'กล้วยบวชชีน',
+        price: 45,
+        sku: 'DESS-002',
+        categorySortOrder: 3,
+        stockQuantity: 11,
+      ),
     ];
 
     final existingCategories = await isar.categoryModels.where().findAll();
@@ -127,11 +181,30 @@ class DataSeeder {
           ..name = spec.name
           ..price = spec.price
           ..sku = spec.sku
-          ..isAvailable = true;
+          ..stockQuantity = spec.stockQuantity
+          ..isAvailable = spec.stockQuantity > 0;
         product.category.value = categoriesByOrder[spec.categorySortOrder];
         product.id = await isar.productModels.put(product);
         await product.category.save();
       }
+    });
+  }
+
+  static Future<void> _seedSettings(Isar isar) async {
+    final existing = await isar.appSettingsModels.get(1);
+    if (existing != null) return;
+
+    await isar.writeTxn(() async {
+      await isar.appSettingsModels.put(
+        AppSettingsModel()
+          ..id = 1
+          ..storeName = 'Thai POS Demo'
+          ..storeAddress = '99 ถนนสุขุมวิท กรุงเทพฯ 10110'
+          ..storeTaxId = '0105559999999'
+          ..storePhone = '02-123-4567'
+          ..receiptFooter = 'ขอบคุณที่อุดหนุน แล้วพบกันใหม่'
+          ..lowStockThreshold = 5,
+      );
     });
   }
 }
@@ -152,10 +225,12 @@ class _ProductSeed {
     required this.price,
     required this.sku,
     required this.categorySortOrder,
+    required this.stockQuantity,
   });
 
   final String name;
   final double price;
   final String sku;
   final int categorySortOrder;
+  final int stockQuantity;
 }

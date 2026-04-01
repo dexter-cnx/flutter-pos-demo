@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../app/layout/responsive_layout.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
+import '../../../pos/presentation/providers/pos_providers.dart';
 import '../providers/checkout_providers.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
@@ -53,6 +55,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           receivedAmount: effectiveReceivedAmount,
           changeAmount: change,
         );
+    await ref.read(inventoryActionsProvider.notifier).deductStock({
+      for (final item in cartState.items) item.product.id: item.quantity,
+    });
     if (!context.mounted) return;
 
     ref.read(cartProvider.notifier).clearCart();
@@ -135,7 +140,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         padding: const EdgeInsets.all(16),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final isWide = constraints.maxWidth >= 1000;
+            final responsive = ResponsiveLayout.fromConstraints(constraints);
             final summary = _buildOrderSummary(context, cartState);
             final paymentPanel = _buildPaymentPanel(
               context,
@@ -152,7 +157,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               ),
             );
 
-            if (isWide) {
+            if (responsive.isSplitView) {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
