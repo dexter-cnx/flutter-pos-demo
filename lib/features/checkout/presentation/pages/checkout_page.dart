@@ -188,19 +188,27 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(flex: 3, child: summary),
+                  Expanded(
+                    flex: 3,
+                    child: SingleChildScrollView(child: summary),
+                  ),
                   const SizedBox(width: 16),
-                  Expanded(flex: 2, child: paymentPanel),
+                  Expanded(
+                    flex: 2,
+                    child: SingleChildScrollView(child: paymentPanel),
+                  ),
                 ],
               );
             }
 
-            return Column(
-              children: [
-                summary,
-                const SizedBox(height: 16),
-                paymentPanel,
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  summary,
+                  const SizedBox(height: 16),
+                  paymentPanel,
+                ],
+              ),
             );
           },
         ),
@@ -213,51 +221,53 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'checkout.summary'.tr(),
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 12),
-            if (!hasItems)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Column(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'checkout.summary'.tr(),
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 12),
+              if (!hasItems)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: Column(
+                    children: [
+                      Text('checkout.empty_cart'.tr()),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () => context.go('/'),
+                        child: Text('common.back'.tr()),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Column(
                   children: [
-                    Text('checkout.empty_cart'.tr()),
-                    const SizedBox(height: 12),
-                    FilledButton(
-                      onPressed: () => context.go('/'),
-                      child: Text('common.back'.tr()),
+                    ...cartState.items
+                        .map((item) => _buildCartItem(context, item)),
+                    const SizedBox(height: 16),
+                    const Divider(height: 32),
+                    _buildSummaryRow(
+                      context,
+                      'checkout.amount_due'.tr(),
+                      _currency(cartState.subtotal + cartState.taxAmount),
+                      bold: true,
+                    ),
+                    _buildSummaryRow(
+                      context,
+                      '${'pos.vat'.tr()} (7%)',
+                      _currency(cartState.taxAmount),
                     ),
                   ],
                 ),
-              )
-            else
-              Column(
-                children: [
-                  ...cartState.items
-                      .map((item) => _buildCartItem(context, item)),
-                  const SizedBox(height: 16),
-                  const Divider(height: 32),
-                  _buildSummaryRow(
-                    context,
-                    'checkout.amount_due'.tr(),
-                    _currency(cartState.subtotal + cartState.taxAmount),
-                    bold: true,
-                  ),
-                  _buildSummaryRow(
-                    context,
-                    '${'pos.vat'.tr()} (7%)',
-                    _currency(cartState.taxAmount),
-                  ),
-                ],
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -302,100 +312,102 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'payment.title'.tr(),
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'checkout.payment_method'.tr(),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              children: PaymentMethod.values.map((candidate) {
-                return ChoiceChip(
-                  label: Text(_paymentLabel(candidate)),
-                  selected: candidate == method,
-                  onSelected: (_) => ref
-                      .read(selectedPaymentMethodProvider.notifier)
-                      .state = candidate,
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _receivedController,
-              enabled: isCash,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                labelText: 'checkout.enter_received'.tr(),
-                prefixText: '\u0E3F',
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'payment.title'.tr(),
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
-              onChanged: _onReceivedChanged,
-            ),
-            if (isCash) ...[
+              const SizedBox(height: 16),
+              Text(
+                'checkout.payment_method'.tr(),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
-                runSpacing: 8,
-                children: [
-                  OutlinedButton(
-                    onPressed: () => _setReceivedAmount(amountDue),
-                    child: Text('checkout.exact_amount'.tr()),
-                  ),
-                  for (final amount in const [10, 100, 500, 1000])
-                    OutlinedButton(
-                      onPressed: () => _addReceivedAmount(amount.toDouble()),
-                      child: Text(
-                        'checkout.add_cash_amount'.tr(args: ['$amount']),
-                      ),
-                    ),
-                ],
+                children: PaymentMethod.values.map((candidate) {
+                  return ChoiceChip(
+                    label: Text(_paymentLabel(candidate)),
+                    selected: candidate == method,
+                    onSelected: (_) => ref
+                        .read(selectedPaymentMethodProvider.notifier)
+                        .state = candidate,
+                  );
+                }).toList(),
               ),
-              if (receivedAmount > 0 && receivedAmount < amountDue) ...[
+              const SizedBox(height: 16),
+              TextField(
+                controller: _receivedController,
+                enabled: isCash,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'checkout.enter_received'.tr(),
+                  prefixText: '\u0E3F',
+                ),
+                onChanged: _onReceivedChanged,
+              ),
+              if (isCash) ...[
                 const SizedBox(height: 12),
-                Text(
-                  'checkout.insufficient_cash'.tr(),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () => _setReceivedAmount(amountDue),
+                      child: Text('checkout.exact_amount'.tr()),
+                    ),
+                    for (final amount in const [10, 100, 500, 1000])
+                      OutlinedButton(
+                        onPressed: () => _addReceivedAmount(amount.toDouble()),
+                        child: Text(
+                          'checkout.add_cash_amount'.tr(args: ['$amount']),
+                        ),
+                      ),
+                  ],
                 ),
+                if (receivedAmount > 0 && receivedAmount < amountDue) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'checkout.insufficient_cash'.tr(),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ],
               ],
-            ],
-            const SizedBox(height: 16),
-            _buildSummaryRow(
-              context,
-              'checkout.amount_due'.tr(),
-              _currency(amountDue),
-            ),
-            _buildSummaryRow(
-              context,
-              'payment.change'.tr(),
-              _currency(change),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: enabled ? onConfirm : null,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    isCash ? 'payment.confirm'.tr() : 'common.pay'.tr(),
-                    style: const TextStyle(fontSize: 16),
+              const SizedBox(height: 16),
+              _buildSummaryRow(
+                context,
+                'checkout.amount_due'.tr(),
+                _currency(amountDue),
+              ),
+              _buildSummaryRow(
+                context,
+                'payment.change'.tr(),
+                _currency(change),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: enabled ? onConfirm : null,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                      isCash ? 'payment.confirm'.tr() : 'common.pay'.tr(),
+                      style: const TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

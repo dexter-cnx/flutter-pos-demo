@@ -21,14 +21,14 @@
   },
   "inventory": {
     "title": "Inventory",
-    "low_stock_count": "{0} low stock items",
+    "low_stock_count": "{} low stock items",
     "low_stock": "Low stock",
     "out_of_stock": "Out of stock",
-    "stock_remaining": "{0} left",
+    "stock_remaining": "{} left",
     "restock": "Restock",
     "restock_quantity": "Restock quantity",
-    "restock_success": "Restocked {0} successfully.",
-    "warning_summary": "{0} items are below the warning threshold of {1}."
+    "restock_success": "Restocked {} successfully.",
+    "warning_summary": "{} items are below the warning threshold of {}."
   },
   "history": {
     "title": "Order History",
@@ -95,7 +95,7 @@
     "amount_due": "Amount to pay",
     "enter_received": "Enter received amount",
     "exact_amount": "Exact amount",
-    "add_cash_amount": "+{0}",
+    "add_cash_amount": "+{}",
     "insufficient_cash": "Received amount is less than the total due.",
     "change_due": "Change due",
     "empty_cart": "No items to pay for yet"
@@ -122,11 +122,11 @@
     "print": "Print Receipt",
     "share_pdf": "Share PDF",
     "print_simulation": "Print Simulation",
-    "simulation_message": "Print simulation completed for {0}.",
+    "simulation_message": "Print simulation completed for {}.",
     "print_failed": "Unable to send receipt to printer.",
     "share_failed": "Unable to share receipt PDF.",
     "footer": "This is a demo receipt for preview and printing flow.",
     "not_found": "Receipt not found",
-    "not_found_hint": "We could not find receipt {0}."
+    "not_found_hint": "We could not find receipt {}."
   }
 }

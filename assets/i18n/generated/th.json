@@ -21,14 +21,14 @@
   },
   "inventory": {
     "title": "คลังสินค้า",
-    "low_stock_count": "{0} รายการใกล้หมด",
+    "low_stock_count": "{} รายการใกล้หมด",
     "low_stock": "ใกล้หมด",
     "out_of_stock": "สินค้าหมด",
-    "stock_remaining": "คงเหลือ {0}",
+    "stock_remaining": "คงเหลือ {}",
     "restock": "เติมสต็อก",
     "restock_quantity": "จำนวนที่เติม",
-    "restock_success": "เติมสต็อก {0} เรียบร้อยแล้ว",
-    "warning_summary": "มี {0} รายการที่ต่ำกว่าค่าเตือนสต็อก {1}"
+    "restock_success": "เติมสต็อก {} เรียบร้อยแล้ว",
+    "warning_summary": "มี {} รายการที่ต่ำกว่าค่าเตือนสต็อก {}"
   },
   "history": {
     "title": "ประวัติการขาย",
@@ -95,7 +95,7 @@
     "amount_due": "ยอดที่ต้องชำระ",
     "enter_received": "กรอกยอดที่รับมา",
     "exact_amount": "ชำระเงินตรง",
-    "add_cash_amount": "+{0}",
+    "add_cash_amount": "+{}",
     "insufficient_cash": "ยอดเงินที่รับมายังไม่พอ",
     "change_due": "เงินทอน",
     "empty_cart": "ยังไม่มีรายการให้ชำระ"
@@ -122,11 +122,11 @@
     "print": "พิมพ์ใบเสร็จ",
     "share_pdf": "แชร์ PDF",
     "print_simulation": "จำลองการพิมพ์",
-    "simulation_message": "จำลองการพิมพ์เสร็จแล้วสำหรับ {0}",
+    "simulation_message": "จำลองการพิมพ์เสร็จแล้วสำหรับ {}",
     "print_failed": "ไม่สามารถส่งใบเสร็จไปยังเครื่องพิมพ์ได้",
     "share_failed": "ไม่สามารถแชร์ไฟล์ PDF ของใบเสร็จได้",
     "footer": "ใบเสร็จนี้เป็นเดโมสำหรับตัวอย่างการแสดงผลและการพิมพ์",
     "not_found": "ไม่พบใบเสร็จ",
-    "not_found_hint": "ไม่พบข้อมูลใบเสร็จ {0}"
+    "not_found_hint": "ไม่พบข้อมูลใบเสร็จ {}"
   }
 }
