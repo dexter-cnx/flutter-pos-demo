@@ -34,10 +34,22 @@ class ResponsiveLayout {
     return 1;
   }
 
+  double get contentCardAspectRatio {
+    if (isSplitView) return 0.92;
+    if (isBalanced) return 1.0;
+    return 1.35;
+  }
+
   int get inventoryGridCount {
     if (widthRatio >= 1.55) return 3;
     if (widthRatio >= 0.95) return 2;
     return 1;
+  }
+
+  double get inventoryCardAspectRatio {
+    if (inventoryGridCount == 1) return isBalanced ? 2.5 : 2.8;
+    if (inventoryGridCount == 2) return 2.05;
+    return 1.95;
   }
 
   int get settingsColumnCount {
@@ -45,4 +57,10 @@ class ResponsiveLayout {
     if (widthRatio >= 1.1) return 2;
     return 1;
   }
+
+  double get cartDockHeight => isBalanced ? 300.0 : 260.0;
+
+  double get cartPanelWidth => (width * 0.28).clamp(320.0, 420.0);
+
+  double get receiptPreviewHeightFactor => isBalanced ? 0.58 : 0.5;
 }

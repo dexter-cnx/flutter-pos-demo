@@ -118,7 +118,7 @@ class PosPage extends ConsumerWidget {
                       padding: const EdgeInsets.all(16),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
-                        childAspectRatio: responsive.isBalanced ? 0.92 : 1.35,
+                        childAspectRatio: responsive.contentCardAspectRatio,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
                       ),
@@ -136,13 +136,12 @@ class PosPage extends ConsumerWidget {
             );
 
             if (responsive.isSplitView) {
-              final cartWidth = constraints.maxWidth * 0.28;
               return Row(
                 children: [
                   Expanded(flex: 3, child: mainContent),
                   VerticalDivider(width: 1, color: theme.dividerColor),
                   SizedBox(
-                    width: cartWidth.clamp(320.0, 420.0),
+                    width: responsive.cartPanelWidth,
                     child: const CartSidebar(),
                   ),
                 ],
@@ -153,7 +152,7 @@ class PosPage extends ConsumerWidget {
               children: [
                 Expanded(child: mainContent),
                 Container(
-                  height: responsive.isBalanced ? 300 : 260,
+                  height: responsive.cartDockHeight,
                   decoration: BoxDecoration(
                     border: Border(
                       top: BorderSide(color: theme.dividerColor),

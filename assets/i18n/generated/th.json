@@ -94,6 +94,9 @@
     "payment_method": "ช่องทางการชำระเงิน",
     "amount_due": "ยอดที่ต้องชำระ",
     "enter_received": "กรอกยอดที่รับมา",
+    "exact_amount": "ชำระเงินตรง",
+    "add_cash_amount": "+{0}",
+    "insufficient_cash": "ยอดเงินที่รับมายังไม่พอ",
     "change_due": "เงินทอน",
     "empty_cart": "ยังไม่มีรายการให้ชำระ"
   },

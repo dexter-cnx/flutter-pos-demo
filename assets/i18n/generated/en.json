@@ -94,6 +94,9 @@
     "payment_method": "Payment Method",
     "amount_due": "Amount to pay",
     "enter_received": "Enter received amount",
+    "exact_amount": "Exact amount",
+    "add_cash_amount": "+{0}",
+    "insufficient_cash": "Received amount is less than the total due.",
     "change_due": "Change due",
     "empty_cart": "No items to pay for yet"
   },

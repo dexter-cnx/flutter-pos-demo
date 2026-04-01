@@ -75,6 +75,9 @@ checkout.items,Items,รายการ
 checkout.payment_method,Payment Method,ช่องทางการชำระเงิน
 checkout.amount_due,Amount to pay,ยอดที่ต้องชำระ
 checkout.enter_received,Enter received amount,กรอกยอดที่รับมา
+checkout.exact_amount,Exact amount,ชำระเงินตรง
+checkout.add_cash_amount,+{0},+{0}
+checkout.insufficient_cash,Received amount is less than the total due.,ยอดเงินที่รับมายังไม่พอ
 checkout.change_due,Change due,เงินทอน
 checkout.empty_cart,No items to pay for yet,ยังไม่มีรายการให้ชำระ
 receipt.title,Receipt Preview,ตัวอย่างใบเสร็จ

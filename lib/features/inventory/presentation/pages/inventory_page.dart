@@ -103,7 +103,7 @@ class InventoryPage extends ConsumerWidget {
                           crossAxisCount: crossAxisCount,
                           mainAxisSpacing: 12,
                           crossAxisSpacing: 12,
-                          childAspectRatio: crossAxisCount == 1 ? 2.8 : 2.15,
+                          childAspectRatio: responsive.inventoryCardAspectRatio,
                         ),
                         itemBuilder: (context, index) => _InventoryCard(
                           product: sortedProducts[index],

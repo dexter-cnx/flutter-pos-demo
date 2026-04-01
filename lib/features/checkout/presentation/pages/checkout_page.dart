@@ -38,6 +38,28 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     ref.read(cashReceivedProvider.notifier).state = parsed;
   }
 
+  String _editableCurrency(double value) {
+    if (value == value.roundToDouble()) {
+      return value.toStringAsFixed(0);
+    }
+    return value.toStringAsFixed(2);
+  }
+
+  void _setReceivedAmount(double value) {
+    final safeValue = value < 0 ? 0.0 : value;
+    final text = _editableCurrency(safeValue);
+    ref.read(cashReceivedProvider.notifier).state = safeValue;
+    _receivedController.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  }
+
+  void _addReceivedAmount(double amount) {
+    final current = ref.read(cashReceivedProvider);
+    _setReceivedAmount(current + amount);
+  }
+
   Future<void> _confirmPayment(
     BuildContext context,
     CartState cartState,
@@ -121,6 +143,10 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         ? max(0.0, receivedAmount - amountDue)
         : 0.0;
     final hasItems = cartState.items.isNotEmpty;
+    final hasEnteredCash = method != PaymentMethod.cash || receivedAmount > 0;
+    final hasSufficientCash =
+        method != PaymentMethod.cash || receivedAmount >= amountDue;
+    final canConfirmPayment = hasItems && hasEnteredCash && hasSufficientCash;
 
     return Scaffold(
       appBar: AppBar(
@@ -144,9 +170,10 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
             final summary = _buildOrderSummary(context, cartState);
             final paymentPanel = _buildPaymentPanel(
               context,
-              hasItems,
+              canConfirmPayment,
               method,
               amountDue,
+              receivedAmount,
               change,
               () => _confirmPayment(
                 context,
@@ -266,9 +293,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     bool enabled,
     PaymentMethod method,
     double amountDue,
+    double receivedAmount,
     double change,
     VoidCallback onConfirm,
   ) {
+    final isCash = method == PaymentMethod.cash;
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 2,
@@ -302,7 +332,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
             const SizedBox(height: 16),
             TextField(
               controller: _receivedController,
-              enabled: method == PaymentMethod.cash,
+              enabled: isCash,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
@@ -311,6 +341,35 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               ),
               onChanged: _onReceivedChanged,
             ),
+            if (isCash) ...[
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => _setReceivedAmount(amountDue),
+                    child: Text('checkout.exact_amount'.tr()),
+                  ),
+                  for (final amount in const [10, 100, 500, 1000])
+                    OutlinedButton(
+                      onPressed: () => _addReceivedAmount(amount.toDouble()),
+                      child: Text(
+                        'checkout.add_cash_amount'.tr(args: ['$amount']),
+                      ),
+                    ),
+                ],
+              ),
+              if (receivedAmount > 0 && receivedAmount < amountDue) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'checkout.insufficient_cash'.tr(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ],
+            ],
             const SizedBox(height: 16),
             _buildSummaryRow(
               context,
@@ -330,7 +389,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    'payment.confirm'.tr(),
+                    isCash ? 'payment.confirm'.tr() : 'common.pay'.tr(),
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),

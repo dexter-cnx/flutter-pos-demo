@@ -564,7 +564,11 @@ class _ReceiptContent extends ConsumerWidget {
         return Column(
           children: [
             Expanded(child: summary),
-            SizedBox(height: constraints.maxHeight * 0.55, child: pdfCard),
+            SizedBox(
+              height:
+                  constraints.maxHeight * responsive.receiptPreviewHeightFactor,
+              child: pdfCard,
+            ),
           ],
         );
       },
