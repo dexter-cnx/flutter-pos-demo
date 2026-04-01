@@ -50,9 +50,8 @@ void main() async {
 
     for (var localeIndex = 0; localeIndex < locales.length; localeIndex++) {
       final locale = locales[localeIndex];
-      final value = localeIndex + 1 < row.length
-          ? row[localeIndex + 1].trim()
-          : '';
+      final value =
+          localeIndex + 1 < row.length ? row[localeIndex + 1].trim() : '';
       _writeNestedValue(localeMaps[locale]!, key, value);
     }
   }

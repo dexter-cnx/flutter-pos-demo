@@ -17,7 +17,9 @@
     "subtotal": "Subtotal",
     "vat": "VAT",
     "pay": "Checkout",
-    "total": "Total"
+    "total": "Total",
+    "empty_products": "No products available",
+    "empty_products_hint": "Add or seed products to start selling from this screen."
   },
   "inventory": {
     "title": "Inventory",
@@ -75,7 +77,10 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "total": "Total",
-    "back": "Back"
+    "back": "Back",
+    "retry": "Retry",
+    "loading": "Loading...",
+    "error_title": "Something went wrong"
   },
   "payment": {
     "title": "Payment",
@@ -98,7 +103,13 @@
     "add_cash_amount": "+{}",
     "insufficient_cash": "Received amount is less than the total due.",
     "change_due": "Change due",
-    "empty_cart": "No items to pay for yet"
+    "empty_cart": "No items to pay for yet",
+    "promptpay_ready": "PromptPay QR is ready to scan",
+    "promptpay_hint": "Use a banking app to scan the QR code below for this order amount.",
+    "promptpay_receiver": "Receiver",
+    "promptpay_reference": "Reference",
+    "card_hint": "Card payment is simulated in this demo.",
+    "card_ready": "Tap confirm after card approval"
   },
   "receipt": {
     "title": "Receipt Preview",

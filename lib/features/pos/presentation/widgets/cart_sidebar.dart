@@ -7,7 +7,12 @@ import '../../../../app/layout/responsive_layout.dart';
 import '../providers/cart_provider.dart';
 
 class CartSidebar extends ConsumerWidget {
-  const CartSidebar({super.key});
+  const CartSidebar({
+    super.key,
+    this.showRetryHint = false,
+  });
+
+  final bool showRetryHint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,6 +30,35 @@ class CartSidebar extends ConsumerWidget {
 
         return Column(
           children: [
+            if (showRetryHint)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: Material(
+                  color: theme.colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(16),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: theme.colorScheme.onErrorContainer,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'common.error_title'.tr(),
+                            style: TextStyle(
+                              color: theme.colorScheme.onErrorContainer,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.all(compact ? 12 : 16),
               child: Row(

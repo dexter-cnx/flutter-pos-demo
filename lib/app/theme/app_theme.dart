@@ -31,31 +31,31 @@ class AppTheme {
         brightness: Brightness.dark,
       ),
       scaffoldBackgroundColor: backgroundColor,
-      textTheme: GoogleFonts.notoSansThaiTextTheme(baseTheme.textTheme)
-          .copyWith(
-            displayLarge: GoogleFonts.notoSansThai(
-              fontSize: 56,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
-              color: onSurface,
-            ),
-            headlineMedium: GoogleFonts.notoSansThai(
-              fontSize: 28,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.5,
-              color: onSurface,
-            ),
-            titleLarge: GoogleFonts.notoSansThai(
-              fontSize: 22,
-              fontWeight: FontWeight.w500,
-              color: onSurface,
-            ),
-            bodyLarge: GoogleFonts.notoSansThai(
-              fontSize: 16,
-              height: 1.6,
-              color: onSurface,
-            ),
-          ),
+      textTheme:
+          GoogleFonts.notoSansThaiTextTheme(baseTheme.textTheme).copyWith(
+        displayLarge: GoogleFonts.notoSansThai(
+          fontSize: 56,
+          fontWeight: FontWeight.bold,
+          height: 1.2,
+          color: onSurface,
+        ),
+        headlineMedium: GoogleFonts.notoSansThai(
+          fontSize: 28,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.5,
+          color: onSurface,
+        ),
+        titleLarge: GoogleFonts.notoSansThai(
+          fontSize: 22,
+          fontWeight: FontWeight.w500,
+          color: onSurface,
+        ),
+        bodyLarge: GoogleFonts.notoSansThai(
+          fontSize: 16,
+          height: 1.6,
+          color: onSurface,
+        ),
+      ),
       cardTheme: CardThemeData(
         color: surfaceHigh,
         elevation: 0,

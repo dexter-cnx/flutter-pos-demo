@@ -2,8 +2,13 @@ name: Deploy Flutter Web to GitHub Pages
 
 on:
   push:
-    branches: [ main ]      # เปลี่ยนเป็น master ถ้า repo คุณใช้ master
-  workflow_dispatch:        # ให้กด Deploy เองได้จาก GitHub
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
@@ -22,11 +27,16 @@ jobs:
         run: flutter pub get
 
       - name: Build Flutter Web
-        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/" --web-renderer html
+        run: flutter build web --release --base-href "/flutter-pos-demo/"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './build/web'
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./published/web
-          force_orphan: true          # ทำให้ branch gh-pages สะอาด
+        id: deployment
+        uses: actions/deploy-pages@v4

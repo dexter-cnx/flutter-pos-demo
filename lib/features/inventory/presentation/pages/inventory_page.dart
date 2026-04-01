@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/layout/responsive_layout.dart';
+import '../../../../app/widgets/async_state_view.dart';
 import '../../../pos/domain/entities/product.dart';
 import '../../../pos/presentation/providers/pos_providers.dart';
 import '../../../settings/presentation/providers/settings_providers.dart';
@@ -42,6 +43,16 @@ class InventoryPage extends ConsumerWidget {
         child: thresholdAsync.when(
           data: (threshold) => productsAsync.when(
             data: (products) {
+              if (products.isEmpty) {
+                return AppEmptyState(
+                  icon: Icons.inventory_2_outlined,
+                  title: 'pos.empty_products'.tr(),
+                  message: 'pos.empty_products_hint'.tr(),
+                  actionLabel: 'common.back'.tr(),
+                  onAction: () => context.go('/'),
+                );
+              }
+
               final sortedProducts = [...products]..sort((a, b) {
                   final aRank = a.stockQuantity <= 0
                       ? 0
@@ -115,11 +126,20 @@ class InventoryPage extends ConsumerWidget {
                 },
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(child: Text(error.toString())),
+            loading: () => const AppLoadingState(),
+            error: (error, _) => AppErrorState(
+              message: error.toString(),
+              onRetry: () => ref.invalidate(inventoryProductsProvider),
+            ),
           ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, _) => Center(child: Text(error.toString())),
+          loading: () => const AppLoadingState(),
+          error: (error, _) => AppErrorState(
+            message: error.toString(),
+            onRetry: () {
+              ref.invalidate(storeProfileProvider);
+              ref.invalidate(lowStockThresholdProvider);
+            },
+          ),
         ),
       ),
     );

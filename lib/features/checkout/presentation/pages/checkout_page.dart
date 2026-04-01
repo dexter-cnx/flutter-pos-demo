@@ -4,12 +4,17 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../app/layout/responsive_layout.dart';
+import '../../../../app/widgets/async_state_view.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../../pos/presentation/providers/pos_providers.dart';
+import '../../../settings/domain/entities/store_profile.dart';
+import '../../../settings/presentation/providers/settings_providers.dart';
 import '../providers/checkout_providers.dart';
+import '../services/promptpay_qr_service.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -136,6 +141,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final cartState = ref.watch(cartProvider);
     final method = ref.watch(selectedPaymentMethodProvider);
     final receivedAmount = ref.watch(cashReceivedProvider);
+    final storeProfileAsync = ref.watch(storeProfileProvider);
     final amountDue = cartState.total;
     final effectiveReceivedAmount =
         method == PaymentMethod.cash ? receivedAmount : amountDue;
@@ -175,6 +181,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               amountDue,
               receivedAmount,
               change,
+              storeProfileAsync,
               () => _confirmPayment(
                 context,
                 cartState,
@@ -305,9 +312,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     double amountDue,
     double receivedAmount,
     double change,
+    AsyncValue<StoreProfile> storeProfileAsync,
     VoidCallback onConfirm,
   ) {
     final isCash = method == PaymentMethod.cash;
+    final isQr = method == PaymentMethod.qr;
+    final isCard = method == PaymentMethod.card;
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -341,18 +351,17 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 }).toList(),
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: _receivedController,
-                enabled: isCash,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'checkout.enter_received'.tr(),
-                  prefixText: '\u0E3F',
-                ),
-                onChanged: _onReceivedChanged,
-              ),
               if (isCash) ...[
+                TextField(
+                  controller: _receivedController,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: 'checkout.enter_received'.tr(),
+                    prefixText: '\u0E3F',
+                  ),
+                  onChanged: _onReceivedChanged,
+                ),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
@@ -380,6 +389,19 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                     ),
                   ),
                 ],
+              ] else if (isQr) ...[
+                storeProfileAsync.when(
+                  data: (profile) =>
+                      _buildPromptPaySection(context, profile, amountDue),
+                  loading: () => const AppLoadingState(compact: true),
+                  error: (error, _) => AppErrorState(
+                    message: error.toString(),
+                    compact: true,
+                    onRetry: () => ref.invalidate(storeProfileProvider),
+                  ),
+                ),
+              ] else if (isCard) ...[
+                _buildCardSection(context),
               ],
               const SizedBox(height: 16),
               _buildSummaryRow(
@@ -409,6 +431,109 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPromptPaySection(
+    BuildContext context,
+    StoreProfile storeProfile,
+    double amountDue,
+  ) {
+    final qrData = PromptPayQrService.build(
+      storeName: storeProfile.storeName,
+      taxId: storeProfile.storeTaxId,
+      phone: storeProfile.storePhone,
+      amount: amountDue,
+    );
+    final theme = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'checkout.promptpay_ready'.tr(),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'checkout.promptpay_hint'.tr(),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: QrImageView(
+                  data: qrData.payload,
+                  version: QrVersions.auto,
+                  size: 220,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildSummaryRow(
+            context,
+            'checkout.promptpay_receiver'.tr(),
+            qrData.receiverLabel,
+          ),
+          _buildSummaryRow(
+            context,
+            'checkout.promptpay_reference'.tr(),
+            qrData.reference,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCardSection(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'checkout.card_ready'.tr(),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'checkout.card_hint'.tr(),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
       ),
     );
   }

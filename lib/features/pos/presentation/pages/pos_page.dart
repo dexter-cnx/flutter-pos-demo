@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/layout/responsive_layout.dart';
+import '../../../../app/widgets/async_state_view.dart';
 import '../../../settings/presentation/providers/settings_providers.dart';
 import '../providers/pos_providers.dart';
 import '../widgets/cart_sidebar.dart';
@@ -20,6 +21,8 @@ class PosPage extends ConsumerWidget {
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
     final lowStockCountAsync = ref.watch(lowStockCountProvider);
     final lowStockThresholdAsync = ref.watch(lowStockThresholdProvider);
+    final categoriesError = categoriesAsync.hasError;
+    final productsError = productsAsync.hasError;
 
     return Scaffold(
       appBar: AppBar(
@@ -109,27 +112,60 @@ class PosPage extends ConsumerWidget {
                       },
                     ),
                   ),
-                  loading: () => const LinearProgressIndicator(),
-                  error: (e, _) => Center(child: Text(e.toString())),
+                  loading: () => const SizedBox(
+                    height: 60,
+                    child: AppLoadingState(compact: true),
+                  ),
+                  error: (e, _) => SizedBox(
+                    height: 72,
+                    child: AppErrorState(
+                      message: e.toString(),
+                      compact: true,
+                      onRetry: () {
+                        ref.invalidate(categoriesProvider);
+                        ref.invalidate(productsProvider);
+                      },
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: productsAsync.when(
-                    data: (products) => GridView.builder(
-                      padding: const EdgeInsets.all(16),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        childAspectRatio: responsive.contentCardAspectRatio,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                      ),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        return ProductCard(product: products[index]);
+                    data: (products) {
+                      if (products.isEmpty) {
+                        return AppEmptyState(
+                          icon: Icons.inventory_2_outlined,
+                          title: 'pos.empty_products'.tr(),
+                          message: 'pos.empty_products_hint'.tr(),
+                          actionLabel: 'common.retry'.tr(),
+                          onAction: () {
+                            ref.invalidate(categoriesProvider);
+                            ref.invalidate(productsProvider);
+                          },
+                        );
+                      }
+
+                      return GridView.builder(
+                        padding: const EdgeInsets.all(16),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          childAspectRatio: responsive.contentCardAspectRatio,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          return ProductCard(product: products[index]);
+                        },
+                      );
+                    },
+                    loading: () => const AppLoadingState(),
+                    error: (e, _) => AppErrorState(
+                      message: e.toString(),
+                      onRetry: () {
+                        ref.invalidate(categoriesProvider);
+                        ref.invalidate(productsProvider);
                       },
                     ),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text(e.toString())),
                   ),
                 ),
               ],
@@ -142,7 +178,9 @@ class PosPage extends ConsumerWidget {
                   VerticalDivider(width: 1, color: theme.dividerColor),
                   SizedBox(
                     width: responsive.cartPanelWidth,
-                    child: const CartSidebar(),
+                    child: CartSidebar(
+                      showRetryHint: categoriesError || productsError,
+                    ),
                   ),
                 ],
               );
@@ -158,7 +196,9 @@ class PosPage extends ConsumerWidget {
                       top: BorderSide(color: theme.dividerColor),
                     ),
                   ),
-                  child: const CartSidebar(),
+                  child: CartSidebar(
+                    showRetryHint: categoriesError || productsError,
+                  ),
                 ),
               ],
             );

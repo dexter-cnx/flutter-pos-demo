@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../app/widgets/async_state_view.dart';
 import '../../data/models/order_model.dart';
 import '../providers/order_history_provider.dart';
 
@@ -31,8 +32,11 @@ class OrderHistoryPage extends ConsumerWidget {
                 itemBuilder: (context, index) =>
                     _OrderCard(order: orders[index]),
               ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text(error.toString())),
+        loading: () => const AppLoadingState(),
+        error: (error, _) => AppErrorState(
+          message: error.toString(),
+          onRetry: () => ref.invalidate(ordersProvider),
+        ),
       ),
     );
   }
@@ -45,29 +49,12 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.receipt_long_outlined, size: 72),
-            const SizedBox(height: 16),
-            Text('history.empty'.tr(),
-                style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 12),
-            Text(
-              'history.empty_hint'.tr(),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: onBack,
-              child: Text('common.back'.tr()),
-            ),
-          ],
-        ),
-      ),
+    return AppEmptyState(
+      icon: Icons.receipt_long_outlined,
+      title: 'history.empty'.tr(),
+      message: 'history.empty_hint'.tr(),
+      actionLabel: 'common.back'.tr(),
+      onAction: onBack,
     );
   }
 }

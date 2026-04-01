@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/bootstrap.dart';
 import '../../../../app/layout/responsive_layout.dart';
 import '../../../../app/l10n/localization.dart';
+import '../../../../app/widgets/async_state_view.dart';
 import '../../domain/entities/store_profile.dart';
 import '../providers/settings_providers.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
@@ -169,8 +170,12 @@ class SettingsPage extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        loading: () => const LinearProgressIndicator(),
-                        error: (error, _) => Text(error.toString()),
+                        loading: () => const AppLoadingState(compact: true),
+                        error: (error, _) => AppErrorState(
+                          message: error.toString(),
+                          compact: true,
+                          onRetry: () => ref.invalidate(orderCountProvider),
+                        ),
                       ),
                     ],
                   ),
@@ -444,18 +449,19 @@ class _AsyncInfoRow<T> extends StatelessWidget {
       data: (data) => _InfoRow(label: label, value: valueBuilder(data)),
       loading: () => Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: Text(label)),
-            const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
+            Text(label),
+            const SizedBox(height: 8),
+            const AppLoadingState(compact: true),
           ],
         ),
       ),
-      error: (error, _) => _InfoRow(label: label, value: error.toString()),
+      error: (error, _) => AppErrorState(
+        message: error.toString(),
+        compact: true,
+      ),
     );
   }
 }
@@ -469,7 +475,7 @@ class _LoadingCard extends StatelessWidget {
       title: 'settings.store_profile'.tr(),
       child: SizedBox(
         height: 180,
-        child: Center(child: CircularProgressIndicator()),
+        child: const AppLoadingState(),
       ),
     );
   }
@@ -484,7 +490,10 @@ class _ErrorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SettingsCard(
       title: 'settings.store_profile'.tr(),
-      child: Text(error),
+      child: AppErrorState(
+        message: error,
+        compact: true,
+      ),
     );
   }
 }

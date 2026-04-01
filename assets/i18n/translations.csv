@@ -54,6 +54,9 @@ common.cancel,Cancel,ยกเลิก
 common.confirm,Confirm,ยืนยัน
 common.total,Total,ยอดรวม
 common.back,Back,กลับ
+common.retry,Retry,ลองอีกครั้ง
+common.loading,Loading...,กำลังโหลด...
+common.error_title,Something went wrong,เกิดปัญหาในการโหลดข้อมูล
 pos.cart,Cart,ตะกร้าสินค้า
 pos.empty_cart,Your cart is empty,ยังไม่มีสินค้าในตะกร้า
 pos.all_categories,All,ทั้งหมด
@@ -61,6 +64,8 @@ pos.subtotal,Subtotal,ยอดรวมสินค้า
 pos.vat,VAT,ภาษีมูลค่าเพิ่ม
 pos.pay,Checkout,ชำระเงิน
 pos.total,Total,ยอดรวมสุทธิ
+pos.empty_products,No products available,ยังไม่มีสินค้าให้ขาย
+pos.empty_products_hint,Add or seed products to start selling from this screen.,เพิ่มหรือ seed สินค้าก่อนเริ่มขายจากหน้านี้
 payment.title,Payment,ชำระเงิน
 payment.cash,Cash,เงินสด
 payment.qr,PromptPay,คิวอาร์โค้ด
@@ -80,6 +85,12 @@ checkout.add_cash_amount,+{},+{}
 checkout.insufficient_cash,Received amount is less than the total due.,ยอดเงินที่รับมายังไม่พอ
 checkout.change_due,Change due,เงินทอน
 checkout.empty_cart,No items to pay for yet,ยังไม่มีรายการให้ชำระ
+checkout.promptpay_ready,PromptPay QR is ready to scan,พร้อมให้ลูกค้าสแกน PromptPay แล้ว
+checkout.promptpay_hint,Use a banking app to scan the QR code below for this order amount.,ใช้แอปธนาคารสแกน QR ด้านล่างเพื่อชำระยอดนี้
+checkout.promptpay_receiver,Receiver,ผู้รับเงิน
+checkout.promptpay_reference,Reference,รหัสอ้างอิง
+checkout.card_hint,Card payment is simulated in this demo.,การชำระผ่านบัตรเป็นการจำลองในเดโมนี้
+checkout.card_ready,Tap confirm after card approval,กดยืนยันหลังจากจำลองการอนุมัติบัตรแล้ว
 receipt.title,Receipt Preview,ตัวอย่างใบเสร็จ
 receipt.thank_you,Thank you for your purchase!,ขอบคุณที่อุดหนุน
 receipt.order_no,Order No.,เลขที่ใบเสร็จ

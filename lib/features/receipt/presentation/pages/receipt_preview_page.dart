@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import '../../../../app/layout/responsive_layout.dart';
+import '../../../../app/widgets/async_state_view.dart';
 import '../../../orders/data/models/order_model.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
 import '../../../settings/domain/entities/store_profile.dart';
@@ -55,11 +56,17 @@ class ReceiptPreviewPage extends ConsumerWidget {
               storeProfile: storeProfile,
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, _) => Center(child: Text(error.toString())),
+          loading: () => const AppLoadingState(),
+          error: (error, _) => AppErrorState(
+            message: error.toString(),
+            onRetry: () => ref.invalidate(orderReceiptProvider(orderId)),
+          ),
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text(error.toString())),
+        loading: () => const AppLoadingState(),
+        error: (error, _) => AppErrorState(
+          message: error.toString(),
+          onRetry: () => ref.invalidate(storeProfileProvider),
+        ),
       ),
     );
   }
@@ -583,31 +590,12 @@ class _MissingReceiptState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.receipt_long_outlined, size: 72),
-            const SizedBox(height: 16),
-            Text(
-              'receipt.not_found'.tr(),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'receipt.not_found_hint'.tr(args: ['#$orderId']),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: () => context.go('/history'),
-              child: Text('receipt.view_history'.tr()),
-            ),
-          ],
-        ),
-      ),
+    return AppEmptyState(
+      icon: Icons.receipt_long_outlined,
+      title: 'receipt.not_found'.tr(),
+      message: 'receipt.not_found_hint'.tr(args: ['#$orderId']),
+      actionLabel: 'receipt.view_history'.tr(),
+      onAction: () => context.go('/history'),
     );
   }
 }
