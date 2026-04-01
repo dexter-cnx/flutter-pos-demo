@@ -26,9 +26,7 @@ class PosPage extends ConsumerWidget {
           ),
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {
-              // TODO: Navigation to Settings
-            },
+            onPressed: () => context.go('/settings'),
           ),
         ],
       ),

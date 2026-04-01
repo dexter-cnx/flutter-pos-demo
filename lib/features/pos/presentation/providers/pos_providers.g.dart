@@ -35,6 +35,21 @@ final categoriesProvider = AutoDisposeFutureProvider<List<Category>>.internal(
 );
 
 typedef CategoriesRef = AutoDisposeFutureProviderRef<List<Category>>;
+String _$categoryCountHash() => r'd659ce7c5649b9bbdb84ef9c8d0739c7e7cdf8e4';
+
+/// See also [categoryCount].
+@ProviderFor(categoryCount)
+final categoryCountProvider = AutoDisposeFutureProvider<int>.internal(
+  categoryCount,
+  name: r'categoryCountProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$categoryCountHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CategoryCountRef = AutoDisposeFutureProviderRef<int>;
 String _$productsHash() => r'b1268e82504fee42d6c6c0aab8239153b57ba924';
 
 /// See also [products].
@@ -49,6 +64,20 @@ final productsProvider = AutoDisposeFutureProvider<List<Product>>.internal(
 );
 
 typedef ProductsRef = AutoDisposeFutureProviderRef<List<Product>>;
+String _$productCountHash() => r'd80df356e149f2dffc61d2da59694774c8dd4128';
+
+/// See also [productCount].
+@ProviderFor(productCount)
+final productCountProvider = AutoDisposeFutureProvider<int>.internal(
+  productCount,
+  name: r'productCountProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$productCountHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef ProductCountRef = AutoDisposeFutureProviderRef<int>;
 String _$selectedCategoryIdHash() =>
     r'e200877d189e9efa39b0a04655f56101e28aaf21';
 

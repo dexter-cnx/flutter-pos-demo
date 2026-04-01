@@ -33,6 +33,14 @@ Future<OrderModel?> orderReceipt(OrderReceiptRef ref, int orderId) async {
 }
 
 @riverpod
+Future<int> orderCount(OrderCountRef ref) async {
+  final database = isar;
+  if (database == null) return 0;
+
+  return database.orderModels.count();
+}
+
+@riverpod
 class OrderHistory extends _$OrderHistory {
   @override
   FutureOr<void> build() {}
@@ -71,8 +79,22 @@ class OrderHistory extends _$OrderHistory {
     });
 
     ref.invalidate(ordersProvider);
+    ref.invalidate(orderCountProvider);
     ref.invalidate(orderReceiptProvider(orderId));
     state = const AsyncData(null);
     return orderId;
+  }
+
+  Future<void> clearOrders() async {
+    final database = isar;
+    if (database == null) return;
+
+    await database.writeTxn(() async {
+      await database.orderModels.clear();
+    });
+
+    ref.invalidate(ordersProvider);
+    ref.invalidate(orderCountProvider);
+    state = const AsyncData(null);
   }
 }

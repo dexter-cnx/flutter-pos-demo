@@ -169,7 +169,21 @@ class _OrderReceiptProviderElement
   int get orderId => (origin as OrderReceiptProvider).orderId;
 }
 
-String _$orderHistoryHash() => r'e0225e5bfb057a506770082cc4894bba0573d9c3';
+String _$orderCountHash() => r'7629264847415940638eaeace672d683a8805650';
+
+/// See also [orderCount].
+@ProviderFor(orderCount)
+final orderCountProvider = AutoDisposeFutureProvider<int>.internal(
+  orderCount,
+  name: r'orderCountProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$orderCountHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef OrderCountRef = AutoDisposeFutureProviderRef<int>;
+String _$orderHistoryHash() => r'82dffe693d378ddd47768fb30b9df7f624231184';
 
 /// See also [OrderHistory].
 @ProviderFor(OrderHistory)

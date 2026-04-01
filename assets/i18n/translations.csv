@@ -9,6 +9,28 @@ history.title,Order History,ประวัติการขาย
 history.empty,No orders yet,ยังไม่มีประวัติการขาย
 history.empty_hint,Completed orders will appear here after checkout.,รายการที่ชำระแล้วจะแสดงที่นี่หลังจากเช็คเอาต์
 settings.title,Settings,การตั้งค่า
+settings.language,Language,ภาษา
+settings.language_th,Thai,ไทย
+settings.language_en,English,อังกฤษ
+settings.storage,Storage,การจัดเก็บข้อมูล
+settings.mode_label,Mode,โหมด
+settings.offline_first,Offline-first demo,เดโมแบบออฟไลน์ก่อน
+settings.persistence,Persistence,การบันทึกข้อมูล
+settings.storage_ready,Local database is ready,ฐานข้อมูลในเครื่องพร้อมใช้งาน
+settings.storage_unavailable,Local database is unavailable on this platform,ฐานข้อมูลในเครื่องไม่พร้อมใช้งานบนแพลตฟอร์มนี้
+settings.data_summary,Data Summary,สรุปข้อมูล
+settings.categories_count,Categories,หมวดสินค้า
+settings.products_count,Products,สินค้า
+settings.orders_count,Saved Orders,ออเดอร์ที่บันทึก
+settings.latest_order,Latest Order,ออเดอร์ล่าสุด
+settings.no_orders,No saved orders yet,ยังไม่มีออเดอร์ที่บันทึก
+settings.management,Management,การจัดการ
+settings.clear_orders,Clear Order History,ล้างประวัติการขาย
+settings.clear_orders_hint,Remove saved orders from local storage while keeping products and categories intact.,ลบออเดอร์ที่บันทึกไว้ในเครื่องโดยไม่กระทบสินค้าและหมวดสินค้า
+settings.confirm_clear_title,Clear saved orders?,ล้างออเดอร์ที่บันทึกไว้หรือไม่
+settings.confirm_clear_message,This action will remove all saved order history from the device.,การกระทำนี้จะลบประวัติออเดอร์ทั้งหมดออกจากอุปกรณ์
+settings.confirm_clear_action,Clear Orders,ล้างออเดอร์
+settings.clear_orders_success,Order history cleared successfully.,ล้างประวัติการขายเรียบร้อยแล้ว
 common.pay,Pay Now,ชำระเงิน
 common.cancel,Cancel,ยกเลิก
 common.confirm,Confirm,ยืนยัน
@@ -49,6 +71,10 @@ receipt.pdf_preview,PDF Preview,ตัวอย่าง PDF
 receipt.download_pdf,Download PDF,ดาวน์โหลด PDF
 receipt.download_success,Receipt PDF downloaded successfully.,ดาวน์โหลดไฟล์ PDF ของใบเสร็จสำเร็จ
 receipt.download_failed,Unable to download receipt PDF.,ไม่สามารถดาวน์โหลดไฟล์ PDF ของใบเสร็จได้
+receipt.open_saved_file,Open Saved File,เปิดไฟล์ที่บันทึก
+receipt.open_folder,Open Folder,เปิดโฟลเดอร์
+receipt.open_file_failed,Unable to open the saved file.,ไม่สามารถเปิดไฟล์ที่บันทึกได้
+receipt.open_folder_failed,Unable to open the folder.,ไม่สามารถเปิดโฟลเดอร์ได้
 receipt.print,Print Receipt,พิมพ์ใบเสร็จ
 receipt.share_pdf,Share PDF,แชร์ PDF
 receipt.print_simulation,Print Simulation,จำลองการพิมพ์

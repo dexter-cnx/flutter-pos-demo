@@ -5,6 +5,7 @@ import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/orders/presentation/pages/order_history_page.dart';
 import '../../features/pos/presentation/pages/pos_page.dart';
 import '../../features/receipt/presentation/pages/receipt_preview_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -40,6 +41,11 @@ final appRouter = GoRouter(
 
         return ReceiptPreviewPage(orderId: orderId);
       },
+    ),
+    GoRoute(
+      path: '/settings',
+      name: 'settings',
+      builder: (context, state) => const SettingsPage(),
     ),
     GoRoute(
       path: '/home',

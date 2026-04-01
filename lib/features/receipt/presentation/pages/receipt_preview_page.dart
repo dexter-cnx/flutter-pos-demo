@@ -10,6 +10,8 @@ import 'package:printing/printing.dart';
 
 import '../../../orders/data/models/order_model.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
+import '../providers/receipt_actions_providers.dart';
+import '../services/desktop_file_actions.dart';
 
 class ReceiptPreviewPage extends ConsumerWidget {
   const ReceiptPreviewPage({
@@ -52,7 +54,7 @@ class ReceiptPreviewPage extends ConsumerWidget {
   }
 }
 
-class _ReceiptContent extends StatelessWidget {
+class _ReceiptContent extends ConsumerWidget {
   const _ReceiptContent({required this.order});
 
   final OrderModel order;
@@ -73,6 +75,8 @@ class _ReceiptContent extends StatelessWidget {
         return false;
     }
   }
+
+  bool get _supportsDesktopOpenActions => !kIsWeb && _supportsDownload;
 
   String _paymentLabel() {
     switch (order.paymentMethod) {
@@ -240,7 +244,7 @@ class _ReceiptContent extends StatelessWidget {
     }
   }
 
-  Future<void> _downloadReceipt(BuildContext context) async {
+  Future<String?> _downloadReceipt(BuildContext context) async {
     try {
       final fileName = 'receipt-${order.id}.pdf';
       final location = await getSaveLocation(
@@ -254,7 +258,7 @@ class _ReceiptContent extends StatelessWidget {
       );
 
       if (location == null) {
-        return;
+        return null;
       }
 
       final bytes = await _buildPdf(PdfPageFormat.a4);
@@ -265,24 +269,58 @@ class _ReceiptContent extends StatelessWidget {
       );
       await pdfFile.saveTo(location.path);
 
-      if (!context.mounted) return;
+      if (!context.mounted) return null;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('receipt.download_success'.tr()),
         ),
       );
+      return location.path;
     } catch (_) {
-      if (!context.mounted) return;
+      if (!context.mounted) return null;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('receipt.download_failed'.tr()),
         ),
       );
+      return null;
     }
   }
 
+  Future<void> _openSavedFile(BuildContext context) async {
+    final container = ProviderScope.containerOf(context, listen: false);
+    final path = container.read(downloadedReceiptPathProvider(order.id));
+    if (path == null) return;
+
+    final opened = await openSavedFile(path);
+    if (!context.mounted || opened) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('receipt.open_file_failed'.tr()),
+      ),
+    );
+  }
+
+  Future<void> _openContainingFolder(BuildContext context) async {
+    final container = ProviderScope.containerOf(context, listen: false);
+    final path = container.read(downloadedReceiptPathProvider(order.id));
+    if (path == null) return;
+
+    final opened = await openContainingFolder(path);
+    if (!context.mounted || opened) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('receipt.open_folder_failed'.tr()),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lastDownloadedPath =
+        ref.watch(downloadedReceiptPathProvider(order.id));
     final dateText = DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);
 
     return LayoutBuilder(
@@ -389,9 +427,32 @@ class _ReceiptContent extends StatelessWidget {
                       ),
                       if (_supportsDownload)
                         OutlinedButton.icon(
-                          onPressed: () => _downloadReceipt(context),
+                          onPressed: () async {
+                            final path = await _downloadReceipt(context);
+                            if (path == null) return;
+                            ref
+                                .read(
+                                  downloadedReceiptPathProvider(order.id)
+                                      .notifier,
+                                )
+                                .setPath(path);
+                          },
                           icon: const Icon(Icons.download_outlined),
                           label: Text('receipt.download_pdf'.tr()),
+                        ),
+                      if (_supportsDesktopOpenActions &&
+                          lastDownloadedPath != null)
+                        OutlinedButton.icon(
+                          onPressed: () => _openSavedFile(context),
+                          icon: const Icon(Icons.insert_drive_file_outlined),
+                          label: Text('receipt.open_saved_file'.tr()),
+                        ),
+                      if (_supportsDesktopOpenActions &&
+                          lastDownloadedPath != null)
+                        OutlinedButton.icon(
+                          onPressed: () => _openContainingFolder(context),
+                          icon: const Icon(Icons.folder_open_outlined),
+                          label: Text('receipt.open_folder'.tr()),
                         ),
                       OutlinedButton.icon(
                         onPressed: () => _printReceipt(context),

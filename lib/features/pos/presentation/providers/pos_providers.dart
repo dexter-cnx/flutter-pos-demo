@@ -18,6 +18,12 @@ Future<List<Category>> categories(CategoriesRef ref) {
 }
 
 @riverpod
+Future<int> categoryCount(CategoryCountRef ref) async {
+  final categories = await ref.watch(posRepositoryProvider).getCategories();
+  return categories.length;
+}
+
+@riverpod
 class SelectedCategoryId extends _$SelectedCategoryId {
   @override
   String? build() => null;
@@ -29,4 +35,10 @@ class SelectedCategoryId extends _$SelectedCategoryId {
 Future<List<Product>> products(ProductsRef ref) {
   final categoryId = ref.watch(selectedCategoryIdProvider);
   return ref.watch(posRepositoryProvider).getProducts(categoryId: categoryId);
+}
+
+@riverpod
+Future<int> productCount(ProductCountRef ref) async {
+  final products = await ref.watch(posRepositoryProvider).getProducts();
+  return products.length;
 }
