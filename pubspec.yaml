@@ -1,0 +1,61 @@
+name: thai_pos_demo
+description: "Thai POS Demo - Offline-First with Isar and Riverpod"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: any
+  riverpod_annotation: any
+
+  # Routing
+  go_router: any
+
+  # Database (Offline-First)
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+
+  # UI & Design
+  flutter_screenutil: any
+  google_fonts: any
+  
+  # Localization (CSV-first)
+  easy_localization: any
+
+  # Utilities
+  freezed_annotation: any
+  json_annotation: any
+  
+  # Features
+  path_provider: any
+  pdf: any
+  printing: any
+  mobile_scanner: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+  # Code Generation
+  build_runner: any
+  riverpod_generator: any
+  freezed: any
+  json_serializable: any
+  isar_generator: ^3.1.0+1
+  go_router_builder: any
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/i18n/translations.csv
+    - assets/i18n/generated/

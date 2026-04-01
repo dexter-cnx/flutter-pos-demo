@@ -1,0 +1,31 @@
+{
+  "app": {
+    "title": "ระบบขายหน้าร้าน"
+  },
+  "login": {
+    "title": "กดยืนยันรหัส PIN",
+    "subtitle": "ระบบ POS ร้านค้าไทย"
+  },
+  "dashboard": {
+    "title": "แดชบอร์ด"
+  },
+  "pos": {
+    "title": "ขายหน้าร้าน"
+  },
+  "inventory": {
+    "title": "คลังสินค้า"
+  },
+  "history": {
+    "title": "ประวัติการขาย"
+  },
+  "settings": {
+    "title": "การตั้งค่า"
+  },
+  "common": {
+    "pay": "ชำระเงิน",
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน",
+    "total": "ยอดรวม",
+    "back": "กลับ"
+  }
+}

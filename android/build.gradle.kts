@@ -1,0 +1,38 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+val newBuildDir: Directory =
+    rootProject.layout.buildDirectory
+        .dir("../../build")
+        .get()
+rootProject.layout.buildDirectory.value(newBuildDir)
+
+subprojects {
+    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
+    project.layout.buildDirectory.value(newSubprojectBuildDir)
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+// Fix for AGP 8.0+ namespace requirement in older plugins like isar_flutter_libs
+subprojects {
+    plugins.withId("com.android.library") {
+        val android = extensions.getByName("android")
+        try {
+            val getNamespace = android.javaClass.getMethod("getNamespace")
+            val setNamespace = android.javaClass.getMethod("setNamespace", String::class.java)
+            if (getNamespace.invoke(android) == null) {
+                setNamespace.invoke(android, project.group.toString())
+            }
+        } catch (e: Exception) {}
+    }
+}
+
+tasks.register<Delete>("clean") {
+    delete(rootProject.layout.buildDirectory)
+}

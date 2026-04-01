@@ -1,0 +1,14 @@
+key,en,th
+app.title,Thai POS Demo,ระบบขายหน้าร้าน
+login.title,Please enter PIN,กดยืนยันรหัส PIN
+login.subtitle,Standard Thai POS,ระบบ POS ร้านค้าไทย
+dashboard.title,Dashboard,แดชบอร์ด
+pos.title,Point of Sale,ขายหน้าร้าน
+inventory.title,Inventory,คลังสินค้า
+history.title,Order History,ประวัติการขาย
+settings.title,Settings,การตั้งค่า
+common.pay,Pay Now,ชำระเงิน
+common.cancel,Cancel,ยกเลิก
+common.confirm,Confirm,ยืนยัน
+common.total,Total,ยอดรวม
+common.back,Back,กลับ

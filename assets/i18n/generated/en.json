@@ -1,0 +1,31 @@
+{
+  "app": {
+    "title": "Thai POS Demo"
+  },
+  "login": {
+    "title": "Please enter PIN",
+    "subtitle": "Standard Thai POS"
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "pos": {
+    "title": "Point of Sale"
+  },
+  "inventory": {
+    "title": "Inventory"
+  },
+  "history": {
+    "title": "Order History"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "common": {
+    "pay": "Pay Now",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "total": "Total",
+    "back": "Back"
+  }
+}
