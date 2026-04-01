@@ -29,25 +29,16 @@ class HomePage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'app.title'.tr(),
-              style: theme.textTheme.displayLarge,
-            ),
+            Text('app.title'.tr(), style: theme.textTheme.displayLarge),
             const SizedBox(height: 24),
-            Text(
-              'dashboard.title'.tr(),
-              style: theme.textTheme.headlineMedium,
-            ),
+            Text('dashboard.title'.tr(), style: theme.textTheme.headlineMedium),
             const SizedBox(height: 48),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(32),
                 child: Column(
                   children: [
-                    Text(
-                      'login.title'.tr(),
-                      style: theme.textTheme.titleLarge,
-                    ),
+                    Text('login.title'.tr(), style: theme.textTheme.titleLarge),
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: () {},

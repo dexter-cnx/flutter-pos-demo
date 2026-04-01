@@ -88,10 +88,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         boxShadow: filled
                             ? [
                                 BoxShadow(
-                                  color: theme.colorScheme.primary.withOpacity(0.5),
+                                  color: theme.colorScheme.primary.withOpacity(
+                                    0.5,
+                                  ),
                                   blurRadius: 10,
                                   spreadRadius: 2,
-                                )
+                                ),
                               ]
                             : null,
                       ),
@@ -167,9 +169,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: Center(
-          child: Icon(icon, size: 32),
-        ),
+        child: Center(child: Icon(icon, size: 32)),
       ),
     );
   }

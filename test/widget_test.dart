@@ -17,7 +17,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that the login title or app title is present.
-    // Note: Since we use easy_localization, we might need a more complex test setup, 
+    // Note: Since we use easy_localization, we might need a more complex test setup,
     // but for now we just verify it doesn't crash.
     expect(find.byType(ThaiPosApp), findsOneWidget);
   });
