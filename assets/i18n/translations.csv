@@ -12,3 +12,9 @@ common.cancel,Cancel,ยกเลิก
 common.confirm,Confirm,ยืนยัน
 common.total,Total,ยอดรวม
 common.back,Back,กลับ
+pos.cart,Cart,ตะกร้าสินค้า
+pos.empty_cart,Your cart is empty,ยังไม่มีสินค้าในตะกร้า
+pos.all_categories,All,ทั้งหมด
+pos.subtotal,Subtotal,ยอดรวมสินค้า
+pos.vat,VAT,ภาษีมูลค่าเพิ่ม
+pos.pay,Checkout,ชำระเงิน
