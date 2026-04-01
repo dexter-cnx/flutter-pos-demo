@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/cart_provider.dart';
 
 class CartSidebar extends ConsumerWidget {
@@ -22,7 +23,8 @@ class CartSidebar extends ConsumerWidget {
             children: [
               Text(
                 'pos.cart'.tr(),
-                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               IconButton(
                 onPressed: cartNotifier.clearCart,
@@ -39,9 +41,11 @@ class CartSidebar extends ConsumerWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.shopping_cart_outlined, size: 64, color: theme.disabledColor),
+                      Icon(Icons.shopping_cart_outlined,
+                          size: 64, color: theme.disabledColor),
                       const SizedBox(height: 16),
-                      Text('pos.empty_cart'.tr(), style: TextStyle(color: theme.disabledColor)),
+                      Text('pos.empty_cart'.tr(),
+                          style: TextStyle(color: theme.disabledColor)),
                     ],
                   ),
                 )
@@ -54,18 +58,22 @@ class CartSidebar extends ConsumerWidget {
                         item.product.name,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text('฿${item.product.price.toStringAsFixed(2)}'),
+                      subtitle:
+                          Text('฿${item.product.price.toStringAsFixed(2)}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            onPressed: () => cartNotifier.updateQuantity(item.product.id, -1),
+                            onPressed: () => cartNotifier.updateQuantity(
+                                item.product.id, -1),
                             icon: const Icon(Icons.remove_circle_outline),
                             color: theme.colorScheme.primary,
                           ),
-                          Text('${item.quantity}', style: theme.textTheme.titleMedium),
+                          Text('${item.quantity}',
+                              style: theme.textTheme.titleMedium),
                           IconButton(
-                            onPressed: () => cartNotifier.updateQuantity(item.product.id, 1),
+                            onPressed: () =>
+                                cartNotifier.updateQuantity(item.product.id, 1),
                             icon: const Icon(Icons.add_circle_outline),
                             color: theme.colorScheme.primary,
                           ),
@@ -85,9 +93,11 @@ class CartSidebar extends ConsumerWidget {
           ),
           child: Column(
             children: [
-              _buildSummaryRow(context, 'pos.subtotal'.tr(), '฿${cartState.subtotal.toStringAsFixed(2)}'),
+              _buildSummaryRow(context, 'pos.subtotal'.tr(),
+                  '฿${cartState.subtotal.toStringAsFixed(2)}'),
               const SizedBox(height: 8),
-              _buildSummaryRow(context, '${'pos.vat'.tr()} (7%)', '฿${cartState.taxAmount.toStringAsFixed(2)}'),
+              _buildSummaryRow(context, '${'pos.vat'.tr()} (7%)',
+                  '฿${cartState.taxAmount.toStringAsFixed(2)}'),
               const Divider(height: 32),
               _buildSummaryRow(
                 context,
@@ -99,14 +109,18 @@ class CartSidebar extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
-                  onPressed: cartState.items.isEmpty ? null : () {},
+                  onPressed: cartState.items.isEmpty
+                      ? null
+                      : () => context.go('/checkout'),
                   icon: const Icon(Icons.payments_outlined),
                   label: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text('pos.pay'.tr(), style: const TextStyle(fontSize: 18)),
+                    child: Text('pos.pay'.tr(),
+                        style: const TextStyle(fontSize: 18)),
                   ),
                   style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
                   ),
                 ),
               ),
@@ -117,7 +131,8 @@ class CartSidebar extends ConsumerWidget {
     );
   }
 
-  Widget _buildSummaryRow(BuildContext context, String label, String value, {bool isBold = false}) {
+  Widget _buildSummaryRow(BuildContext context, String label, String value,
+      {bool isBold = false}) {
     final style = Theme.of(context).textTheme.titleMedium?.copyWith(
           fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
           fontSize: isBold ? 20 : null,

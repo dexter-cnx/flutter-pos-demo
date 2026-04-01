@@ -23,7 +23,9 @@
     "title": "Inventory"
   },
   "history": {
-    "title": "Order History"
+    "title": "Order History",
+    "empty": "No orders yet",
+    "empty_hint": "Completed orders will appear here after checkout."
   },
   "settings": {
     "title": "Settings"
@@ -34,5 +36,48 @@
     "confirm": "Confirm",
     "total": "Total",
     "back": "Back"
+  },
+  "payment": {
+    "title": "Payment",
+    "cash": "Cash",
+    "qr": "PromptPay",
+    "card": "Card",
+    "received_amount": "Received",
+    "change": "Change",
+    "confirm": "Confirm Payment",
+    "amount_to_pay": "Amount to pay"
+  },
+  "checkout": {
+    "title": "Checkout & Payment",
+    "summary": "Order Summary",
+    "items": "Items",
+    "payment_method": "Payment Method",
+    "amount_due": "Amount to pay",
+    "enter_received": "Enter received amount",
+    "change_due": "Change due",
+    "empty_cart": "No items to pay for yet"
+  },
+  "receipt": {
+    "title": "Receipt Preview",
+    "thank_you": "Thank you for your purchase!",
+    "order_no": "Order No.",
+    "date": "Date",
+    "qty": "Qty",
+    "view": "View Receipt",
+    "view_history": "View History",
+    "back_to_pos": "Back to POS",
+    "pdf_preview": "PDF Preview",
+    "download_pdf": "Download PDF",
+    "download_success": "Receipt PDF downloaded successfully.",
+    "download_failed": "Unable to download receipt PDF.",
+    "print": "Print Receipt",
+    "share_pdf": "Share PDF",
+    "print_simulation": "Print Simulation",
+    "simulation_message": "Print simulation completed for {0}.",
+    "print_failed": "Unable to send receipt to printer.",
+    "share_failed": "Unable to share receipt PDF.",
+    "footer": "This is a demo receipt for preview and printing flow.",
+    "not_found": "Receipt not found",
+    "not_found_hint": "We could not find receipt {0}."
   }
 }

@@ -39,7 +39,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
 
-    ref.listen(authNotifierProvider, (previous, next) {
+    ref.listen<AsyncValue<String?>>(authNotifierProvider, (previous, next) {
       next.whenData((role) {
         if (role != null) {
           context.go('/');
@@ -88,8 +88,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         boxShadow: filled
                             ? [
                                 BoxShadow(
-                                  color: theme.colorScheme.primary.withOpacity(
-                                    0.5,
+                                  color: theme.colorScheme.primary.withValues(
+                                    alpha: 0.5,
                                   ),
                                   blurRadius: 10,
                                   spreadRadius: 2,

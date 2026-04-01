@@ -1,24 +1,32 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:thai_pos_demo/app/app.dart';
-import 'package:thai_pos_demo/app/bootstrap.dart';
+import 'package:thai_pos_demo/app/l10n/localization.dart';
 
 void main() {
-  testWidgets('App builds test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await bootstrap(child: const ThaiPosApp());
-    await tester.pumpAndSettle();
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that the login title or app title is present.
-    // Note: Since we use easy_localization, we might need a more complex test setup,
-    // but for now we just verify it doesn't crash.
+  testWidgets('Thai POS app renders login screen', (WidgetTester tester) async {
+    await EasyLocalization.ensureInitialized();
+
+    await tester.pumpWidget(
+      EasyLocalization(
+        supportedLocales: AppLocalization.supportedLocales,
+        path: AppLocalization.assetPath,
+        fallbackLocale: AppLocalization.fallbackLocale,
+        startLocale: AppLocalization.fallbackLocale,
+        useOnlyLangCode: true,
+        child: const ProviderScope(
+          child: ThaiPosApp(),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
     expect(find.byType(ThaiPosApp), findsOneWidget);
   });
 }

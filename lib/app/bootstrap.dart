@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'l10n/localization.dart';
 import 'services/data_seeder.dart';
 import '../features/auth/data/models/user_model.dart';
+import '../features/orders/data/models/order_model.dart';
 import '../features/pos/data/models/product_model.dart';
 import '../features/pos/data/models/category_model.dart';
 
@@ -24,6 +27,7 @@ Future<void> bootstrap({required Widget child}) async {
       final directory = (await getApplicationDocumentsDirectory()).path;
       isar = await Isar.open([
         UserModelSchema,
+        OrderModelSchema,
         ProductModelSchema,
         CategoryModelSchema,
       ], directory: directory);

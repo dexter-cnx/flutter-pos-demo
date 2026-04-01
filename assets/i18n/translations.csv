@@ -6,6 +6,8 @@ dashboard.title,Dashboard,แดชบอร์ด
 pos.title,Point of Sale,ขายหน้าร้าน
 inventory.title,Inventory,คลังสินค้า
 history.title,Order History,ประวัติการขาย
+history.empty,No orders yet,ยังไม่มีประวัติการขาย
+history.empty_hint,Completed orders will appear here after checkout.,รายการที่ชำระแล้วจะแสดงที่นี่หลังจากเช็คเอาต์
 settings.title,Settings,การตั้งค่า
 common.pay,Pay Now,ชำระเงิน
 common.cancel,Cancel,ยกเลิก
@@ -27,3 +29,32 @@ payment.received_amount,Received,รับเงินมา
 payment.change,Change,เงินทอน
 payment.confirm,Confirm Payment,ยืนยันการชำระเงิน
 payment.amount_to_pay,Amount to pay,ยอดที่ต้องชำระ
+checkout.title,Checkout & Payment,เช็คเอาต์และการชำระเงิน
+checkout.summary,Order Summary,สรุปคำสั่งซื้อ
+checkout.items,Items,รายการ
+checkout.payment_method,Payment Method,ช่องทางการชำระเงิน
+checkout.amount_due,Amount to pay,ยอดที่ต้องชำระ
+checkout.enter_received,Enter received amount,กรอกยอดที่รับมา
+checkout.change_due,Change due,เงินทอน
+checkout.empty_cart,No items to pay for yet,ยังไม่มีรายการให้ชำระ
+receipt.title,Receipt Preview,ตัวอย่างใบเสร็จ
+receipt.thank_you,Thank you for your purchase!,ขอบคุณที่อุดหนุน
+receipt.order_no,Order No.,เลขที่ใบเสร็จ
+receipt.date,Date,วันที่
+receipt.qty,Qty,จำนวน
+receipt.view,View Receipt,ดูใบเสร็จ
+receipt.view_history,View History,ดูประวัติการขาย
+receipt.back_to_pos,Back to POS,กลับไปหน้าขาย
+receipt.pdf_preview,PDF Preview,ตัวอย่าง PDF
+receipt.download_pdf,Download PDF,ดาวน์โหลด PDF
+receipt.download_success,Receipt PDF downloaded successfully.,ดาวน์โหลดไฟล์ PDF ของใบเสร็จสำเร็จ
+receipt.download_failed,Unable to download receipt PDF.,ไม่สามารถดาวน์โหลดไฟล์ PDF ของใบเสร็จได้
+receipt.print,Print Receipt,พิมพ์ใบเสร็จ
+receipt.share_pdf,Share PDF,แชร์ PDF
+receipt.print_simulation,Print Simulation,จำลองการพิมพ์
+receipt.simulation_message,Print simulation completed for {0}.,จำลองการพิมพ์เสร็จแล้วสำหรับ {0}
+receipt.print_failed,Unable to send receipt to printer.,ไม่สามารถส่งใบเสร็จไปยังเครื่องพิมพ์ได้
+receipt.share_failed,Unable to share receipt PDF.,ไม่สามารถแชร์ไฟล์ PDF ของใบเสร็จได้
+receipt.footer,This is a demo receipt for preview and printing flow.,ใบเสร็จนี้เป็นเดโมสำหรับตัวอย่างการแสดงผลและการพิมพ์
+receipt.not_found,Receipt not found,ไม่พบใบเสร็จ
+receipt.not_found_hint,We could not find receipt {0}.,ไม่พบข้อมูลใบเสร็จ {0}

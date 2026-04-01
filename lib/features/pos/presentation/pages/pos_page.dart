@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/pos_providers.dart';
 import '../widgets/cart_sidebar.dart';
 import '../widgets/product_card.dart';
@@ -21,9 +22,7 @@ class PosPage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.history),
-            onPressed: () {
-              // TODO: Navigation to History
-            },
+            onPressed: () => context.go('/history'),
           ),
           IconButton(
             icon: const Icon(Icons.settings),
@@ -55,14 +54,18 @@ class PosPage extends ConsumerWidget {
                           return FilterChip(
                             label: Text('pos.all_categories'.tr()),
                             selected: selectedCategoryId == null,
-                            onSelected: (_) => ref.read(selectedCategoryIdProvider.notifier).select(null),
+                            onSelected: (_) => ref
+                                .read(selectedCategoryIdProvider.notifier)
+                                .select(null),
                           );
                         }
                         final category = categories[index - 1];
                         return FilterChip(
                           label: Text(category.name),
                           selected: selectedCategoryId == category.id,
-                          onSelected: (_) => ref.read(selectedCategoryIdProvider.notifier).select(category.id),
+                          onSelected: (_) => ref
+                              .read(selectedCategoryIdProvider.notifier)
+                              .select(category.id),
                         );
                       },
                     ),
@@ -76,7 +79,8 @@ class PosPage extends ConsumerWidget {
                   child: productsAsync.when(
                     data: (products) => GridView.builder(
                       padding: const EdgeInsets.all(16),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3, // For Tablet Landscape
                         childAspectRatio: 0.85,
                         crossAxisSpacing: 16,
@@ -87,7 +91,8 @@ class PosPage extends ConsumerWidget {
                         return ProductCard(product: products[index]);
                       },
                     ),
-                    loading: () => const Center(child: CircularProgressIndicator()),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
                     error: (e, _) => Center(child: Text(e.toString())),
                   ),
                 ),

@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/pos_repository.dart';
 
 class MockPosRepository implements PosRepository {
   final List<Category> _categories = [
-    const Category(id: '1', name: 'Main Dishes', sortOrder: 1),
-    const Category(id: '2', name: 'Drinks', sortOrder: 2),
-    const Category(id: '3', name: 'Desserts', sortOrder: 3),
+    const Category(id: '1', name: 'อาหารจานหลัก', sortOrder: 1),
+    const Category(id: '2', name: 'เครื่องดื่ม', sortOrder: 2),
+    const Category(id: '3', name: 'ของหวาน', sortOrder: 3),
   ];
 
   late final List<Product> _products;
@@ -15,105 +17,105 @@ class MockPosRepository implements PosRepository {
     _products = [
       Product(
         id: '1',
-        name: 'Pad Thai',
+        name: 'ผัดไทย',
         price: 85.0,
         sku: 'MAIN-001',
         category: _categories[0],
       ),
       Product(
         id: '2',
-        name: 'Som Tum',
+        name: 'ส้มตำ',
         price: 60.0,
         sku: 'MAIN-002',
         category: _categories[0],
       ),
       Product(
         id: '3',
-        name: 'Tom Yum Goong',
+        name: 'ต้มยำกุ้ง',
         price: 150.0,
         sku: 'MAIN-003',
         category: _categories[0],
       ),
       Product(
         id: '4',
-        name: 'Green Curry',
+        name: 'แกงเขียวหวาน',
         price: 120.0,
         sku: 'MAIN-004',
         category: _categories[0],
       ),
       Product(
         id: '5',
-        name: 'Basil Fried Rice',
+        name: 'ข้าวผัดกะเพรา',
         price: 75.0,
         sku: 'MAIN-005',
         category: _categories[0],
       ),
       Product(
         id: '6',
-        name: 'Thai Milk Tea',
+        name: 'ชาไทย',
         price: 45.0,
         sku: 'DRINK-001',
         category: _categories[1],
       ),
       Product(
         id: '7',
-        name: 'Coconut Water',
+        name: 'น้ำมะพร้าว',
         price: 50.0,
         sku: 'DRINK-002',
         category: _categories[1],
       ),
       Product(
         id: '8',
-        name: 'Lemon Tea',
+        name: 'ชามะนาว',
         price: 40.0,
         sku: 'DRINK-003',
         category: _categories[1],
       ),
       Product(
         id: '9',
-        name: 'Mango Sticky Rice',
+        name: 'ข้าวเหนียวมะม่วง',
         price: 90.0,
         sku: 'DESS-001',
         category: _categories[2],
       ),
       Product(
         id: '10',
-        name: 'Banana in Coconut Milk',
+        name: 'กล้วยบวชชีน',
         price: 45.0,
         sku: 'DESS-002',
         category: _categories[2],
       ),
       Product(
         id: '11',
-        name: 'Spring Rolls',
+        name: 'ปอเปี๊ยะทอด',
         price: 55.0,
         sku: 'APP-001',
         category: _categories[0],
       ),
       Product(
         id: '12',
-        name: 'Chicken Satay',
+        name: 'สะเต๊ะไก่',
         price: 80.0,
         sku: 'APP-002',
         category: _categories[0],
       ),
       Product(
         id: '13',
-        name: 'Fried Rice w/ Crab',
+        name: 'ข้าวผัดปู',
         price: 95.0,
         sku: 'MAIN-006',
         category: _categories[0],
       ),
       Product(
         id: '14',
-        name: 'Chrysanthemum Juice',
+        name: 'น้ำเก๊กฮวย',
         price: 30.0,
         sku: 'DRINK-004',
         category: _categories[1],
       ),
       Product(
         id: '15',
-        name: 'Iced Coffee',
+        name: 'กาแฟเย็น',
         price: 45.0,
         sku: 'DRINK-005',
         category: _categories[1],
