@@ -15,7 +15,7 @@ extension GetCategoryModelCollection on Isar {
 
 const CategoryModelSchema = CollectionSchema(
   name: r'categories',
-  id: -7368044883450683743,
+  id: -(7368044883 * 1000000000 + 450683743),
   properties: {
     r'name': PropertySchema(
       id: 0,
@@ -35,7 +35,7 @@ const CategoryModelSchema = CollectionSchema(
   idName: r'id',
   indexes: {
     r'name': IndexSchema(
-      id: 879695947855722453,
+      id: (879695947 * 1000000000 + 855722453),
       name: r'name',
       unique: true,
       replace: false,

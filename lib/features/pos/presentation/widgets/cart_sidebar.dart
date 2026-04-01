@@ -50,7 +50,10 @@ class CartSidebar extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final item = cartState.items[index];
                     return ListTile(
-                      title: Text(item.product.name, fontWeight: FontWeight.bold),
+                      title: Text(
+                        item.product.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       subtitle: Text('฿${item.product.price.toStringAsFixed(2)}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -84,7 +87,7 @@ class CartSidebar extends ConsumerWidget {
             children: [
               _buildSummaryRow(context, 'pos.subtotal'.tr(), '฿${cartState.subtotal.toStringAsFixed(2)}'),
               const SizedBox(height: 8),
-              _buildSummaryRow(context, 'pos.vat'.tr() + ' (7%)', '฿${cartState.taxAmount.toStringAsFixed(2)}'),
+              _buildSummaryRow(context, '${'pos.vat'.tr()} (7%)', '฿${cartState.taxAmount.toStringAsFixed(2)}'),
               const Divider(height: 32),
               _buildSummaryRow(
                 context,

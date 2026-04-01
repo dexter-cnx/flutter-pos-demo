@@ -10,7 +10,14 @@
     "title": "Dashboard"
   },
   "pos": {
-    "title": "Point of Sale"
+    "title": "Point of Sale",
+    "cart": "Cart",
+    "empty_cart": "Your cart is empty",
+    "all_categories": "All",
+    "subtotal": "Subtotal",
+    "vat": "VAT",
+    "pay": "Checkout",
+    "total": "Total"
   },
   "inventory": {
     "title": "Inventory"

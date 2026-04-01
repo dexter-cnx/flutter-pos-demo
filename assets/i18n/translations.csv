@@ -18,3 +18,12 @@ pos.all_categories,All,ทั้งหมด
 pos.subtotal,Subtotal,ยอดรวมสินค้า
 pos.vat,VAT,ภาษีมูลค่าเพิ่ม
 pos.pay,Checkout,ชำระเงิน
+pos.total,Total,ยอดรวมสุทธิ
+payment.title,Payment,ชำระเงิน
+payment.cash,Cash,เงินสด
+payment.qr,PromptPay,คิวอาร์โค้ด
+payment.card,Card,บัตรเครดิต/เดบิต
+payment.received_amount,Received,รับเงินมา
+payment.change,Change,เงินทอน
+payment.confirm,Confirm Payment,ยืนยันการชำระเงิน
+payment.amount_to_pay,Amount to pay,ยอดที่ต้องชำระ

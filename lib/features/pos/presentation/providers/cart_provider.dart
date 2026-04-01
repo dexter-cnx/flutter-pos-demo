@@ -53,14 +53,19 @@ class Cart extends _$Cart {
   }
 
   void updateQuantity(String productId, int delta) {
-    final updatedItems = state.items.map((item) {
-      if (item.product.id == productId) {
-        final newQuantity = item.quantity + delta;
-        return newQuantity > 0 ? item.copyWith(quantity: newQuantity) : item;
-      }
-      return item;
-    }).toList();
-    state = state.copyWith(items: updatedItems);
+    final itemIndex = state.items.indexWhere((item) => item.product.id == productId);
+    if (itemIndex == -1) return;
+
+    final currentQuantity = state.items[itemIndex].quantity;
+    final newQuantity = currentQuantity + delta;
+
+    if (newQuantity <= 0) {
+      removeItem(productId);
+    } else {
+      final updatedItems = List<CartItem>.from(state.items);
+      updatedItems[itemIndex] = updatedItems[itemIndex].copyWith(quantity: newQuantity);
+      state = state.copyWith(items: updatedItems);
+    }
   }
 
   void clearCart() {
