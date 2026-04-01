@@ -108,8 +108,19 @@
     "promptpay_hint": "Use a banking app to scan the QR code below for this order amount.",
     "promptpay_receiver": "Receiver",
     "promptpay_reference": "Reference",
+    "promptpay_amount": "PromptPay amount",
+    "promptpay_merchant": "Merchant",
+    "copy_reference": "Copy reference",
+    "copy_success": "Reference copied successfully.",
+    "qr_waiting": "Waiting for customer scan",
+    "qr_success": "PromptPay payment received",
+    "qr_mark_paid": "Mark QR as paid",
     "card_hint": "Card payment is simulated in this demo.",
-    "card_ready": "Tap confirm after card approval"
+    "card_ready": "Tap confirm after card approval",
+    "card_processing": "Authorizing card transaction...",
+    "card_success": "Card approved successfully",
+    "card_simulate": "Simulate terminal approval",
+    "payment_status": "Payment status"
   },
   "receipt": {
     "title": "Receipt Preview",

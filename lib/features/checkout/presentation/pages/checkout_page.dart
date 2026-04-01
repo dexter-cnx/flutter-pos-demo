@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -65,6 +66,33 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     _setReceivedAmount(current + amount);
   }
 
+  void _resetSimulationState() {
+    ref.read(paymentSimulationStateProvider.notifier).state =
+        PaymentSimulationState.idle;
+  }
+
+  Future<void> _simulateCardApproval() async {
+    ref.read(paymentSimulationStateProvider.notifier).state =
+        PaymentSimulationState.processing;
+    await Future<void>.delayed(const Duration(milliseconds: 1200));
+    if (!mounted) return;
+    ref.read(paymentSimulationStateProvider.notifier).state =
+        PaymentSimulationState.approved;
+  }
+
+  void _markQrAsPaid() {
+    ref.read(paymentSimulationStateProvider.notifier).state =
+        PaymentSimulationState.approved;
+  }
+
+  Future<void> _copyReference(BuildContext context, String reference) async {
+    await Clipboard.setData(ClipboardData(text: reference));
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('checkout.copy_success'.tr())),
+    );
+  }
+
   Future<void> _confirmPayment(
     BuildContext context,
     CartState cartState,
@@ -89,6 +117,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
     ref.read(cartProvider.notifier).clearCart();
     ref.read(cashReceivedProvider.notifier).state = 0;
+    _resetSimulationState();
     _receivedController.clear();
 
     if (orderId != null) {
@@ -142,6 +171,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final method = ref.watch(selectedPaymentMethodProvider);
     final receivedAmount = ref.watch(cashReceivedProvider);
     final storeProfileAsync = ref.watch(storeProfileProvider);
+    final simulationState = ref.watch(paymentSimulationStateProvider);
     final amountDue = cartState.total;
     final effectiveReceivedAmount =
         method == PaymentMethod.cash ? receivedAmount : amountDue;
@@ -152,7 +182,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final hasEnteredCash = method != PaymentMethod.cash || receivedAmount > 0;
     final hasSufficientCash =
         method != PaymentMethod.cash || receivedAmount >= amountDue;
-    final canConfirmPayment = hasItems && hasEnteredCash && hasSufficientCash;
+    final hasApprovedDigitalPayment = method == PaymentMethod.cash ||
+        simulationState == PaymentSimulationState.approved;
+    final canConfirmPayment = hasItems &&
+        hasEnteredCash &&
+        hasSufficientCash &&
+        hasApprovedDigitalPayment;
 
     return Scaffold(
       appBar: AppBar(
@@ -181,6 +216,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               amountDue,
               receivedAmount,
               change,
+              simulationState,
               storeProfileAsync,
               () => _confirmPayment(
                 context,
@@ -312,6 +348,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     double amountDue,
     double receivedAmount,
     double change,
+    PaymentSimulationState simulationState,
     AsyncValue<StoreProfile> storeProfileAsync,
     VoidCallback onConfirm,
   ) {
@@ -344,9 +381,11 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   return ChoiceChip(
                     label: Text(_paymentLabel(candidate)),
                     selected: candidate == method,
-                    onSelected: (_) => ref
-                        .read(selectedPaymentMethodProvider.notifier)
-                        .state = candidate,
+                    onSelected: (_) {
+                      ref.read(selectedPaymentMethodProvider.notifier).state =
+                          candidate;
+                      _resetSimulationState();
+                    },
                   );
                 }).toList(),
               ),
@@ -391,8 +430,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 ],
               ] else if (isQr) ...[
                 storeProfileAsync.when(
-                  data: (profile) =>
-                      _buildPromptPaySection(context, profile, amountDue),
+                  data: (profile) => _buildPromptPaySection(
+                    context,
+                    profile,
+                    amountDue,
+                    simulationState,
+                  ),
                   loading: () => const AppLoadingState(compact: true),
                   error: (error, _) => AppErrorState(
                     message: error.toString(),
@@ -401,7 +444,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   ),
                 ),
               ] else if (isCard) ...[
-                _buildCardSection(context),
+                _buildCardSection(context, simulationState),
               ],
               const SizedBox(height: 16),
               _buildSummaryRow(
@@ -439,6 +482,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     BuildContext context,
     StoreProfile storeProfile,
     double amountDue,
+    PaymentSimulationState simulationState,
   ) {
     final qrData = PromptPayQrService.build(
       storeName: storeProfile.storeName,
@@ -493,6 +537,16 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           const SizedBox(height: 16),
           _buildSummaryRow(
             context,
+            'checkout.promptpay_amount'.tr(),
+            _currency(amountDue),
+          ),
+          _buildSummaryRow(
+            context,
+            'checkout.promptpay_merchant'.tr(),
+            storeProfile.storeName,
+          ),
+          _buildSummaryRow(
+            context,
             'checkout.promptpay_receiver'.tr(),
             qrData.receiverLabel,
           ),
@@ -501,12 +555,46 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
             'checkout.promptpay_reference'.tr(),
             qrData.reference,
           ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              OutlinedButton.icon(
+                onPressed: () => _copyReference(context, qrData.reference),
+                icon: const Icon(Icons.copy_outlined),
+                label: Text('checkout.copy_reference'.tr()),
+              ),
+              FilledButton.icon(
+                onPressed: simulationState == PaymentSimulationState.approved
+                    ? null
+                    : _markQrAsPaid,
+                icon: Icon(
+                  simulationState == PaymentSimulationState.approved
+                      ? Icons.check_circle_outline
+                      : Icons.qr_code_2_rounded,
+                ),
+                label: Text('checkout.qr_mark_paid'.tr()),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _buildSimulationStatus(
+            context,
+            simulationState,
+            idleText: 'checkout.qr_waiting'.tr(),
+            processingText: 'checkout.qr_waiting'.tr(),
+            approvedText: 'checkout.qr_success'.tr(),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildCardSection(BuildContext context) {
+  Widget _buildCardSection(
+    BuildContext context,
+    PaymentSimulationState simulationState,
+  ) {
     final theme = Theme.of(context);
 
     return Container(
@@ -531,6 +619,94 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
             'checkout.card_hint'.tr(),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildSimulationStatus(
+            context,
+            simulationState,
+            idleText: 'checkout.card_ready'.tr(),
+            processingText: 'checkout.card_processing'.tr(),
+            approvedText: 'checkout.card_success'.tr(),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: simulationState == PaymentSimulationState.processing ||
+                    simulationState == PaymentSimulationState.approved
+                ? null
+                : _simulateCardApproval,
+            icon: Icon(
+              simulationState == PaymentSimulationState.approved
+                  ? Icons.check_circle_outline
+                  : Icons.credit_card,
+            ),
+            label: Text('checkout.card_simulate'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSimulationStatus(
+    BuildContext context,
+    PaymentSimulationState simulationState, {
+    required String idleText,
+    required String processingText,
+    required String approvedText,
+  }) {
+    final theme = Theme.of(context);
+    late final IconData icon;
+    late final String text;
+    late final Color color;
+
+    switch (simulationState) {
+      case PaymentSimulationState.idle:
+        icon = Icons.schedule_outlined;
+        text = idleText;
+        color = theme.colorScheme.secondary;
+        break;
+      case PaymentSimulationState.processing:
+        icon = Icons.sync_rounded;
+        text = processingText;
+        color = theme.colorScheme.tertiary;
+        break;
+      case PaymentSimulationState.approved:
+        icon = Icons.verified_rounded;
+        text = approvedText;
+        color = Colors.green;
+        break;
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'checkout.payment_status'.tr(),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  text,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

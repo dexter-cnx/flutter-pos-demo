@@ -108,8 +108,19 @@
     "promptpay_hint": "ใช้แอปธนาคารสแกน QR ด้านล่างเพื่อชำระยอดนี้",
     "promptpay_receiver": "ผู้รับเงิน",
     "promptpay_reference": "รหัสอ้างอิง",
+    "promptpay_amount": "ยอด PromptPay",
+    "promptpay_merchant": "ชื่อร้าน",
+    "copy_reference": "คัดลอกรหัสอ้างอิง",
+    "copy_success": "คัดลอกรหัสอ้างอิงเรียบร้อยแล้ว",
+    "qr_waiting": "รอลูกค้าสแกนชำระ",
+    "qr_success": "รับชำระ PromptPay แล้ว",
+    "qr_mark_paid": "ยืนยันว่าชำระด้วย QR แล้ว",
     "card_hint": "การชำระผ่านบัตรเป็นการจำลองในเดโมนี้",
-    "card_ready": "กดยืนยันหลังจากจำลองการอนุมัติบัตรแล้ว"
+    "card_ready": "กดยืนยันหลังจากจำลองการอนุมัติบัตรแล้ว",
+    "card_processing": "กำลังอนุมัติรายการบัตร...",
+    "card_success": "บัตรได้รับการอนุมัติแล้ว",
+    "card_simulate": "จำลองการอนุมัติจากเครื่องรูดบัตร",
+    "payment_status": "สถานะการชำระเงิน"
   },
   "receipt": {
     "title": "ตัวอย่างใบเสร็จ",
