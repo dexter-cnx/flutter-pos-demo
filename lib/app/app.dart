@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'scroll/app_scroll_behavior.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 
@@ -17,6 +18,7 @@ class ThaiPosApp extends StatelessWidget {
           title: 'Thai POS Demo',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.dark(),
+          scrollBehavior: const AppScrollBehavior(),
           routerConfig: appRouter,
           locale: context.locale,
           supportedLocales: context.supportedLocales,

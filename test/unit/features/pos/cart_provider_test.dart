@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thai_pos_demo/app/bootstrap.dart';
 import 'package:thai_pos_demo/features/pos/domain/entities/product.dart';
 import 'package:thai_pos_demo/features/pos/presentation/providers/cart_provider.dart';
 
@@ -8,11 +10,13 @@ void main() {
     late ProviderContainer container;
 
     setUp(() {
+      sharedPreferences = null;
       container = ProviderContainer();
     });
 
     tearDown(() {
       container.dispose();
+      sharedPreferences = null;
     });
 
     Product buildProduct({
@@ -103,6 +107,42 @@ void main() {
       notifier.clearCart();
 
       expect(container.read(cartProvider), const CartState());
+    });
+
+    test('restores cart draft from shared preferences when isar is unavailable',
+        () async {
+      SharedPreferences.setMockInitialValues({
+        'web_cart_draft_v1':
+            '{"taxRate":0.07,"items":[{"quantity":2,"product":{"id":"1","name":"Product 1","price":50.0,"sku":"SKU-1","stockQuantity":10,"isAvailable":true,"imageUrl":null}}]}',
+      });
+      sharedPreferences = await SharedPreferences.getInstance();
+
+      final webContainer = ProviderContainer();
+      addTearDown(webContainer.dispose);
+
+      final state = webContainer.read(cartProvider);
+      expect(state.items, hasLength(1));
+      expect(state.items.first.quantity, 2);
+      expect(state.items.first.product.name, 'Product 1');
+    });
+
+    test('persists cart draft to shared preferences on web path', () async {
+      SharedPreferences.setMockInitialValues({});
+      sharedPreferences = await SharedPreferences.getInstance();
+
+      final webContainer = ProviderContainer();
+      addTearDown(webContainer.dispose);
+
+      final notifier = webContainer.read(cartProvider.notifier);
+      notifier.addItem(buildProduct(id: '1', price: 80));
+
+      final raw = sharedPreferences!.getString('web_cart_draft_v1');
+      expect(raw, isNotNull);
+      expect(raw, contains('"quantity":1'));
+      expect(raw, contains('"price":80.0'));
+
+      notifier.clearCart();
+      expect(sharedPreferences!.containsKey('web_cart_draft_v1'), isFalse);
     });
   });
 }
