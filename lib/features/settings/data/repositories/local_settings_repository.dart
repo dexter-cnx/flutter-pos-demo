@@ -85,10 +85,10 @@ class LocalSettingsRepository implements SettingsRepository {
   }
 
   static const _fallbackProfile = StoreProfile(
-    storeName: 'Thai POS Demo',
-    storeAddress: '99 ถนนสุขุมวิท กรุงเทพฯ 10110',
+    storeName: 'Flutter POS Demo',
+    storeAddress: '99 ถนนโชตนา อำเภอเมือง จังหวัดเชียงใหม่ 50000',
     storeTaxId: '0105559999999',
-    storePhone: '02-123-4567',
+    storePhone: '02-333-4444',
     receiptFooter: 'ขอบคุณที่อุดหนุน แล้วพบกันใหม่',
     lowStockThreshold: 5,
   );
