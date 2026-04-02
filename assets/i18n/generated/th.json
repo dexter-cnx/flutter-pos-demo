@@ -70,7 +70,13 @@
     "confirm_clear_title": "ล้างออเดอร์ที่บันทึกไว้หรือไม่",
     "confirm_clear_message": "การกระทำนี้จะลบประวัติออเดอร์ทั้งหมดออกจากอุปกรณ์",
     "confirm_clear_action": "ล้างออเดอร์",
-    "clear_orders_success": "ล้างประวัติการขายเรียบร้อยแล้ว"
+    "clear_orders_success": "ล้างประวัติการขายเรียบร้อยแล้ว",
+    "reset_web_demo_data": "รีเซ็ตข้อมูลเดโมบนเว็บ",
+    "reset_web_demo_data_hint": "orders",
+    "confirm_reset_web_title": "รีเซ็ตข้อมูลเดโมบนเว็บหรือไม่",
+    "confirm_reset_web_message": "orders",
+    "confirm_reset_web_action": "รีเซ็ตข้อมูลเดโม",
+    "reset_web_success": "รีเซ็ตข้อมูลเดโมบนเว็บเรียบร้อยแล้ว"
   },
   "common": {
     "pay": "ชำระเงิน",

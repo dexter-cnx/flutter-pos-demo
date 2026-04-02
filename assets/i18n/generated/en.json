@@ -70,7 +70,13 @@
     "confirm_clear_title": "Clear saved orders?",
     "confirm_clear_message": "This action will remove all saved order history from the device.",
     "confirm_clear_action": "Clear Orders",
-    "clear_orders_success": "Order history cleared successfully."
+    "clear_orders_success": "Order history cleared successfully.",
+    "reset_web_demo_data": "Reset Web Demo Data",
+    "reset_web_demo_data_hint": "Clear web-only settings",
+    "confirm_reset_web_title": "Reset web demo data?",
+    "confirm_reset_web_message": "This will clear web-persisted settings",
+    "confirm_reset_web_action": "Reset Demo Data",
+    "reset_web_success": "Web demo data has been reset."
   },
   "common": {
     "pay": "Pay Now",

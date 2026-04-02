@@ -7,13 +7,16 @@ import '../../../../app/bootstrap.dart';
 import '../../../checkout/presentation/providers/checkout_providers.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../data/models/order_model.dart';
+import '../../data/services/web_order_storage.dart';
 
 part 'order_history_provider.g.dart';
 
 @riverpod
 Future<List<OrderModel>> orders(OrdersRef ref) async {
   final database = isar;
-  if (database == null) return [];
+  if (database == null) {
+    return WebOrderStorage.loadOrders();
+  }
 
   // ignore: experimental_member_use
   final query = database.orderModels.buildQuery<OrderModel>(
@@ -27,7 +30,9 @@ Future<List<OrderModel>> orders(OrdersRef ref) async {
 @riverpod
 Future<OrderModel?> orderReceipt(OrderReceiptRef ref, int orderId) async {
   final database = isar;
-  if (database == null) return null;
+  if (database == null) {
+    return WebOrderStorage.loadOrder(orderId);
+  }
 
   return database.orderModels.get(orderId);
 }
@@ -35,7 +40,9 @@ Future<OrderModel?> orderReceipt(OrderReceiptRef ref, int orderId) async {
 @riverpod
 Future<int> orderCount(OrderCountRef ref) async {
   final database = isar;
-  if (database == null) return 0;
+  if (database == null) {
+    return WebOrderStorage.count();
+  }
 
   return database.orderModels.count();
 }
@@ -52,7 +59,22 @@ class OrderHistory extends _$OrderHistory {
     required double changeAmount,
   }) async {
     final database = isar;
-    if (database == null || cartState.items.isEmpty) return null;
+    if (database == null) {
+      final orderId = await WebOrderStorage.saveOrder(
+        cartState: cartState,
+        method: method,
+        receivedAmount: receivedAmount,
+        changeAmount: changeAmount,
+      );
+      if (orderId != null) {
+        ref.invalidate(ordersProvider);
+        ref.invalidate(orderCountProvider);
+        ref.invalidate(orderReceiptProvider(orderId));
+        state = const AsyncData(null);
+      }
+      return orderId;
+    }
+    if (cartState.items.isEmpty) return null;
 
     final order = OrderModel()
       ..createdAt = DateTime.now()
@@ -87,7 +109,13 @@ class OrderHistory extends _$OrderHistory {
 
   Future<void> clearOrders() async {
     final database = isar;
-    if (database == null) return;
+    if (database == null) {
+      await WebOrderStorage.clear();
+      ref.invalidate(ordersProvider);
+      ref.invalidate(orderCountProvider);
+      state = const AsyncData(null);
+      return;
+    }
 
     await database.writeTxn(() async {
       await database.orderModels.clear();

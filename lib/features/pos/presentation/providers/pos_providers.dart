@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/bootstrap.dart';
 import '../../data/repositories/local_pos_repository.dart';
 import '../../data/repositories/mock_pos_repository.dart';
+import '../../data/repositories/shared_prefs_pos_repository.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/pos_repository.dart';
@@ -13,6 +14,10 @@ part 'pos_providers.g.dart';
 PosRepository posRepository(PosRepositoryRef ref) {
   if (isar != null) {
     return LocalPosRepository();
+  }
+
+  if (sharedPreferences != null) {
+    return SharedPrefsPosRepository();
   }
 
   return MockPosRepository();

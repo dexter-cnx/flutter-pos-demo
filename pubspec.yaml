@@ -37,6 +37,7 @@ dependencies:
   # Features
   path_provider: any
   file_selector: any
+  shared_preferences: any
   pdf: any
   printing: any
   mobile_scanner: any

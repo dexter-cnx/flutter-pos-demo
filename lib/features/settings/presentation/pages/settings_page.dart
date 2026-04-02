@@ -10,6 +10,7 @@ import '../../../../app/widgets/async_state_view.dart';
 import '../../domain/entities/store_profile.dart';
 import '../providers/settings_providers.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
+import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../../pos/presentation/providers/pos_providers.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -17,6 +18,7 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isWebPersistenceMode = isar == null && sharedPreferences != null;
     final categoryCountAsync = ref.watch(categoryCountProvider);
     final productCountAsync = ref.watch(productCountProvider);
     final ordersAsync = ref.watch(ordersProvider);
@@ -37,12 +39,14 @@ class SettingsPage extends ConsumerWidget {
           builder: (context, constraints) {
             final responsive = ResponsiveLayout.fromConstraints(constraints);
             final columns = responsive.settingsColumnCount;
-            final totalSpacing = 16.0 * (columns - 1);
+            const gridSpacing = 16.0;
+            final totalSpacing = gridSpacing * (columns - 1);
             final cardWidth =
                 ((constraints.maxWidth - totalSpacing) / columns).clamp(
               280.0,
               constraints.maxWidth,
             );
+            final contentWidth = (cardWidth * columns) + totalSpacing;
 
             final cards = [
               SizedBox(
@@ -146,6 +150,17 @@ class SettingsPage extends ConsumerWidget {
                     children: [
                       Text('settings.clear_orders_hint'.tr()),
                       const SizedBox(height: 16),
+                      if (isWebPersistenceMode) ...[
+                        Text('settings.reset_web_demo_data_hint'.tr()),
+                        const SizedBox(height: 16),
+                        OutlinedButton.icon(
+                          onPressed: () =>
+                              _confirmResetWebDemoData(context, ref),
+                          icon: const Icon(Icons.restart_alt_rounded),
+                          label: Text('settings.reset_web_demo_data'.tr()),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
                       orderCountAsync.when(
                         data: (count) => Wrap(
                           spacing: 12,
@@ -185,10 +200,15 @@ class SettingsPage extends ConsumerWidget {
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: cards,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: contentWidth),
+                  child: Wrap(
+                    spacing: gridSpacing,
+                    runSpacing: gridSpacing,
+                    children: cards,
+                  ),
+                ),
               ),
             );
           },
@@ -226,6 +246,65 @@ class SettingsPage extends ConsumerWidget {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('settings.clear_orders_success'.tr())),
+    );
+  }
+
+  Future<void> _confirmResetWebDemoData(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('settings.confirm_reset_web_title'.tr()),
+              content: Text('settings.confirm_reset_web_message'.tr()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text('common.cancel'.tr()),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text('settings.confirm_reset_web_action'.tr()),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (!confirmed || sharedPreferences == null) return;
+
+    await Future.wait([
+      sharedPreferences!.remove('web_categories_v1'),
+      sharedPreferences!.remove('web_products_v1'),
+      sharedPreferences!.remove('web_store_name_v1'),
+      sharedPreferences!.remove('web_store_address_v1'),
+      sharedPreferences!.remove('web_store_tax_id_v1'),
+      sharedPreferences!.remove('web_store_phone_v1'),
+      sharedPreferences!.remove('web_receipt_footer_v1'),
+      sharedPreferences!.remove('web_low_stock_threshold_v1'),
+      sharedPreferences!.remove('web_orders_v1'),
+      sharedPreferences!.remove('web_cart_draft_v1'),
+    ]);
+
+    ref.read(selectedCategoryIdProvider.notifier).select(null);
+    ref.read(cartProvider.notifier).clearCart();
+    ref.invalidate(categoriesProvider);
+    ref.invalidate(productsProvider);
+    ref.invalidate(inventoryProductsProvider);
+    ref.invalidate(productCountProvider);
+    ref.invalidate(lowStockCountProvider);
+    ref.invalidate(storeProfileProvider);
+    ref.invalidate(lowStockThresholdProvider);
+    ref.invalidate(ordersProvider);
+    ref.invalidate(orderCountProvider);
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('settings.reset_web_success'.tr())),
     );
   }
 }

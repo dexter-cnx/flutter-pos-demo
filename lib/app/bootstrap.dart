@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart'; // For kIsWeb
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'l10n/localization.dart';
 import 'services/data_seeder.dart';
@@ -17,11 +18,13 @@ import '../features/settings/data/models/app_settings_model.dart';
 
 // Global Isar instance
 Isar? isar;
+SharedPreferences? sharedPreferences;
 
 Future<void> bootstrap({required Widget child}) async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await EasyLocalization.ensureInitialized();
+    sharedPreferences = await SharedPreferences.getInstance();
 
     // Initialize Isar
     if (!kIsWeb) {
@@ -40,7 +43,7 @@ Future<void> bootstrap({required Widget child}) async {
       }
     } else {
       debugPrint(
-        'Web environment detected. Bypassing Isar initialization to prevent crash.',
+        'Web environment detected. Using SharedPreferences-backed persistence.',
       );
     }
 
