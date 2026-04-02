@@ -18,10 +18,7 @@ import '../providers/receipt_actions_providers.dart';
 import '../services/desktop_file_actions.dart';
 
 class ReceiptPreviewPage extends ConsumerWidget {
-  const ReceiptPreviewPage({
-    required this.orderId,
-    super.key,
-  });
+  const ReceiptPreviewPage({required this.orderId, super.key});
 
   final int orderId;
 
@@ -51,10 +48,7 @@ class ReceiptPreviewPage extends ConsumerWidget {
               return _MissingReceiptState(orderId: orderId);
             }
 
-            return _ReceiptContent(
-              order: order,
-              storeProfile: storeProfile,
-            );
+            return _ReceiptContent(order: order, storeProfile: storeProfile);
           },
           loading: () => const AppLoadingState(),
           error: (error, _) => AppErrorState(
@@ -73,10 +67,7 @@ class ReceiptPreviewPage extends ConsumerWidget {
 }
 
 class _ReceiptContent extends ConsumerWidget {
-  const _ReceiptContent({
-    required this.order,
-    required this.storeProfile,
-  });
+  const _ReceiptContent({required this.order, required this.storeProfile});
 
   final OrderModel order;
   final StoreProfile storeProfile;
@@ -123,10 +114,7 @@ class _ReceiptContent extends ConsumerWidget {
       pw.MultiPage(
         pageFormat: format,
         margin: const pw.EdgeInsets.all(24),
-        theme: pw.ThemeData.withFont(
-          base: baseFont,
-          bold: boldFont,
-        ),
+        theme: pw.ThemeData.withFont(base: baseFont, bold: boldFont),
         build: (context) => [
           pw.Center(
             child: pw.Text(
@@ -137,12 +125,14 @@ class _ReceiptContent extends ConsumerWidget {
           pw.SizedBox(height: 6),
           pw.Center(child: pw.Text(storeProfile.storeAddress)),
           pw.Center(
-            child:
-                pw.Text('${'receipt.tax_id'.tr()}: ${storeProfile.storeTaxId}'),
+            child: pw.Text(
+              '${'receipt.tax_id'.tr()}: ${storeProfile.storeTaxId}',
+            ),
           ),
           pw.Center(
-            child:
-                pw.Text('${'receipt.phone'.tr()}: ${storeProfile.storePhone}'),
+            child: pw.Text(
+              '${'receipt.phone'.tr()}: ${storeProfile.storePhone}',
+            ),
           ),
           pw.SizedBox(height: 8),
           pw.Center(child: pw.Text('receipt.thank_you'.tr())),
@@ -180,7 +170,10 @@ class _ReceiptContent extends ConsumerWidget {
           ),
           pw.SizedBox(height: 16),
           _pdfSummaryRow(
-              'pos.subtotal'.tr(), _currency(order.subtotal), baseFont),
+            'pos.subtotal'.tr(),
+            _currency(order.subtotal),
+            baseFont,
+          ),
           _pdfSummaryRow(
             '${'pos.vat'.tr()} (7%)',
             _currency(order.taxAmount),
@@ -193,7 +186,10 @@ class _ReceiptContent extends ConsumerWidget {
             baseFont,
           ),
           _pdfSummaryRow(
-              'payment.change'.tr(), _currency(order.changeAmount), baseFont),
+            'payment.change'.tr(),
+            _currency(order.changeAmount),
+            baseFont,
+          ),
           pw.SizedBox(height: 20),
           pw.Divider(),
           pw.Center(child: pw.Text(storeProfile.receiptFooter)),
@@ -230,8 +226,9 @@ class _ReceiptContent extends ConsumerWidget {
       builder: (context) {
         return AlertDialog(
           title: Text('receipt.print_simulation'.tr()),
-          content:
-              Text('receipt.simulation_message'.tr(args: ['#${order.id}'])),
+          content: Text(
+            'receipt.simulation_message'.tr(args: ['#${order.id}']),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -251,11 +248,9 @@ class _ReceiptContent extends ConsumerWidget {
       );
     } catch (_) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('receipt.print_failed'.tr()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('receipt.print_failed'.tr())));
     }
   }
 
@@ -268,11 +263,9 @@ class _ReceiptContent extends ConsumerWidget {
       );
     } catch (_) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('receipt.share_failed'.tr()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('receipt.share_failed'.tr())));
     }
   }
 
@@ -282,10 +275,7 @@ class _ReceiptContent extends ConsumerWidget {
       final location = await getSaveLocation(
         suggestedName: fileName,
         acceptedTypeGroups: const [
-          XTypeGroup(
-            label: 'PDF',
-            extensions: ['pdf'],
-          ),
+          XTypeGroup(label: 'PDF', extensions: ['pdf']),
         ],
       );
 
@@ -302,19 +292,15 @@ class _ReceiptContent extends ConsumerWidget {
       await pdfFile.saveTo(location.path);
 
       if (!context.mounted) return null;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('receipt.download_success'.tr()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('receipt.download_success'.tr())));
       return location.path;
     } catch (_) {
       if (!context.mounted) return null;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('receipt.download_failed'.tr()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('receipt.download_failed'.tr())));
       return null;
     }
   }
@@ -327,11 +313,9 @@ class _ReceiptContent extends ConsumerWidget {
     final opened = await openSavedFile(path);
     if (!context.mounted || opened) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('receipt.open_file_failed'.tr()),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('receipt.open_file_failed'.tr())));
   }
 
   Future<void> _openContainingFolder(BuildContext context) async {
@@ -342,17 +326,16 @@ class _ReceiptContent extends ConsumerWidget {
     final opened = await openContainingFolder(path);
     if (!context.mounted || opened) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('receipt.open_folder_failed'.tr()),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('receipt.open_folder_failed'.tr())));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final lastDownloadedPath =
-        ref.watch(downloadedReceiptPathProvider(order.id));
+    final lastDownloadedPath = ref.watch(
+      downloadedReceiptPathProvider(order.id),
+    );
     final dateText = DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);
 
     return LayoutBuilder(
@@ -376,12 +359,8 @@ class _ReceiptContent extends ConsumerWidget {
                   const SizedBox(height: 8),
                   Text(storeProfile.storeAddress),
                   const SizedBox(height: 4),
-                  Text(
-                    '${'receipt.tax_id'.tr()}: ${storeProfile.storeTaxId}',
-                  ),
-                  Text(
-                    '${'receipt.phone'.tr()}: ${storeProfile.storePhone}',
-                  ),
+                  Text('${'receipt.tax_id'.tr()}: ${storeProfile.storeTaxId}'),
+                  Text('${'receipt.phone'.tr()}: ${storeProfile.storePhone}'),
                   const SizedBox(height: 8),
                   Text('receipt.thank_you'.tr()),
                   const SizedBox(height: 20),
@@ -389,10 +368,7 @@ class _ReceiptContent extends ConsumerWidget {
                     label: 'receipt.order_no'.tr(),
                     value: '#${order.id}',
                   ),
-                  _DetailRow(
-                    label: 'receipt.date'.tr(),
-                    value: dateText,
-                  ),
+                  _DetailRow(label: 'receipt.date'.tr(), value: dateText),
                   _DetailRow(
                     label: 'checkout.payment_method'.tr(),
                     value: _paymentLabel(),
@@ -455,8 +431,8 @@ class _ReceiptContent extends ConsumerWidget {
                   Text(
                     storeProfile.receiptFooter,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   Wrap(
@@ -480,8 +456,9 @@ class _ReceiptContent extends ConsumerWidget {
                             if (path == null) return;
                             ref
                                 .read(
-                                  downloadedReceiptPathProvider(order.id)
-                                      .notifier,
+                                  downloadedReceiptPathProvider(
+                                    order.id,
+                                  ).notifier,
                                 )
                                 .setPath(path);
                           },
@@ -614,9 +591,9 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.bodyLarge?.copyWith(
-          fontWeight: emphasized ? FontWeight.bold : FontWeight.normal,
-          fontSize: emphasized ? 18 : null,
-        );
+      fontWeight: emphasized ? FontWeight.bold : FontWeight.normal,
+      fontSize: emphasized ? 18 : null,
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),

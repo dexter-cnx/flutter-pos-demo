@@ -4,15 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('material shell renders basic scaffold',
-      (WidgetTester tester) async {
+  testWidgets('material shell renders basic scaffold', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Text('Thai POS Demo'),
-          ),
-        ),
+        home: Scaffold(body: Center(child: Text('Thai POS Demo'))),
       ),
     );
 

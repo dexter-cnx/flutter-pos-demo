@@ -96,10 +96,12 @@ class _OrderCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      DateFormat('dd/MM/yyyy HH:mm')
-                          .format(order.createdAt.toLocal()),
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                      DateFormat(
+                        'dd/MM/yyyy HH:mm',
+                      ).format(order.createdAt.toLocal()),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Chip(label: Text(_paymentLabel(context))),
@@ -164,8 +166,8 @@ class _SummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.bodyLarge?.copyWith(
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-        );
+      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),

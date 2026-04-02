@@ -13,8 +13,9 @@ String _$ordersHash() => r'709073178552c2afbbdf9aae733ab9648c7648e4';
 final ordersProvider = AutoDisposeFutureProvider<List<OrderModel>>.internal(
   orders,
   name: r'ordersProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$ordersHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$ordersHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -53,21 +54,15 @@ class OrderReceiptFamily extends Family<AsyncValue<OrderModel?>> {
   const OrderReceiptFamily();
 
   /// See also [orderReceipt].
-  OrderReceiptProvider call(
-    int orderId,
-  ) {
-    return OrderReceiptProvider(
-      orderId,
-    );
+  OrderReceiptProvider call(int orderId) {
+    return OrderReceiptProvider(orderId);
   }
 
   @override
   OrderReceiptProvider getProviderOverride(
     covariant OrderReceiptProvider provider,
   ) {
-    return call(
-      provider.orderId,
-    );
+    return call(provider.orderId);
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -88,24 +83,19 @@ class OrderReceiptFamily extends Family<AsyncValue<OrderModel?>> {
 /// See also [orderReceipt].
 class OrderReceiptProvider extends AutoDisposeFutureProvider<OrderModel?> {
   /// See also [orderReceipt].
-  OrderReceiptProvider(
-    int orderId,
-  ) : this._internal(
-          (ref) => orderReceipt(
-            ref as OrderReceiptRef,
-            orderId,
-          ),
-          from: orderReceiptProvider,
-          name: r'orderReceiptProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$orderReceiptHash,
-          dependencies: OrderReceiptFamily._dependencies,
-          allTransitiveDependencies:
-              OrderReceiptFamily._allTransitiveDependencies,
-          orderId: orderId,
-        );
+  OrderReceiptProvider(int orderId)
+    : this._internal(
+        (ref) => orderReceipt(ref as OrderReceiptRef, orderId),
+        from: orderReceiptProvider,
+        name: r'orderReceiptProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$orderReceiptHash,
+        dependencies: OrderReceiptFamily._dependencies,
+        allTransitiveDependencies:
+            OrderReceiptFamily._allTransitiveDependencies,
+        orderId: orderId,
+      );
 
   OrderReceiptProvider._internal(
     super._createNotifier, {
@@ -162,7 +152,8 @@ mixin OrderReceiptRef on AutoDisposeFutureProviderRef<OrderModel?> {
 }
 
 class _OrderReceiptProviderElement
-    extends AutoDisposeFutureProviderElement<OrderModel?> with OrderReceiptRef {
+    extends AutoDisposeFutureProviderElement<OrderModel?>
+    with OrderReceiptRef {
   _OrderReceiptProviderElement(super.provider);
 
   @override
@@ -176,8 +167,9 @@ String _$orderCountHash() => r'7629264847415940638eaeace672d683a8805650';
 final orderCountProvider = AutoDisposeFutureProvider<int>.internal(
   orderCount,
   name: r'orderCountProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$orderCountHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$orderCountHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -189,13 +181,14 @@ String _$orderHistoryHash() => r'82dffe693d378ddd47768fb30b9df7f624231184';
 @ProviderFor(OrderHistory)
 final orderHistoryProvider =
     AutoDisposeAsyncNotifierProvider<OrderHistory, void>.internal(
-  OrderHistory.new,
-  name: r'orderHistoryProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$orderHistoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+      OrderHistory.new,
+      name: r'orderHistoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$orderHistoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
 typedef _$OrderHistory = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint

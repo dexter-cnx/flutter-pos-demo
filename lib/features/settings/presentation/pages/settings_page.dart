@@ -41,11 +41,8 @@ class SettingsPage extends ConsumerWidget {
             final columns = responsive.settingsColumnCount;
             const gridSpacing = 16.0;
             final totalSpacing = gridSpacing * (columns - 1);
-            final cardWidth =
-                ((constraints.maxWidth - totalSpacing) / columns).clamp(
-              280.0,
-              constraints.maxWidth,
-            );
+            final cardWidth = ((constraints.maxWidth - totalSpacing) / columns)
+                .clamp(280.0, constraints.maxWidth);
             final contentWidth = (cardWidth * columns) + totalSpacing;
 
             final cards = [
@@ -125,8 +122,9 @@ class SettingsPage extends ConsumerWidget {
                           if (orders.isEmpty) {
                             return 'settings.no_orders'.tr();
                           }
-                          return DateFormat('dd/MM/yyyy HH:mm')
-                              .format(orders.first.createdAt.toLocal());
+                          return DateFormat(
+                            'dd/MM/yyyy HH:mm',
+                          ).format(orders.first.createdAt.toLocal());
                         },
                       ),
                     ],
@@ -218,7 +216,8 @@ class SettingsPage extends ConsumerWidget {
   }
 
   Future<void> _confirmClearOrders(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed =
+        await showDialog<bool>(
           context: context,
           builder: (context) {
             return AlertDialog(
@@ -253,7 +252,8 @@ class SettingsPage extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed =
+        await showDialog<bool>(
           context: context,
           builder: (context) {
             return AlertDialog(
@@ -303,9 +303,9 @@ class SettingsPage extends ConsumerWidget {
 
     if (!context.mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('settings.reset_web_success'.tr())),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('settings.reset_web_success'.tr())));
   }
 }
 
@@ -329,16 +329,21 @@ class _StoreProfileCardState extends ConsumerState<_StoreProfileCard> {
   @override
   void initState() {
     super.initState();
-    _storeNameController =
-        TextEditingController(text: widget.profile.storeName);
-    _storeAddressController =
-        TextEditingController(text: widget.profile.storeAddress);
-    _storeTaxIdController =
-        TextEditingController(text: widget.profile.storeTaxId);
-    _storePhoneController =
-        TextEditingController(text: widget.profile.storePhone);
-    _receiptFooterController =
-        TextEditingController(text: widget.profile.receiptFooter);
+    _storeNameController = TextEditingController(
+      text: widget.profile.storeName,
+    );
+    _storeAddressController = TextEditingController(
+      text: widget.profile.storeAddress,
+    );
+    _storeTaxIdController = TextEditingController(
+      text: widget.profile.storeTaxId,
+    );
+    _storePhoneController = TextEditingController(
+      text: widget.profile.storePhone,
+    );
+    _receiptFooterController = TextEditingController(
+      text: widget.profile.receiptFooter,
+    );
     _lowStockThresholdController = TextEditingController(
       text: widget.profile.lowStockThreshold.toString(),
     );
@@ -354,8 +359,8 @@ class _StoreProfileCardState extends ConsumerState<_StoreProfileCard> {
     _storeTaxIdController.text = widget.profile.storeTaxId;
     _storePhoneController.text = widget.profile.storePhone;
     _receiptFooterController.text = widget.profile.receiptFooter;
-    _lowStockThresholdController.text =
-        widget.profile.lowStockThreshold.toString();
+    _lowStockThresholdController.text = widget.profile.lowStockThreshold
+        .toString();
   }
 
   @override
@@ -430,7 +435,8 @@ class _StoreProfileCardState extends ConsumerState<_StoreProfileCard> {
   }
 
   Future<void> _saveProfile() async {
-    final threshold = int.tryParse(_lowStockThresholdController.text.trim()) ??
+    final threshold =
+        int.tryParse(_lowStockThresholdController.text.trim()) ??
         widget.profile.lowStockThreshold;
     final profile = StoreProfile(
       storeName: _storeNameController.text.trim(),
@@ -453,10 +459,7 @@ class _StoreProfileCardState extends ConsumerState<_StoreProfileCard> {
 }
 
 class _SettingsCard extends StatelessWidget {
-  const _SettingsCard({
-    required this.title,
-    required this.child,
-  });
+  const _SettingsCard({required this.title, required this.child});
 
   final String title;
   final Widget child;
@@ -481,10 +484,7 @@ class _SettingsCard extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -499,12 +499,7 @@ class _InfoRow extends StatelessWidget {
         children: [
           Expanded(child: Text(label)),
           const SizedBox(width: 16),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-            ),
-          ),
+          Flexible(child: Text(value, textAlign: TextAlign.right)),
         ],
       ),
     );
@@ -537,10 +532,8 @@ class _AsyncInfoRow<T> extends StatelessWidget {
           ],
         ),
       ),
-      error: (error, _) => AppErrorState(
-        message: error.toString(),
-        compact: true,
-      ),
+      error: (error, _) =>
+          AppErrorState(message: error.toString(), compact: true),
     );
   }
 }
@@ -552,10 +545,7 @@ class _LoadingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SettingsCard(
       title: 'settings.store_profile'.tr(),
-      child: SizedBox(
-        height: 180,
-        child: const AppLoadingState(),
-      ),
+      child: SizedBox(height: 180, child: const AppLoadingState()),
     );
   }
 }
@@ -569,10 +559,7 @@ class _ErrorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SettingsCard(
       title: 'settings.store_profile'.tr(),
-      child: AppErrorState(
-        message: error,
-        compact: true,
-      ),
+      child: AppErrorState(message: error, compact: true),
     );
   }
 }

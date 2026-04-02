@@ -192,9 +192,7 @@ class PosPage extends ConsumerWidget {
                 Container(
                   height: responsive.cartDockHeight,
                   decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: theme.dividerColor),
-                    ),
+                    border: Border(top: BorderSide(color: theme.dividerColor)),
                   ),
                   child: CartSidebar(
                     showRetryHint: categoriesError || productsError,

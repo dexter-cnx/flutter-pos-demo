@@ -3,6 +3,14 @@ app.title,Thai POS Demo,ระบบขายหน้าร้าน
 login.title,Please enter PIN,กดยืนยันรหัส PIN
 login.subtitle,Standard Thai POS,ระบบ POS ร้านค้าไทย
 login.demo_hint,Demo mode: enter any 4-digit PIN,โหมดเดโม: กรอก PIN ตัวเลข 4 หลักอะไรก็ได้
+login.landscape_title,Tablet POS Login,หน้าล็อกอินแบบแท็บเล็ต
+login.landscape_subtitle,Use the keypad on the right to sign in quickly at the counter.,ใช้ปุ่มด้านขวาเพื่อเข้าสู่ระบบให้รวดเร็วที่หน้าเคาน์เตอร์
+login.feature_fast_pin.title,Fast PIN entry,กรอกรหัส PIN ได้เร็ว
+login.feature_fast_pin.body,Enter any 4-digit PIN to continue. The keypad is sized for touch-first POS workflows.,กรอก PIN ตัวเลข 4 หลักเพื่อเข้าใช้งาน ปุ่มถูกออกแบบให้แตะง่ายสำหรับงาน POS
+login.feature_pos_ready.title,POS-ready layout,เลย์เอาต์พร้อมใช้สำหรับ POS
+login.feature_pos_ready.body,The login screen uses the extra width in landscape mode instead of squeezing everything into the center.,หน้าเข้าสู่ระบบใช้พื้นที่แนวนอนให้คุ้มค่าแทนการบีบทุกอย่างไว้ตรงกลาง
+login.feature_demo.title,Demo mode,โหมดเดโม
+login.feature_demo.body,Use any 4-digit numeric PIN to enter the app and explore the flow safely.,ใช้ PIN ตัวเลข 4 หลักใดก็ได้เพื่อเข้าสู่แอปและลองใช้งานได้อย่างปลอดภัย
 dashboard.title,Dashboard,แดชบอร์ด
 pos.title,Point of Sale,ขายหน้าร้าน
 inventory.title,Inventory,คลังสินค้า
@@ -61,6 +69,7 @@ common.cancel,Cancel,ยกเลิก
 common.confirm,Confirm,ยืนยัน
 common.total,Total,ยอดรวม
 common.back,Back,กลับ
+common.backspace,Backspace,ลบตัวเลข
 common.retry,Retry,ลองอีกครั้ง
 common.loading,Loading...,กำลังโหลด...
 common.error_title,Something went wrong,เกิดปัญหาในการโหลดข้อมูล

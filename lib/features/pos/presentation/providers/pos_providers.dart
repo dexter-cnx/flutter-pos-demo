@@ -64,8 +64,10 @@ Future<int> lowStockCount(LowStockCountRef ref) async {
   final threshold = await ref.watch(lowStockThresholdProvider.future);
   final products = await ref.watch(inventoryProductsProvider.future);
   return products
-      .where((product) =>
-          product.stockQuantity > 0 && product.stockQuantity <= threshold)
+      .where(
+        (product) =>
+            product.stockQuantity > 0 && product.stockQuantity <= threshold,
+      )
       .length;
 }
 

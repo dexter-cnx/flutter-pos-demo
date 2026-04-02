@@ -41,6 +41,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
 
     ref.listen<AsyncValue<String?>>(authNotifierProvider, (previous, next) {
       next.whenData((role) {
@@ -56,13 +58,275 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final responsive = ResponsiveLayout.fromConstraints(constraints);
+            final landscapeSplit = isLandscape && constraints.maxWidth >= 900;
             final compact = responsive.isCompactForm;
-            final maxWidth = constraints.maxWidth * (compact ? 0.42 : 0.3);
             final indicatorSize = compact ? 16.0 : 20.0;
             final indicatorGap = compact ? 8.0 : 12.0;
-            final sectionGap = compact ? 28.0 : 48.0;
-            final pinPadGap = compact ? 12.0 : 16.0;
-            final pinPadRatio = compact ? 1.0 : 1.2;
+            final sectionGap = compact ? 24.0 : 40.0;
+            final keypadMaxWidth = landscapeSplit ? 420.0 : 430.0;
+            final panelWidth = constraints.maxWidth * 0.42;
+
+            Widget buildLanguageSelector({required Alignment alignment}) {
+              return Align(
+                alignment: alignment,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: AppLocalization.supportedLocales.map((locale) {
+                    final isSelected =
+                        context.locale.languageCode == locale.languageCode;
+                    final label = locale.languageCode == 'th'
+                        ? 'settings.language_th'.tr()
+                        : 'settings.language_en'.tr();
+                    return ChoiceChip(
+                      label: Text(label),
+                      selected: isSelected,
+                      onSelected: (_) => context.setLocale(locale),
+                    );
+                  }).toList(),
+                ),
+              );
+            }
+
+            Widget buildBrandBlock({required TextAlign textAlign}) {
+              return Column(
+                crossAxisAlignment: textAlign == TextAlign.left
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'app.title'.tr(),
+                    textAlign: textAlign,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'login.subtitle'.tr(),
+                    textAlign: textAlign,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primaryContainer.withValues(
+                        alpha: 0.35,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: theme.colorScheme.primary.withValues(
+                          alpha: 0.25,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      'login.demo_hint'.tr(),
+                      textAlign: textAlign,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            Widget buildPinIndicators() {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(4, (index) {
+                  final filled = index < _pin.length;
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: indicatorGap),
+                    width: indicatorSize,
+                    height: indicatorSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: filled
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.surfaceContainerHigh,
+                      boxShadow: filled
+                          ? [
+                              BoxShadow(
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.5,
+                                ),
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                              ),
+                            ]
+                          : null,
+                    ),
+                  );
+                }),
+              );
+            }
+
+            Widget buildAuthError() {
+              if (!authState.hasError) {
+                return const SizedBox.shrink();
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  authState.error.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
+              );
+            }
+
+            Widget buildLandscapeBadge(String label) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerLow.withValues(
+                    alpha: 0.8,
+                  ),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                  ),
+                ),
+                child: Text(
+                  label,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
+            }
+
+            Widget buildLandscapeHero() {
+              return Container(
+                padding: const EdgeInsets.all(28),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      theme.colorScheme.surface.withValues(alpha: 0.08),
+                      theme.colorScheme.surfaceContainerLow.withValues(
+                        alpha: 0.35,
+                      ),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildLanguageSelector(alignment: Alignment.centerLeft),
+                    const Spacer(),
+                    Text(
+                      'app.title'.tr(),
+                      style: theme.textTheme.displayLarge?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w800,
+                        height: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: 460,
+                      child: Text(
+                        'login.subtitle'.tr(),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          height: 1.35,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    buildLandscapeBadge('login.demo_hint'.tr()),
+                    const SizedBox(height: 12),
+                    buildLandscapeBadge('settings.offline_first'.tr()),
+                    const SizedBox(height: 12),
+                    buildLandscapeBadge('settings.storage_ready'.tr()),
+                    const Spacer(),
+                  ],
+                ),
+              );
+            }
+
+            Widget buildLoginPanel() {
+              return Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerLow.withValues(
+                    alpha: 0.55,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'login.title'.tr(),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    buildPinIndicators(),
+                    const SizedBox(height: 12),
+                    buildAuthError(),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: keypadMaxWidth),
+                          child: buildKeypad(landscape: true),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (landscapeSplit) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: buildLandscapeHero(),
+                    ),
+                  ),
+                  SizedBox(
+                    width: panelWidth.clamp(380.0, 520.0),
+                    child: buildLoginPanel(),
+                  ),
+                ],
+              );
+            }
+
+            final maxWidth = constraints.maxWidth * (compact ? 0.42 : 0.3);
 
             return Center(
               child: SingleChildScrollView(
@@ -75,131 +339,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children:
-                              AppLocalization.supportedLocales.map((locale) {
-                            final isSelected = context.locale.languageCode ==
-                                locale.languageCode;
-                            final label = locale.languageCode == 'th'
-                                ? 'settings.language_th'.tr()
-                                : 'settings.language_en'.tr();
-                            return ChoiceChip(
-                              label: Text(label),
-                              selected: isSelected,
-                              onSelected: (_) => context.setLocale(locale),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                      buildLanguageSelector(alignment: Alignment.centerRight),
                       SizedBox(height: compact ? 20 : 28),
-                      Text(
-                        'app.title'.tr(),
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'login.subtitle'.tr(),
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer.withValues(
-                            alpha: 0.35,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: theme.colorScheme.primary.withValues(
-                              alpha: 0.25,
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'login.demo_hint'.tr(),
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                      buildBrandBlock(textAlign: TextAlign.center),
                       SizedBox(height: sectionGap),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(4, (index) {
-                          final filled = index < _pin.length;
-                          return Container(
-                            margin:
-                                EdgeInsets.symmetric(horizontal: indicatorGap),
-                            width: indicatorSize,
-                            height: indicatorSize,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: filled
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.surfaceContainerHigh,
-                              boxShadow: filled
-                                  ? [
-                                      BoxShadow(
-                                        color: theme.colorScheme.primary
-                                            .withValues(alpha: 0.5),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
-                                      ),
-                                    ]
-                                  : null,
-                            ),
-                          );
-                        }),
-                      ),
+                      buildPinIndicators(),
                       SizedBox(height: sectionGap),
-                      if (authState.hasError)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: Text(
-                            authState.error.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: theme.colorScheme.error),
-                          ),
-                        ),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: pinPadGap,
-                          crossAxisSpacing: pinPadGap,
-                          childAspectRatio: pinPadRatio,
-                        ),
-                        itemCount: 12,
-                        itemBuilder: (context, index) {
-                          if (index == 9) return const SizedBox.shrink();
-                          if (index == 10) return _buildPinButton('0');
-                          if (index == 11) {
-                            return _buildActionButton(
-                              Icons.backspace_rounded,
-                              _onDelete,
-                              color: theme.colorScheme.surfaceContainerHigh,
-                            );
-                          }
-                          return _buildPinButton('${index + 1}');
-                        },
-                      ),
+                      buildAuthError(),
+                      buildKeypad(landscape: false),
                     ],
                   ),
                 ),
@@ -211,6 +358,33 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
+  Widget buildKeypad({required bool landscape}) {
+    final theme = Theme.of(context);
+    return GridView.builder(
+      shrinkWrap: !landscape,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: landscape ? 14 : 12,
+        crossAxisSpacing: landscape ? 14 : 12,
+        childAspectRatio: landscape ? 1.5 : 1.0,
+      ),
+      itemCount: 12,
+      itemBuilder: (context, index) {
+        if (index == 9) return const SizedBox.shrink();
+        if (index == 10) return _buildPinButton('0');
+        if (index == 11) {
+          return _buildActionButton(
+            Icons.backspace_rounded,
+            _onDelete,
+            color: theme.colorScheme.surfaceContainerHigh,
+          );
+        }
+        return _buildPinButton('${index + 1}');
+      },
+    );
+  }
+
   Widget _buildPinButton(String number) {
     final theme = Theme.of(context);
     return Material(
@@ -219,11 +393,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => _onNumberTap(number),
-        child: Center(
-          child: Text(
-            number,
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
+        child: Semantics(
+          button: true,
+          label: number,
+          child: Center(
+            child: Text(
+              number,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -239,7 +417,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: Center(child: Icon(icon, size: 32)),
+        child: Semantics(
+          button: true,
+          label: 'common.backspace'.tr(),
+          child: Center(child: Icon(icon, size: 32)),
+        ),
       ),
     );
   }

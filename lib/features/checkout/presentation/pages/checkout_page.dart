@@ -88,9 +88,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
   Future<void> _copyReference(BuildContext context, String reference) async {
     await Clipboard.setData(ClipboardData(text: reference));
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('checkout.copy_success'.tr())),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('checkout.copy_success'.tr())));
   }
 
   Future<void> _confirmPayment(
@@ -102,9 +102,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
   ) async {
     if (cartState.items.isEmpty) return;
 
-    final effectiveReceivedAmount =
-        method == PaymentMethod.cash ? receivedAmount : cartState.total;
-    final orderId = await ref.read(orderHistoryProvider.notifier).saveOrder(
+    final effectiveReceivedAmount = method == PaymentMethod.cash
+        ? receivedAmount
+        : cartState.total;
+    final orderId = await ref
+        .read(orderHistoryProvider.notifier)
+        .saveOrder(
           cartState: cartState,
           method: method,
           receivedAmount: effectiveReceivedAmount,
@@ -173,8 +176,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final storeProfileAsync = ref.watch(storeProfileProvider);
     final simulationState = ref.watch(paymentSimulationStateProvider);
     final amountDue = cartState.total;
-    final effectiveReceivedAmount =
-        method == PaymentMethod.cash ? receivedAmount : amountDue;
+    final effectiveReceivedAmount = method == PaymentMethod.cash
+        ? receivedAmount
+        : amountDue;
     final change = method == PaymentMethod.cash
         ? max(0.0, receivedAmount - amountDue)
         : 0.0;
@@ -182,9 +186,11 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final hasEnteredCash = method != PaymentMethod.cash || receivedAmount > 0;
     final hasSufficientCash =
         method != PaymentMethod.cash || receivedAmount >= amountDue;
-    final hasApprovedDigitalPayment = method == PaymentMethod.cash ||
+    final hasApprovedDigitalPayment =
+        method == PaymentMethod.cash ||
         simulationState == PaymentSimulationState.approved;
-    final canConfirmPayment = hasItems &&
+    final canConfirmPayment =
+        hasItems &&
         hasEnteredCash &&
         hasSufficientCash &&
         hasApprovedDigitalPayment;
@@ -246,11 +252,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
             return SingleChildScrollView(
               child: Column(
-                children: [
-                  summary,
-                  const SizedBox(height: 16),
-                  paymentPanel,
-                ],
+                children: [summary, const SizedBox(height: 16), paymentPanel],
               ),
             );
           },
@@ -292,8 +294,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               else
                 Column(
                   children: [
-                    ...cartState.items
-                        .map((item) => _buildCartItem(context, item)),
+                    ...cartState.items.map(
+                      (item) => _buildCartItem(context, item),
+                    ),
                     const SizedBox(height: 16),
                     const Divider(height: 32),
                     _buildSummaryRow(
@@ -393,8 +396,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               if (isCash) ...[
                 TextField(
                   controller: _receivedController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(
                     labelText: 'checkout.enter_received'.tr(),
                     prefixText: '\u0E3F',
@@ -631,7 +635,8 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           ),
           const SizedBox(height: 12),
           FilledButton.icon(
-            onPressed: simulationState == PaymentSimulationState.processing ||
+            onPressed:
+                simulationState == PaymentSimulationState.processing ||
                     simulationState == PaymentSimulationState.approved
                 ? null
                 : _simulateCardApproval,

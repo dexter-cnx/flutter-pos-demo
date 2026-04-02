@@ -20,9 +20,7 @@ Future<List<OrderModel>> orders(OrdersRef ref) async {
 
   // ignore: experimental_member_use
   final query = database.orderModels.buildQuery<OrderModel>(
-    sortBy: const [
-      SortProperty(property: 'createdAt', sort: Sort.desc),
-    ],
+    sortBy: const [SortProperty(property: 'createdAt', sort: Sort.desc)],
   );
   return query.findAll();
 }

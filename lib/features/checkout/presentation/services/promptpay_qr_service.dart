@@ -63,20 +63,12 @@ class PromptPayQrService {
     required String phone,
   }) {
     if (taxId.length == 13) {
-      return _ReceiverId(
-        value: taxId,
-        label: 'Tax ID $taxId',
-        isPhone: false,
-      );
+      return _ReceiverId(value: taxId, label: 'Tax ID $taxId', isPhone: false);
     }
 
     if (phone.length == 10 && phone.startsWith('0')) {
       final normalized = '0066${phone.substring(1)}';
-      return _ReceiverId(
-        value: normalized,
-        label: phone,
-        isPhone: true,
-      );
+      return _ReceiverId(value: normalized, label: phone, isPhone: true);
     }
 
     const fallbackPhone = '0812345678';
@@ -88,8 +80,10 @@ class PromptPayQrService {
   }
 
   static String _merchantName(String storeName) {
-    final sanitized =
-        storeName.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9 ]'), '').trim();
+    final sanitized = storeName
+        .toUpperCase()
+        .replaceAll(RegExp(r'[^A-Z0-9 ]'), '')
+        .trim();
     if (sanitized.isEmpty) return 'THAI POS DEMO';
     return sanitized.length > 25 ? sanitized.substring(0, 25) : sanitized;
   }

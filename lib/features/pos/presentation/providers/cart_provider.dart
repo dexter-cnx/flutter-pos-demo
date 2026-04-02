@@ -11,10 +11,8 @@ part 'cart_provider.g.dart';
 
 @freezed
 class CartItem with _$CartItem {
-  const factory CartItem({
-    required Product product,
-    @Default(1) int quantity,
-  }) = _CartItem;
+  const factory CartItem({required Product product, @Default(1) int quantity}) =
+      _CartItem;
 }
 
 @freezed
@@ -43,8 +41,9 @@ class Cart extends _$Cart {
   void addItem(Product product) {
     if (!product.isAvailable || product.stockQuantity <= 0) return;
 
-    final existingIndex =
-        state.items.indexWhere((item) => item.product.id == product.id);
+    final existingIndex = state.items.indexWhere(
+      (item) => item.product.id == product.id,
+    );
     if (existingIndex != -1) {
       final nextQuantity = state.items[existingIndex].quantity + 1;
       if (nextQuantity > product.stockQuantity) return;
@@ -56,8 +55,12 @@ class Cart extends _$Cart {
       state = state.copyWith(items: updatedItems);
       _persistDraft();
     } else {
-      state =
-          state.copyWith(items: [...state.items, CartItem(product: product)]);
+      state = state.copyWith(
+        items: [
+          ...state.items,
+          CartItem(product: product),
+        ],
+      );
       _persistDraft();
     }
   }
@@ -70,8 +73,9 @@ class Cart extends _$Cart {
   }
 
   void updateQuantity(String productId, int delta) {
-    final itemIndex =
-        state.items.indexWhere((item) => item.product.id == productId);
+    final itemIndex = state.items.indexWhere(
+      (item) => item.product.id == productId,
+    );
     if (itemIndex == -1) return;
 
     final currentQuantity = state.items[itemIndex].quantity;
@@ -83,8 +87,9 @@ class Cart extends _$Cart {
       return;
     } else {
       final updatedItems = List<CartItem>.from(state.items);
-      updatedItems[itemIndex] =
-          updatedItems[itemIndex].copyWith(quantity: newQuantity);
+      updatedItems[itemIndex] = updatedItems[itemIndex].copyWith(
+        quantity: newQuantity,
+      );
       state = state.copyWith(items: updatedItems);
       _persistDraft();
     }

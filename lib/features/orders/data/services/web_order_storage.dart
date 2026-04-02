@@ -21,8 +21,8 @@ class WebOrderStorage {
     final raw = prefs.getString(_ordersKey);
     if (raw == null || raw.isEmpty) return [];
 
-    final decoded =
-        (jsonDecode(raw) as List<dynamic>).cast<Map<String, dynamic>>();
+    final decoded = (jsonDecode(raw) as List<dynamic>)
+        .cast<Map<String, dynamic>>();
     final orders = decoded.map(_decodeOrder).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return orders;

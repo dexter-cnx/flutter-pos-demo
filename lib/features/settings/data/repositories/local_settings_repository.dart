@@ -20,15 +20,18 @@ class LocalSettingsRepository implements SettingsRepository {
         return StoreProfile(
           storeName:
               prefs.getString(_storeNameKey) ?? _fallbackProfile.storeName,
-          storeAddress: prefs.getString(_storeAddressKey) ??
+          storeAddress:
+              prefs.getString(_storeAddressKey) ??
               _fallbackProfile.storeAddress,
           storeTaxId:
               prefs.getString(_storeTaxIdKey) ?? _fallbackProfile.storeTaxId,
           storePhone:
               prefs.getString(_storePhoneKey) ?? _fallbackProfile.storePhone,
-          receiptFooter: prefs.getString(_receiptFooterKey) ??
+          receiptFooter:
+              prefs.getString(_receiptFooterKey) ??
               _fallbackProfile.receiptFooter,
-          lowStockThreshold: prefs.getInt(_lowStockThresholdKey) ??
+          lowStockThreshold:
+              prefs.getInt(_lowStockThresholdKey) ??
               _fallbackProfile.lowStockThreshold,
         );
       }

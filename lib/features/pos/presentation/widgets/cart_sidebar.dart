@@ -7,10 +7,7 @@ import '../../../../app/layout/responsive_layout.dart';
 import '../providers/cart_provider.dart';
 
 class CartSidebar extends ConsumerWidget {
-  const CartSidebar({
-    super.key,
-    this.showRetryHint = false,
-  });
+  const CartSidebar({super.key, this.showRetryHint = false});
 
   final bool showRetryHint;
 
@@ -135,9 +132,7 @@ class CartSidebar extends ConsumerWidget {
                           ),
                           subtitle: Text(
                             '\u0E3F${item.product.price.toStringAsFixed(2)} • '
-                            '${'inventory.stock_remaining'.tr(args: [
-                                  '${item.product.stockQuantity}'
-                                ])}',
+                            '${'inventory.stock_remaining'.tr(args: ['${item.product.stockQuantity}'])}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -160,9 +155,9 @@ class CartSidebar extends ConsumerWidget {
                                 onPressed: atMaxStock
                                     ? null
                                     : () => cartNotifier.updateQuantity(
-                                          item.product.id,
-                                          1,
-                                        ),
+                                        item.product.id,
+                                        1,
+                                      ),
                                 icon: const Icon(Icons.add_circle_outline),
                                 color: theme.colorScheme.primary,
                               ),
@@ -243,9 +238,9 @@ class CartSidebar extends ConsumerWidget {
     bool isBold = false,
   }) {
     final style = Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-          fontSize: isBold ? 20 : null,
-        );
+      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+      fontSize: isBold ? 20 : null,
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

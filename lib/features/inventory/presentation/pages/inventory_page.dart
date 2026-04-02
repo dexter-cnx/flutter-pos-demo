@@ -53,17 +53,18 @@ class InventoryPage extends ConsumerWidget {
                 );
               }
 
-              final sortedProducts = [...products]..sort((a, b) {
+              final sortedProducts = [...products]
+                ..sort((a, b) {
                   final aRank = a.stockQuantity <= 0
                       ? 0
                       : a.stockQuantity <= threshold
-                          ? 1
-                          : 2;
+                      ? 1
+                      : 2;
                   final bRank = b.stockQuantity <= 0
                       ? 0
                       : b.stockQuantity <= threshold
-                          ? 1
-                          : 2;
+                      ? 1
+                      : 2;
                   if (aRank != bRank) return aRank.compareTo(bRank);
                   return a.name.compareTo(b.name);
                 });
@@ -82,9 +83,9 @@ class InventoryPage extends ConsumerWidget {
                         data: (count) => count == 0
                             ? const SizedBox.shrink()
                             : Card(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.tertiaryContainer,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16),
                                   child: Row(
@@ -147,10 +148,7 @@ class InventoryPage extends ConsumerWidget {
 }
 
 class _InventoryCard extends ConsumerWidget {
-  const _InventoryCard({
-    required this.product,
-    required this.threshold,
-  });
+  const _InventoryCard({required this.product, required this.threshold});
 
   final Product product;
   final int threshold;
@@ -206,8 +204,9 @@ class _InventoryCard extends ConsumerWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -215,30 +214,50 @@ class _InventoryCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     product.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 if (isOutOfStock)
-                  Chip(label: Text('inventory.out_of_stock'.tr()))
+                  Chip(
+                    label: Text('inventory.out_of_stock'.tr()),
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  )
                 else if (isLowStock)
-                  Chip(label: Text('inventory.low_stock'.tr())),
+                  Chip(
+                    label: Text('inventory.low_stock'.tr()),
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text('${product.sku} • \u0E3F${product.price.toStringAsFixed(2)}'),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Text(
-              'inventory.stock_remaining'
-                  .tr(args: ['${product.stockQuantity}']),
+              '${product.sku} • \u0E3F${product.price.toStringAsFixed(2)}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            const Spacer(),
+            const SizedBox(height: 8),
+            Text(
+              'inventory.stock_remaining'.tr(
+                args: ['${product.stockQuantity}'],
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 10),
             FilledButton.icon(
               onPressed: () => _showRestockDialog(context, ref),
               icon: const Icon(Icons.add_box_outlined),
               label: Text('inventory.restock'.tr()),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(44),
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
             ),
           ],
         ),

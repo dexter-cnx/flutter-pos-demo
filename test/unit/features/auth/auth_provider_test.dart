@@ -16,7 +16,9 @@ void main() {
 
     test('starts unauthenticated', () {
       expect(
-          container.read(authNotifierProvider), const AsyncData<String?>(null));
+        container.read(authNotifierProvider),
+        const AsyncData<String?>(null),
+      );
     });
 
     test('logs in with any 4-digit pin', () {
@@ -29,20 +31,14 @@ void main() {
       container.read(authNotifierProvider.notifier).login('999');
 
       expect(container.read(authNotifierProvider).hasError, isTrue);
-      expect(
-        container.read(authNotifierProvider).error,
-        'Invalid PIN',
-      );
+      expect(container.read(authNotifierProvider).error, 'Invalid PIN');
     });
 
     test('returns error with non-numeric pin', () {
       container.read(authNotifierProvider.notifier).login('12a4');
 
       expect(container.read(authNotifierProvider).hasError, isTrue);
-      expect(
-        container.read(authNotifierProvider).error,
-        'Invalid PIN',
-      );
+      expect(container.read(authNotifierProvider).error, 'Invalid PIN');
     });
 
     test('logout resets auth state', () {
@@ -52,7 +48,9 @@ void main() {
       notifier.logout();
 
       expect(
-          container.read(authNotifierProvider), const AsyncData<String?>(null));
+        container.read(authNotifierProvider),
+        const AsyncData<String?>(null),
+      );
     });
   });
 }

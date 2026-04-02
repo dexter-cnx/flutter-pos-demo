@@ -29,8 +29,10 @@ class DataSeeder {
   }
 
   static Future<void> _upgradeUsers(Isar isar) async {
-    final admin =
-        await isar.userModels.where().usernameEqualTo('admin').findFirst();
+    final admin = await isar.userModels
+        .where()
+        .usernameEqualTo('admin')
+        .findFirst();
     if (admin == null || admin.displayName == 'ผู้ดูแลระบบเดโม') return;
 
     admin.displayName = 'ผู้ดูแลระบบเดโม';
@@ -210,10 +212,7 @@ class DataSeeder {
 }
 
 class _CategorySeed {
-  const _CategorySeed({
-    required this.sortOrder,
-    required this.name,
-  });
+  const _CategorySeed({required this.sortOrder, required this.name});
 
   final int sortOrder;
   final String name;

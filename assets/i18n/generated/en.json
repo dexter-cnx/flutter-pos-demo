@@ -5,7 +5,21 @@
   "login": {
     "title": "Please enter PIN",
     "subtitle": "Standard Thai POS",
-    "demo_hint": "Demo mode: enter any 4-digit PIN"
+    "demo_hint": "Demo mode: enter any 4-digit PIN",
+    "landscape_title": "Tablet POS Login",
+    "landscape_subtitle": "Use the keypad on the right to sign in quickly at the counter.",
+    "feature_fast_pin": {
+      "title": "Fast PIN entry",
+      "body": "Enter any 4-digit PIN to continue. The keypad is sized for touch-first POS workflows."
+    },
+    "feature_pos_ready": {
+      "title": "POS-ready layout",
+      "body": "The login screen uses the extra width in landscape mode instead of squeezing everything into the center."
+    },
+    "feature_demo": {
+      "title": "Demo mode",
+      "body": "Use any 4-digit numeric PIN to enter the app and explore the flow safely."
+    }
   },
   "dashboard": {
     "title": "Dashboard"
@@ -85,6 +99,7 @@
     "confirm": "Confirm",
     "total": "Total",
     "back": "Back",
+    "backspace": "Backspace",
     "retry": "Retry",
     "loading": "Loading...",
     "error_title": "Something went wrong"

@@ -70,7 +70,9 @@ void main() {
 
       expect(repository.savedProfile, updatedProfile);
       expect(
-          container.read(settingsControllerProvider), isA<AsyncData<void>>());
+        container.read(settingsControllerProvider),
+        isA<AsyncData<void>>(),
+      );
       expect(
         await container
             .read(storeProfileProvider.future)

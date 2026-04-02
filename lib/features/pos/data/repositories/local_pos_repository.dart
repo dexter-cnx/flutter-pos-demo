@@ -15,8 +15,10 @@ class LocalPosRepository implements PosRepository {
     final database = isar;
     if (database == null) return [];
 
-    final categories =
-        await database.categoryModels.where().sortBySortOrder().findAll();
+    final categories = await database.categoryModels
+        .where()
+        .sortBySortOrder()
+        .findAll();
     return categories.map(_mapCategory).toList();
   }
 
@@ -36,8 +38,9 @@ class LocalPosRepository implements PosRepository {
 
     final sorted = filtered.toList()
       ..sort((a, b) {
-        final categoryCompare = (a.category.value?.sortOrder ?? 0)
-            .compareTo(b.category.value?.sortOrder ?? 0);
+        final categoryCompare = (a.category.value?.sortOrder ?? 0).compareTo(
+          b.category.value?.sortOrder ?? 0,
+        );
         if (categoryCompare != 0) return categoryCompare;
         return a.name.compareTo(b.name);
       });

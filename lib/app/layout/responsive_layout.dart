@@ -1,10 +1,7 @@
 import 'package:flutter/rendering.dart';
 
 class ResponsiveLayout {
-  const ResponsiveLayout._({
-    required this.width,
-    required this.height,
-  });
+  const ResponsiveLayout._({required this.width, required this.height});
 
   factory ResponsiveLayout.fromConstraints(BoxConstraints constraints) {
     final width = constraints.maxWidth.isFinite ? constraints.maxWidth : 1.0;
@@ -47,9 +44,9 @@ class ResponsiveLayout {
   }
 
   double get inventoryCardAspectRatio {
-    if (inventoryGridCount == 1) return isBalanced ? 2.5 : 2.8;
-    if (inventoryGridCount == 2) return 2.05;
-    return 1.95;
+    if (inventoryGridCount == 1) return isBalanced ? 2.15 : 2.35;
+    if (inventoryGridCount == 2) return 1.7;
+    return 1.68;
   }
 
   int get settingsColumnCount {

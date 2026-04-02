@@ -33,7 +33,9 @@ void main() {
     });
 
     test('does not save order when cart is empty', () async {
-      final id = await container.read(orderHistoryProvider.notifier).saveOrder(
+      final id = await container
+          .read(orderHistoryProvider.notifier)
+          .saveOrder(
             cartState: const CartState(),
             method: PaymentMethod.cash,
             receivedAmount: 0,
@@ -43,28 +45,32 @@ void main() {
       expect(id, isNull);
     });
 
-    test('does not save order when database is unavailable even with items',
-        () async {
-      final product = Product(
-        id: 'p1',
-        name: 'Pad Thai',
-        price: 85,
-        sku: 'MAIN-001',
-        stockQuantity: 10,
-      );
-      final cartState = CartState(
-        items: [CartItem(product: product, quantity: 2)],
-      );
+    test(
+      'does not save order when database is unavailable even with items',
+      () async {
+        final product = Product(
+          id: 'p1',
+          name: 'Pad Thai',
+          price: 85,
+          sku: 'MAIN-001',
+          stockQuantity: 10,
+        );
+        final cartState = CartState(
+          items: [CartItem(product: product, quantity: 2)],
+        );
 
-      final id = await container.read(orderHistoryProvider.notifier).saveOrder(
-            cartState: cartState,
-            method: PaymentMethod.qr,
-            receivedAmount: cartState.total,
-            changeAmount: 0,
-          );
+        final id = await container
+            .read(orderHistoryProvider.notifier)
+            .saveOrder(
+              cartState: cartState,
+              method: PaymentMethod.qr,
+              receivedAmount: cartState.total,
+              changeAmount: 0,
+            );
 
-      expect(id, isNull);
-    });
+        expect(id, isNull);
+      },
+    );
 
     test('clearOrders completes safely when database is unavailable', () async {
       await container.read(orderHistoryProvider.notifier).clearOrders();

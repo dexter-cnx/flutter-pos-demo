@@ -2,11 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AppLoadingState extends StatelessWidget {
-  const AppLoadingState({
-    super.key,
-    this.message,
-    this.compact = false,
-  });
+  const AppLoadingState({super.key, this.message, this.compact = false});
 
   final String? message;
   final bool compact;
@@ -156,10 +152,7 @@ class AppEmptyState extends StatelessWidget {
               ),
               if (actionLabel != null && onAction != null) ...[
                 SizedBox(height: spacing),
-                FilledButton(
-                  onPressed: onAction,
-                  child: Text(actionLabel!),
-                ),
+                FilledButton(onPressed: onAction, child: Text(actionLabel!)),
               ],
             ],
           ),

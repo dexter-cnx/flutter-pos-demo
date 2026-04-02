@@ -7,10 +7,7 @@ import 'package:thai_pos_demo/features/pos/presentation/providers/pos_providers.
 import 'package:thai_pos_demo/features/settings/presentation/providers/settings_providers.dart';
 
 class _FakePosRepository implements PosRepository {
-  _FakePosRepository({
-    required this.categories,
-    required this.products,
-  });
+  _FakePosRepository({required this.categories, required this.products});
 
   final List<Category> categories;
   final List<Product> products;
@@ -40,10 +37,7 @@ class _FakePosRepository implements PosRepository {
 }
 
 class _RestockCall {
-  const _RestockCall({
-    required this.productId,
-    required this.quantity,
-  });
+  const _RestockCall({required this.productId, required this.quantity});
 
   final String productId;
   final int quantity;
@@ -110,17 +104,22 @@ void main() {
       expect(count, 1);
     });
 
-    test('inventory actions delegate to repository and invalidate state',
-        () async {
-      final notifier = container.read(inventoryActionsProvider.notifier);
+    test(
+      'inventory actions delegate to repository and invalidate state',
+      () async {
+        final notifier = container.read(inventoryActionsProvider.notifier);
 
-      await notifier.deductStock({'p1': 2});
-      await notifier.restockProduct('p2', 4);
+        await notifier.deductStock({'p1': 2});
+        await notifier.restockProduct('p2', 4);
 
-      expect(repository.lastDeducted, {'p1': 2});
-      expect(repository.lastRestocked?.productId, 'p2');
-      expect(repository.lastRestocked?.quantity, 4);
-      expect(container.read(inventoryActionsProvider), isA<AsyncData<void>>());
-    });
+        expect(repository.lastDeducted, {'p1': 2});
+        expect(repository.lastRestocked?.productId, 'p2');
+        expect(repository.lastRestocked?.quantity, 4);
+        expect(
+          container.read(inventoryActionsProvider),
+          isA<AsyncData<void>>(),
+        );
+      },
+    );
   });
 }

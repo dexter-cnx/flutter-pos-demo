@@ -109,22 +109,24 @@ void main() {
       expect(container.read(cartProvider), const CartState());
     });
 
-    test('restores cart draft from shared preferences when isar is unavailable',
-        () async {
-      SharedPreferences.setMockInitialValues({
-        'web_cart_draft_v1':
-            '{"taxRate":0.07,"items":[{"quantity":2,"product":{"id":"1","name":"Product 1","price":50.0,"sku":"SKU-1","stockQuantity":10,"isAvailable":true,"imageUrl":null}}]}',
-      });
-      sharedPreferences = await SharedPreferences.getInstance();
+    test(
+      'restores cart draft from shared preferences when isar is unavailable',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'web_cart_draft_v1':
+              '{"taxRate":0.07,"items":[{"quantity":2,"product":{"id":"1","name":"Product 1","price":50.0,"sku":"SKU-1","stockQuantity":10,"isAvailable":true,"imageUrl":null}}]}',
+        });
+        sharedPreferences = await SharedPreferences.getInstance();
 
-      final webContainer = ProviderContainer();
-      addTearDown(webContainer.dispose);
+        final webContainer = ProviderContainer();
+        addTearDown(webContainer.dispose);
 
-      final state = webContainer.read(cartProvider);
-      expect(state.items, hasLength(1));
-      expect(state.items.first.quantity, 2);
-      expect(state.items.first.product.name, 'Product 1');
-    });
+        final state = webContainer.read(cartProvider);
+        expect(state.items, hasLength(1));
+        expect(state.items.first.quantity, 2);
+        expect(state.items.first.product.name, 'Product 1');
+      },
+    );
 
     test('persists cart draft to shared preferences on web path', () async {
       SharedPreferences.setMockInitialValues({});

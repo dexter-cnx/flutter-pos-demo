@@ -13,8 +13,9 @@ String _$cartHash() => r'36ba732f32b36412062609c506e958d5d9d441a7';
 final cartProvider = AutoDisposeNotifierProvider<Cart, CartState>.internal(
   Cart.new,
   name: r'cartProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$cartHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$cartHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

@@ -76,17 +76,21 @@ class SharedPrefsPosRepository implements PosRepository {
     }
 
     await prefs.setString(
-        _categoriesKey, jsonEncode(_encodeCategories(_defaultCategories)));
+      _categoriesKey,
+      jsonEncode(_encodeCategories(_defaultCategories)),
+    );
     await prefs.setString(
-        _productsKey, jsonEncode(_encodeProducts(_defaultProducts)));
+      _productsKey,
+      jsonEncode(_encodeProducts(_defaultProducts)),
+    );
   }
 
   List<Category> _readCategories(SharedPreferences prefs) {
     final raw = prefs.getString(_categoriesKey);
     if (raw == null || raw.isEmpty) return _defaultCategories;
 
-    final decoded =
-        (jsonDecode(raw) as List<dynamic>).cast<Map<String, dynamic>>();
+    final decoded = (jsonDecode(raw) as List<dynamic>)
+        .cast<Map<String, dynamic>>();
     return decoded.map(_decodeCategory).toList()
       ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
   }
@@ -98,14 +102,16 @@ class SharedPrefsPosRepository implements PosRepository {
     final categoriesById = {
       for (final category in _readCategories(prefs)) category.id: category,
     };
-    final decoded =
-        (jsonDecode(raw) as List<dynamic>).cast<Map<String, dynamic>>();
-    final products =
-        decoded.map((json) => _decodeProduct(json, categoriesById)).toList();
+    final decoded = (jsonDecode(raw) as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    final products = decoded
+        .map((json) => _decodeProduct(json, categoriesById))
+        .toList();
 
     products.sort((a, b) {
-      final categoryCompare =
-          (a.category?.sortOrder ?? 0).compareTo(b.category?.sortOrder ?? 0);
+      final categoryCompare = (a.category?.sortOrder ?? 0).compareTo(
+        b.category?.sortOrder ?? 0,
+      );
       if (categoryCompare != 0) return categoryCompare;
       return a.name.compareTo(b.name);
     });
