@@ -4,7 +4,8 @@
   },
   "login": {
     "title": "กดยืนยันรหัส PIN",
-    "subtitle": "ระบบ POS ร้านค้าไทย"
+    "subtitle": "ระบบ POS ร้านค้าไทย",
+    "demo_hint": "โหมดเดโม: กรอก PIN ตัวเลข 4 หลักอะไรก็ได้"
   },
   "dashboard": {
     "title": "แดชบอร์ด"

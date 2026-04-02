@@ -2,6 +2,7 @@ key,en,th
 app.title,Thai POS Demo,ระบบขายหน้าร้าน
 login.title,Please enter PIN,กดยืนยันรหัส PIN
 login.subtitle,Standard Thai POS,ระบบ POS ร้านค้าไทย
+login.demo_hint,Demo mode: enter any 4-digit PIN,โหมดเดโม: กรอก PIN ตัวเลข 4 หลักอะไรก็ได้
 dashboard.title,Dashboard,แดชบอร์ด
 pos.title,Point of Sale,ขายหน้าร้าน
 inventory.title,Inventory,คลังสินค้า

@@ -11,8 +11,9 @@ class AuthNotifier extends _$AuthNotifier {
 
   void login(String pin) {
     state = const AsyncValue.loading();
-    // Simulate PIN check
-    if (pin == '1234') {
+    final isValidPin = RegExp(r'^\d{4}$').hasMatch(pin);
+
+    if (isValidPin) {
       state = const AsyncValue.data('admin');
     } else {
       state = AsyncValue.error('Invalid PIN', StackTrace.current);

@@ -4,7 +4,8 @@
   },
   "login": {
     "title": "Please enter PIN",
-    "subtitle": "Standard Thai POS"
+    "subtitle": "Standard Thai POS",
+    "demo_hint": "Demo mode: enter any 4-digit PIN"
   },
   "dashboard": {
     "title": "Dashboard"

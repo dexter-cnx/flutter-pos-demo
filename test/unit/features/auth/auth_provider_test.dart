@@ -19,14 +19,24 @@ void main() {
           container.read(authNotifierProvider), const AsyncData<String?>(null));
     });
 
-    test('logs in with valid pin', () {
-      container.read(authNotifierProvider.notifier).login('1234');
+    test('logs in with any 4-digit pin', () {
+      container.read(authNotifierProvider.notifier).login('9876');
 
       expect(container.read(authNotifierProvider).value, 'admin');
     });
 
-    test('returns error with invalid pin', () {
-      container.read(authNotifierProvider.notifier).login('9999');
+    test('returns error with non-4-digit pin', () {
+      container.read(authNotifierProvider.notifier).login('999');
+
+      expect(container.read(authNotifierProvider).hasError, isTrue);
+      expect(
+        container.read(authNotifierProvider).error,
+        'Invalid PIN',
+      );
+    });
+
+    test('returns error with non-numeric pin', () {
+      container.read(authNotifierProvider.notifier).login('12a4');
 
       expect(container.read(authNotifierProvider).hasError, isTrue);
       expect(
