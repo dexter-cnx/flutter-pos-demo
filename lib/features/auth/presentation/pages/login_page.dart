@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../app/l10n/localization.dart';
 import '../../../../app/layout/responsive_layout.dart';
 import '../providers/auth_provider.dart';
 
@@ -74,6 +75,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children:
+                              AppLocalization.supportedLocales.map((locale) {
+                            final isSelected = context.locale.languageCode ==
+                                locale.languageCode;
+                            final label = locale.languageCode == 'th'
+                                ? 'settings.language_th'.tr()
+                                : 'settings.language_en'.tr();
+                            return ChoiceChip(
+                              label: Text(label),
+                              selected: isSelected,
+                              onSelected: (_) => context.setLocale(locale),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      SizedBox(height: compact ? 20 : 28),
                       Text(
                         'app.title'.tr(),
                         textAlign: TextAlign.center,
