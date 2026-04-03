@@ -30,7 +30,7 @@ jobs:
           flutter pub get
 
       - name: Build Flutter Web
-        run: flutter build web --release --base-href "/flutter-pos-demo/" --no-wasm
+        run: flutter build web --release --base-href "/flutter-pos-demo/"
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
