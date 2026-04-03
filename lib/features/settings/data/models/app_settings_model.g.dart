@@ -15,7 +15,7 @@ extension GetAppSettingsModelCollection on Isar {
 
 const AppSettingsModelSchema = CollectionSchema(
   name: r'app_settings',
-  id: -3593348448108620041,
+  id: -(3593348448 * 1000000000 + 108620041),
   properties: {
     r'lowStockThreshold': PropertySchema(
       id: 0,
