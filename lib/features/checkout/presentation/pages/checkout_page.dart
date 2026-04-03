@@ -20,6 +20,7 @@ import '../../../printer/presentation/providers/printer_providers.dart';
 import '../../../printer/domain/entities/printer_status.dart';
 import '../../../payment/domain/entities/payment_method.dart';
 import '../../../payment/domain/entities/payment_status.dart';
+import '../../../dining/presentation/providers/dining_providers.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -120,6 +121,21 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     await ref.read(inventoryActionsProvider.notifier).deductStock({
       for (final item in cartState.items) item.product.id: item.quantity,
     });
+    if (!context.mounted) return;
+
+    // Handle Restaurant Session Cleanup
+    if (cartState.sessionId != null) {
+      final session = ref.read(activeDiningSessionProvider(cartState.sessionId!)).value;
+      if (session != null) {
+        await ref.read(diningSessionsNotifierProvider.notifier).checkoutSession(
+              cartState.sessionId!,
+              session.tableId,
+            );
+        // Clear active session to return to table selection
+        ref.read(activeDiningSessionIdProvider.notifier).set(null);
+      }
+    }
+
     if (!context.mounted) return;
 
     ref.read(cartProvider.notifier).clearCart();

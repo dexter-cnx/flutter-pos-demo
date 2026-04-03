@@ -105,14 +105,13 @@ class RetailPricingEngine implements OrderPricingEngine {
   const RetailPricingEngine();
 
   @override
-  double calculateSubtotal(List<dynamic> items) {
-    // Current retail logic: sum of (price * quantity)
-    // items expected to be List<CartItem>
+  double calculateSubtotal(List<dynamic> items, {Map<String, dynamic>? metadata}) {
     return items.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
   }
 
   @override
   double calculateTax(double subtotal, double taxRate) {
+    // Standard Thai VAT 7%
     return subtotal * taxRate;
   }
 

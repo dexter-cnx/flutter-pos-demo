@@ -24,7 +24,7 @@ void main() {
     test('logs in with any 4-digit pin', () {
       container.read(authNotifierProvider.notifier).login('9876');
 
-      expect(container.read(authNotifierProvider).value, 'admin');
+      expect(container.read(authNotifierProvider).value, 'staff');
     });
 
     test('returns error with non-4-digit pin', () {

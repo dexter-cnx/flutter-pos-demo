@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../app/mode/current_mode_provider.dart';
 import '../../../../app/bootstrap.dart';
 import '../../domain/entities/product.dart';
+import '../../../dining/presentation/providers/dining_providers.dart';
+import '../../../orders/data/models/order_model.dart';
 
 part 'cart_provider.freezed.dart';
 part 'cart_provider.g.dart';
@@ -23,6 +25,7 @@ class CartState with _$CartState {
     @Default(0.0) double subtotal,
     @Default(0.0) double taxAmount,
     @Default(0.0) double total,
+    int? sessionId,
   }) = _CartState;
 
   const CartState._();
@@ -36,11 +39,46 @@ class Cart extends _$Cart {
 
   @override
   CartState build() {
+    final sessionId = ref.watch(activeDiningSessionIdProvider);
+    
+    if (sessionId != null) {
+      // In Restaurant Mode - Sync with session
+      final sessionAsync = ref.watch(activeDiningSessionProvider(sessionId));
+      
+      return sessionAsync.maybeWhen(
+        data: (session) {
+          if (session == null) return const CartState();
+          
+          final items = session.items.map((m) => CartItem(
+            product: Product(
+              id: m.sku,
+              name: m.productName,
+              price: m.unitPrice,
+              sku: m.sku,
+              stockQuantity: 999,
+              isAvailable: true,
+            ),
+            quantity: m.quantity,
+          )).toList();
+
+          return CartState(
+            items: items,
+            taxRate: 0.07,
+            subtotal: session.subtotal,
+            taxAmount: session.taxAmount,
+            total: session.total,
+            sessionId: sessionId,
+          );
+        },
+        orElse: () => state.sessionId == sessionId ? state : const CartState(),
+      );
+    }
+
     return _restoreDraft();
   }
 
   void addItem(Product product) {
-    if (!product.isAvailable || product.stockQuantity <= 0) return;
+    if (!product.isAvailable) return;
 
     final existingIndex = state.items.indexWhere(
       (item) => item.product.id == product.id,
@@ -48,64 +86,76 @@ class Cart extends _$Cart {
     
     List<CartItem> updatedItems;
     if (existingIndex != -1) {
-      final nextQuantity = state.items[existingIndex].quantity + 1;
-      if (nextQuantity > product.stockQuantity) return;
-
+      final currentQuantity = state.items[existingIndex].quantity;
+      if (currentQuantity >= product.stockQuantity) return;
+      
       updatedItems = List<CartItem>.from(state.items);
       updatedItems[existingIndex] = updatedItems[existingIndex].copyWith(
-        quantity: nextQuantity,
+        quantity: currentQuantity + 1,
       );
     } else {
-      updatedItems = [
-        ...state.items,
-        CartItem(product: product),
-      ];
+      if (product.stockQuantity <= 0) return;
+      updatedItems = [...state.items, CartItem(product: product)];
     }
 
-    state = _applyCalculations(state.copyWith(items: updatedItems));
-    _persistDraft();
+    _updateStateAndPersist(state.copyWith(items: updatedItems));
   }
 
   void removeItem(String productId) {
-    state = _applyCalculations(state.copyWith(
+    _updateStateAndPersist(state.copyWith(
       items: state.items.where((item) => item.product.id != productId).toList(),
     ));
-    _persistDraft();
   }
 
   void updateQuantity(String productId, int delta) {
-    final itemIndex = state.items.indexWhere(
-      (item) => item.product.id == productId,
-    );
+    final itemIndex = state.items.indexWhere((item) => item.product.id == productId);
     if (itemIndex == -1) return;
 
-    final currentQuantity = state.items[itemIndex].quantity;
-    final newQuantity = currentQuantity + delta;
-
+    final item = state.items[itemIndex];
+    final newQuantity = item.quantity + delta;
+    
     if (newQuantity <= 0) {
       removeItem(productId);
-    } else if (newQuantity > state.items[itemIndex].product.stockQuantity) {
+    } else if (newQuantity > item.product.stockQuantity) {
       return;
     } else {
       final updatedItems = List<CartItem>.from(state.items);
-      updatedItems[itemIndex] = updatedItems[itemIndex].copyWith(
-        quantity: newQuantity,
-      );
-      state = _applyCalculations(state.copyWith(items: updatedItems));
-      _persistDraft();
+      updatedItems[itemIndex] = updatedItems[itemIndex].copyWith(quantity: newQuantity);
+      _updateStateAndPersist(state.copyWith(items: updatedItems));
     }
   }
 
   void clearCart() {
-    state = _applyCalculations(const CartState());
-    _persistDraft();
+    _updateStateAndPersist(const CartState());
+  }
+
+  void _updateStateAndPersist(CartState newState) {
+    final calculatedState = _applyCalculations(newState);
+    state = calculatedState;
+
+    if (state.sessionId != null) {
+      _syncWithSession();
+    } else {
+      _persistDraft();
+    }
   }
 
   CartState _applyCalculations(CartState currentState) {
     final modeDef = ref.read(currentModeDefinitionProvider);
     final engine = modeDef.pricingEngine;
 
-    final subtotal = engine.calculateSubtotal(currentState.items);
+    Map<String, dynamic>? metadata;
+    if (currentState.sessionId != null) {
+      final session = ref.read(activeDiningSessionProvider(currentState.sessionId!)).value;
+      if (session != null) {
+        metadata = {
+          'headcount': session.headcount,
+          'buffetPrice': 0.0,
+        };
+      }
+    }
+
+    final subtotal = engine.calculateSubtotal(currentState.items, metadata: metadata);
     final taxAmount = engine.calculateTax(subtotal, currentState.taxRate);
     final total = engine.calculateTotal(subtotal, taxAmount);
 
@@ -115,6 +165,28 @@ class Cart extends _$Cart {
       total: total,
     );
   }
+
+  Future<void> _syncWithSession() async {
+    if (state.sessionId == null) return;
+
+    final items = state.items.map((item) => OrderItemModel()
+      ..sku = item.product.id
+      ..productName = item.product.name
+      ..unitPrice = item.product.price
+      ..quantity = item.quantity
+      ..lineTotal = item.product.price * item.quantity
+    ).toList();
+
+    await ref.read(diningSessionRepositoryProvider).updateItems(
+      state.sessionId!,
+      items,
+      state.subtotal,
+      state.taxAmount,
+      state.total,
+    );
+  }
+
+  // --- Draft Persistence ---
 
   CartState _restoreDraft() {
     final prefs = sharedPreferences;
@@ -129,8 +201,7 @@ class Cart extends _$Cart {
           .whereType<Map<String, dynamic>>()
           .map(_decodeCartItem)
           .toList();
-      final taxRate = (decoded['taxRate'] as num?)?.toDouble() ?? 0.07;
-      return _applyCalculations(CartState(items: items, taxRate: taxRate));
+      return _applyCalculations(CartState(items: items));
     } catch (_) {
       return _applyCalculations(const CartState());
     }
@@ -146,7 +217,6 @@ class Cart extends _$Cart {
     }
 
     final payload = {
-      'taxRate': state.taxRate,
       'items': state.items.map(_encodeCartItem).toList(),
     };
     prefs.setString(_webCartDraftKey, jsonEncode(payload));
@@ -159,26 +229,20 @@ class Cart extends _$Cart {
         'id': item.product.id,
         'name': item.product.name,
         'price': item.product.price,
-        'sku': item.product.sku,
-        'stockQuantity': item.product.stockQuantity,
-        'isAvailable': item.product.isAvailable,
-        'imageUrl': item.product.imageUrl,
       },
     };
   }
 
   CartItem _decodeCartItem(Map<String, dynamic> json) {
-    final productJson = json['product'] as Map<String, dynamic>? ?? const {};
+    final p = json['product'] as Map<String, dynamic>? ?? const {};
     return CartItem(
       quantity: json['quantity'] as int? ?? 1,
       product: Product(
-        id: productJson['id'] as String? ?? '',
-        name: productJson['name'] as String? ?? '',
-        price: (productJson['price'] as num?)?.toDouble() ?? 0,
-        sku: productJson['sku'] as String? ?? '',
-        stockQuantity: productJson['stockQuantity'] as int? ?? 0,
-        isAvailable: productJson['isAvailable'] as bool? ?? true,
-        imageUrl: productJson['imageUrl'] as String?,
+        id: p['id'] as String? ?? '',
+        name: p['name'] as String? ?? '',
+        price: (p['price'] as num?)?.toDouble() ?? 0,
+        sku: '',
+        stockQuantity: 999,
       ),
     );
   }

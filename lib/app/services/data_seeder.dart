@@ -6,6 +6,7 @@ import '../../features/auth/data/models/user_model.dart';
 import '../../features/pos/data/models/category_model.dart';
 import '../../features/pos/data/models/product_model.dart';
 import '../../features/settings/data/models/app_settings_model.dart';
+import '../../features/tables/data/models/table_model.dart';
 
 class DataSeeder {
   static Future<void> seed(Isar isar) async {
@@ -26,6 +27,43 @@ class DataSeeder {
 
     await _seedOrUpgradeCatalog(isar);
     await _seedSettings(isar);
+    await _seedTables(isar);
+  }
+
+  static Future<void> _seedTables(Isar isar) async {
+    final count = await isar.tableModels.count();
+    if (count > 0) return;
+
+    await isar.writeTxn(() async {
+      final tables = [
+        TableModel()
+          ..name = 'Table 1'
+          ..capacity = 2
+          ..status = 'available',
+        TableModel()
+          ..name = 'Table 2'
+          ..capacity = 2
+          ..status = 'available',
+        TableModel()
+          ..name = 'Table 3'
+          ..capacity = 4
+          ..status = 'available',
+        TableModel()
+          ..name = 'Table 4'
+          ..capacity = 4
+          ..status = 'available',
+        TableModel()
+          ..name = 'Table 5'
+          ..capacity = 6
+          ..status = 'available',
+        TableModel()
+          ..name = 'VIP 1'
+          ..capacity = 8
+          ..status = 'available'
+          ..floor = '2nd Floor',
+      ];
+      await isar.tableModels.putAll(tables);
+    });
   }
 
   static Future<void> _upgradeUsers(Isar isar) async {

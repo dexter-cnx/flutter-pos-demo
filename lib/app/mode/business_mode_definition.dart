@@ -31,7 +31,7 @@ abstract class BusinessModeDefinition {
 
 /// Interface for mode-specific pricing logic (Retail vs Restaurant vs Cafe).
 abstract class OrderPricingEngine {
-  double calculateSubtotal(List<dynamic> items);
+  double calculateSubtotal(List<dynamic> items, {Map<String, dynamic>? metadata});
   double calculateTax(double subtotal, double taxRate);
   double calculateTotal(double subtotal, double taxAmount);
 }

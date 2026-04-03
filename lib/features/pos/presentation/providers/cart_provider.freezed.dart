@@ -169,6 +169,7 @@ mixin _$CartState {
   double get subtotal => throw _privateConstructorUsedError;
   double get taxAmount => throw _privateConstructorUsedError;
   double get total => throw _privateConstructorUsedError;
+  int? get sessionId => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CartStateCopyWith<CartState> get copyWith =>
@@ -185,7 +186,8 @@ abstract class $CartStateCopyWith<$Res> {
       double taxRate,
       double subtotal,
       double taxAmount,
-      double total});
+      double total,
+      int? sessionId});
 }
 
 /// @nodoc
@@ -206,6 +208,7 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
     Object? subtotal = null,
     Object? taxAmount = null,
     Object? total = null,
+    Object? sessionId = freezed,
   }) {
     return _then(_value.copyWith(
       items: null == items
@@ -228,6 +231,10 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as double,
+      sessionId: freezed == sessionId
+          ? _value.sessionId
+          : sessionId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -245,7 +252,8 @@ abstract class _$$CartStateImplCopyWith<$Res>
       double taxRate,
       double subtotal,
       double taxAmount,
-      double total});
+      double total,
+      int? sessionId});
 }
 
 /// @nodoc
@@ -264,6 +272,7 @@ class __$$CartStateImplCopyWithImpl<$Res>
     Object? subtotal = null,
     Object? taxAmount = null,
     Object? total = null,
+    Object? sessionId = freezed,
   }) {
     return _then(_$CartStateImpl(
       items: null == items
@@ -286,6 +295,10 @@ class __$$CartStateImplCopyWithImpl<$Res>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as double,
+      sessionId: freezed == sessionId
+          ? _value.sessionId
+          : sessionId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -298,7 +311,8 @@ class _$CartStateImpl extends _CartState {
       this.taxRate = 0.07,
       this.subtotal = 0.0,
       this.taxAmount = 0.0,
-      this.total = 0.0})
+      this.total = 0.0,
+      this.sessionId})
       : _items = items,
         super._();
 
@@ -323,10 +337,12 @@ class _$CartStateImpl extends _CartState {
   @override
   @JsonKey()
   final double total;
+  @override
+  final int? sessionId;
 
   @override
   String toString() {
-    return 'CartState(items: $items, taxRate: $taxRate, subtotal: $subtotal, taxAmount: $taxAmount, total: $total)';
+    return 'CartState(items: $items, taxRate: $taxRate, subtotal: $subtotal, taxAmount: $taxAmount, total: $total, sessionId: $sessionId)';
   }
 
   @override
@@ -340,7 +356,9 @@ class _$CartStateImpl extends _CartState {
                 other.subtotal == subtotal) &&
             (identical(other.taxAmount, taxAmount) ||
                 other.taxAmount == taxAmount) &&
-            (identical(other.total, total) || other.total == total));
+            (identical(other.total, total) || other.total == total) &&
+            (identical(other.sessionId, sessionId) ||
+                other.sessionId == sessionId));
   }
 
   @override
@@ -350,7 +368,8 @@ class _$CartStateImpl extends _CartState {
       taxRate,
       subtotal,
       taxAmount,
-      total);
+      total,
+      sessionId);
 
   @JsonKey(ignore: true)
   @override
@@ -365,7 +384,8 @@ abstract class _CartState extends CartState {
       final double taxRate,
       final double subtotal,
       final double taxAmount,
-      final double total}) = _$CartStateImpl;
+      final double total,
+      final int? sessionId}) = _$CartStateImpl;
   const _CartState._() : super._();
 
   @override
@@ -378,6 +398,8 @@ abstract class _CartState extends CartState {
   double get taxAmount;
   @override
   double get total;
+  @override
+  int? get sessionId;
   @override
   @JsonKey(ignore: true)
   _$$CartStateImplCopyWith<_$CartStateImpl> get copyWith =>

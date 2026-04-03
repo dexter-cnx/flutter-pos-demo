@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../app/mode/business_mode.dart';
 import '../../app/mode/business_mode_definition.dart';
 import '../../app/mode/feature_capability.dart';
 import '../../app/shell/app_nav_item.dart';
-import '../../features/receipt/domain/services/receipt_composer.dart';
 import '../../features/receipt/domain/services/restaurant_receipt_composer.dart';
+import '../../features/receipt/domain/services/receipt_composer.dart';
 import '../../features/orders/presentation/pages/order_history_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
-import './restaurant_main_page.dart';
+import 'presentation/pages/restaurant_main_page.dart';
+import 'presentation/pages/dining_session_page.dart';
 
-class RestaurantModeDefinition extends BusinessModeDefinition {
+class RestaurantModeDefinition implements BusinessModeDefinition {
+  const RestaurantModeDefinition();
+
   @override
   BusinessMode get mode => BusinessMode.restaurant;
 
@@ -23,37 +25,29 @@ class RestaurantModeDefinition extends BusinessModeDefinition {
 
   @override
   List<FeatureCapability> get capabilities => [
-        FeatureCapability.productCatalog,
-        FeatureCapability.cart, // Buffet / Dining cart
-        FeatureCapability.checkout,
-        FeatureCapability.receipt,
-        FeatureCapability.orderHistory,
-        FeatureCapability.reporting,
-        FeatureCapability.printerSupport,
         FeatureCapability.tableManagement,
         FeatureCapability.diningSession,
         FeatureCapability.headcountPricing,
         FeatureCapability.buffetPricing,
         FeatureCapability.extraChargeItems,
-        FeatureCapability.promptPayPayment,
-        FeatureCapability.cardPayment,
+        FeatureCapability.kitchenTicket,
       ];
 
   @override
   List<AppNavItem> get navItems => [
-        AppNavItem(
+        const AppNavItem(
           label: 'pos.nav.restaurant_tables',
           icon: Icons.table_restaurant_outlined,
           selectedIcon: Icons.table_restaurant,
           location: '/',
         ),
-        AppNavItem(
+        const AppNavItem(
           label: 'pos.nav.history',
           icon: Icons.history_outlined,
           selectedIcon: Icons.history,
           location: '/history',
         ),
-        AppNavItem(
+        const AppNavItem(
           label: 'pos.nav.settings',
           icon: Icons.settings_outlined,
           selectedIcon: Icons.settings,
@@ -66,17 +60,25 @@ class RestaurantModeDefinition extends BusinessModeDefinition {
     return [
       GoRoute(
         path: '/',
-        name: 'restaurant_pos',
+        name: 'restaurant_home',
         builder: (context, state) => const RestaurantMainPage(),
       ),
       GoRoute(
+        path: '/session/:sessionId',
+        name: 'restaurant_session',
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['sessionId'] ?? '');
+          return DiningSessionPage(sessionId: id);
+        },
+      ),
+      GoRoute(
         path: '/history',
-        name: 'history',
+        name: 'restaurant_history',
         builder: (context, state) => const OrderHistoryPage(),
       ),
       GoRoute(
         path: '/settings',
-        name: 'settings',
+        name: 'restaurant_settings',
         builder: (context, state) => const SettingsPage(),
       ),
     ];
@@ -86,39 +88,42 @@ class RestaurantModeDefinition extends BusinessModeDefinition {
   OrderPricingEngine get pricingEngine => const RestaurantPricingEngine();
 
   @override
-  ReceiptComposer get receiptComposer => RestaurantReceiptComposer();
+  ReceiptComposer get receiptComposer => const RestaurantReceiptComposer();
 
   @override
-  SeedDataStrategy get seedDataStrategy => const RestaurantSeedDataStrategy();
+  SeedDataStrategy get seedDataStrategy => const DefaultRestaurantSeedDataStrategy();
+}
+
+class DefaultRestaurantSeedDataStrategy implements SeedDataStrategy {
+  const DefaultRestaurantSeedDataStrategy();
+  
+  @override
+  Future<void> seed() async {
+    // Seeding logic is currently handled in app/services/data_seeder.dart
+  }
 }
 
 class RestaurantPricingEngine implements OrderPricingEngine {
   const RestaurantPricingEngine();
 
   @override
-  double calculateSubtotal(List<dynamic> items) {
-    // Basic sum for now (can expand to buffet/headcount later)
-    return items.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
+  double calculateSubtotal(List<dynamic> items, {Map<String, dynamic>? metadata}) {
+    double subtotal = items.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
+    
+    // Support for buffet/headcount charges via metadata
+    final headcount = (metadata?['headcount'] as int?) ?? 0;
+    final buffetPrice = (metadata?['buffetPrice'] as num?)?.toDouble() ?? 0.0;
+    
+    return subtotal + (headcount * buffetPrice);
   }
 
   @override
   double calculateTax(double subtotal, double taxRate) {
-    // Restaurants sometimes have Service Charge (10%) then VAT (7%)
-    // But for foundation, we stay clean
     return subtotal * taxRate;
   }
 
   @override
   double calculateTotal(double subtotal, double taxAmount) {
     return subtotal + taxAmount;
-  }
-}
-
-class RestaurantSeedDataStrategy implements SeedDataStrategy {
-  const RestaurantSeedDataStrategy();
-
-  @override
-  Future<void> seed() async {
-    // No-op for foundation
   }
 }

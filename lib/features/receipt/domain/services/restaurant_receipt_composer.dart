@@ -6,6 +6,8 @@ import '../services/receipt_composer.dart';
 /// Composes a restaurant receipt document.
 /// Adds table number and service charge if needed.
 class RestaurantReceiptComposer implements ReceiptComposer {
+  const RestaurantReceiptComposer();
+
   @override
   ReceiptDocument compose({
     required OrderModel order,

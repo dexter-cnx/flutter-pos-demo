@@ -5,6 +5,7 @@ import '../services/receipt_composer.dart';
 
 /// Composes a retail receipt document from order data and store profile.
 class RetailReceiptComposer implements ReceiptComposer {
+  const RetailReceiptComposer();
   @override
   ReceiptDocument compose({
     required OrderModel order,

@@ -25,5 +25,13 @@ class OrderModel {
   late double total;
   late double receivedAmount;
   late double changeAmount;
+  
+  late String businessMode; // 'retail' or 'restaurant'
+  
+  // Restaurant specific fields
+  String? tableId;
+  String? tableName;
+  int? headcount;
+
   late List<OrderItemModel> items;
 }

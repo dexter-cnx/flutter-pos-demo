@@ -15,6 +15,8 @@ import '../features/orders/data/models/order_model.dart';
 import '../features/pos/data/models/product_model.dart';
 import '../features/pos/data/models/category_model.dart';
 import '../features/settings/data/models/app_settings_model.dart';
+import '../features/tables/data/models/table_model.dart';
+import '../features/dining/data/models/dining_session_model.dart';
 
 // Global Isar instance
 Isar? isar;
@@ -35,6 +37,8 @@ Future<void> bootstrap({required Widget child}) async {
         ProductModelSchema,
         CategoryModelSchema,
         AppSettingsModelSchema,
+        TableModelSchema,
+        DiningSessionModelSchema,
       ], directory: directory);
 
       // Seed Data
