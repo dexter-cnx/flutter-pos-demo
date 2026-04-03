@@ -1,11 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../mode/current_mode_provider.dart';
 import './app_nav_item.dart';
 
 /// The top-level layout for the application, providing a persistent navigation
 /// sidebar or bottom bar across multiple pages.
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({
     super.key,
     required this.child,
@@ -15,43 +17,12 @@ class AppShell extends StatelessWidget {
   final Widget child;
   final String location;
 
-  static const List<AppNavItem> _navItems = [
-    AppNavItem(
-      label: 'pos.nav.home',
-      icon: Icons.dashboard_outlined,
-      selectedIcon: Icons.dashboard,
-      location: '/home',
-    ),
-    AppNavItem(
-      label: 'pos.nav.sale',
-      icon: Icons.point_of_sale_outlined,
-      selectedIcon: Icons.point_of_sale,
-      location: '/',
-    ),
-    AppNavItem(
-      label: 'pos.nav.history',
-      icon: Icons.history_outlined,
-      selectedIcon: Icons.history,
-      location: '/history',
-    ),
-    AppNavItem(
-      label: 'pos.nav.inventory',
-      icon: Icons.inventory_2_outlined,
-      selectedIcon: Icons.inventory_2,
-      location: '/inventory',
-    ),
-    AppNavItem(
-      label: 'pos.nav.settings',
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
-      location: '/settings',
-    ),
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final definition = ref.watch(currentModeDefinitionProvider);
+    final navItems = definition.navItems;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -64,10 +35,10 @@ class AppShell extends StatelessWidget {
               children: [
                 NavigationRail(
                   extended: constraints.maxWidth >= 900,
-                  backgroundColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-                  selectedIndex: _getSelectedIndex(),
+                  backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                  selectedIndex: _getSelectedIndex(navItems),
                   onDestinationSelected: (index) =>
-                      _onDestinationSelected(context, index),
+                      _onDestinationSelected(context, navItems, index),
                   labelType: constraints.maxWidth >= 900
                       ? NavigationRailLabelType.none
                       : NavigationRailLabelType.all,
@@ -79,7 +50,7 @@ class AppShell extends StatelessWidget {
                       child: Icon(Icons.store, color: colorScheme.onPrimary),
                     ),
                   ),
-                  destinations: _navItems.map((item) {
+                  destinations: navItems.map((item) {
                     return NavigationRailDestination(
                       icon: Icon(item.icon),
                       selectedIcon: Icon(item.selectedIcon),
@@ -98,10 +69,10 @@ class AppShell extends StatelessWidget {
         return Scaffold(
           body: child,
           bottomNavigationBar: NavigationBar(
-            selectedIndex: _getSelectedIndex(),
+            selectedIndex: _getSelectedIndex(navItems),
             onDestinationSelected: (index) =>
-                _onDestinationSelected(context, index),
-            destinations: _navItems.take(4).map((item) {
+                _onDestinationSelected(context, navItems, index),
+            destinations: navItems.map((item) {
               return NavigationDestination(
                 icon: Icon(item.icon),
                 selectedIcon: Icon(item.selectedIcon),
@@ -114,12 +85,12 @@ class AppShell extends StatelessWidget {
     );
   }
 
-  int _getSelectedIndex() {
-    final index = _navItems.indexWhere((item) => location.startsWith(item.location));
+  int _getSelectedIndex(List<AppNavItem> navItems) {
+    final index = navItems.indexWhere((item) => location.startsWith(item.location));
     return index == -1 ? 0 : index;
   }
 
-  void _onDestinationSelected(BuildContext context, int index) {
-    context.go(_navItems[index].location);
+  void _onDestinationSelected(BuildContext context, List<AppNavItem> navItems, int index) {
+    context.go(navItems[index].location);
   }
 }

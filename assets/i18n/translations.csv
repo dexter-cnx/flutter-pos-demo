@@ -203,6 +203,7 @@ pos.nav.sale,New Sale,เริ่มการขาย
 pos.nav.history,History,ประวัติการขาย
 pos.nav.inventory,Inventory,สต็อกสินค้า
 pos.nav.settings,Settings,ตั้งค่า
+pos.nav.restaurant_tables,Tables,โต๊ะอาหาร
 printer.test_print_failed,Test print failed. Check connection.,ทดสอบพิมพ์ล้มเหลว โปรดตรวจสอบการเชื่อมต่อ
 printer.connected_success,Connected to {},เชื่อมต่อกับ {} แล้ว
 printer.connect_failed,Connection failed. Make sure the printer is on and paired.,เชื่อมต่อล้มเหลว โปรดตรวจสอบว่าเครื่องพิมพ์เปิดอยู่และจับคู่ไว้
@@ -214,4 +215,8 @@ printer.print_receipt_title,Print Receipt?,พิมพ์ใบเสร็จ?
 printer.print_receipt_confirm,Would you like to print a receipt for this order?,ต้องการพิมพ์ใบเสร็จสำหรับออเดอร์นี้หรือไม่?
 printer.print,Print,พิมพ์
 printer.print_failed,Printing failed. Check printer connection.,การพิมพ์ล้มเหลว โปรดตรวจสอบการเชื่อมต่อเครื่องพิมพ์
-
+settings.business_mode,Business Mode,โหมดการทำงาน
+settings.business_mode_retail_desc,Simple checkout flow for general products.,ระบบขายสินค้าทั่วไปแบบเรียบง่าย
+settings.business_mode_restaurant_desc,Table-based ordering and restaurant-specific workflows.,ระบบจัดการโต๊ะและงานสำหรับร้านอาหาร
+settings.business_mode_switch_confirm,Switching mode will restart the app navigation. Continue?,การเปลี่ยนโหมดจะเริ่มระบบการนำทางใหม่ ต้องการไปต่อหรือไม่
+settings.business_mode_active,Active,กำลังใช้งาน

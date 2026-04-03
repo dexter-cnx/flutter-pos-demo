@@ -166,6 +166,9 @@ abstract class _CartItem implements CartItem {
 mixin _$CartState {
   List<CartItem> get items => throw _privateConstructorUsedError;
   double get taxRate => throw _privateConstructorUsedError;
+  double get subtotal => throw _privateConstructorUsedError;
+  double get taxAmount => throw _privateConstructorUsedError;
+  double get total => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CartStateCopyWith<CartState> get copyWith =>
@@ -177,7 +180,12 @@ abstract class $CartStateCopyWith<$Res> {
   factory $CartStateCopyWith(CartState value, $Res Function(CartState) then) =
       _$CartStateCopyWithImpl<$Res, CartState>;
   @useResult
-  $Res call({List<CartItem> items, double taxRate});
+  $Res call(
+      {List<CartItem> items,
+      double taxRate,
+      double subtotal,
+      double taxAmount,
+      double total});
 }
 
 /// @nodoc
@@ -195,6 +203,9 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
   $Res call({
     Object? items = null,
     Object? taxRate = null,
+    Object? subtotal = null,
+    Object? taxAmount = null,
+    Object? total = null,
   }) {
     return _then(_value.copyWith(
       items: null == items
@@ -204,6 +215,18 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
       taxRate: null == taxRate
           ? _value.taxRate
           : taxRate // ignore: cast_nullable_to_non_nullable
+              as double,
+      subtotal: null == subtotal
+          ? _value.subtotal
+          : subtotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      taxAmount: null == taxAmount
+          ? _value.taxAmount
+          : taxAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
               as double,
     ) as $Val);
   }
@@ -217,7 +240,12 @@ abstract class _$$CartStateImplCopyWith<$Res>
       __$$CartStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<CartItem> items, double taxRate});
+  $Res call(
+      {List<CartItem> items,
+      double taxRate,
+      double subtotal,
+      double taxAmount,
+      double total});
 }
 
 /// @nodoc
@@ -233,6 +261,9 @@ class __$$CartStateImplCopyWithImpl<$Res>
   $Res call({
     Object? items = null,
     Object? taxRate = null,
+    Object? subtotal = null,
+    Object? taxAmount = null,
+    Object? total = null,
   }) {
     return _then(_$CartStateImpl(
       items: null == items
@@ -243,6 +274,18 @@ class __$$CartStateImplCopyWithImpl<$Res>
           ? _value.taxRate
           : taxRate // ignore: cast_nullable_to_non_nullable
               as double,
+      subtotal: null == subtotal
+          ? _value.subtotal
+          : subtotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      taxAmount: null == taxAmount
+          ? _value.taxAmount
+          : taxAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -251,7 +294,11 @@ class __$$CartStateImplCopyWithImpl<$Res>
 
 class _$CartStateImpl extends _CartState {
   const _$CartStateImpl(
-      {final List<CartItem> items = const [], this.taxRate = 0.07})
+      {final List<CartItem> items = const [],
+      this.taxRate = 0.07,
+      this.subtotal = 0.0,
+      this.taxAmount = 0.0,
+      this.total = 0.0})
       : _items = items,
         super._();
 
@@ -267,10 +314,19 @@ class _$CartStateImpl extends _CartState {
   @override
   @JsonKey()
   final double taxRate;
+  @override
+  @JsonKey()
+  final double subtotal;
+  @override
+  @JsonKey()
+  final double taxAmount;
+  @override
+  @JsonKey()
+  final double total;
 
   @override
   String toString() {
-    return 'CartState(items: $items, taxRate: $taxRate)';
+    return 'CartState(items: $items, taxRate: $taxRate, subtotal: $subtotal, taxAmount: $taxAmount, total: $total)';
   }
 
   @override
@@ -279,12 +335,22 @@ class _$CartStateImpl extends _CartState {
         (other.runtimeType == runtimeType &&
             other is _$CartStateImpl &&
             const DeepCollectionEquality().equals(other._items, _items) &&
-            (identical(other.taxRate, taxRate) || other.taxRate == taxRate));
+            (identical(other.taxRate, taxRate) || other.taxRate == taxRate) &&
+            (identical(other.subtotal, subtotal) ||
+                other.subtotal == subtotal) &&
+            (identical(other.taxAmount, taxAmount) ||
+                other.taxAmount == taxAmount) &&
+            (identical(other.total, total) || other.total == total));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_items), taxRate);
+      runtimeType,
+      const DeepCollectionEquality().hash(_items),
+      taxRate,
+      subtotal,
+      taxAmount,
+      total);
 
   @JsonKey(ignore: true)
   @override
@@ -294,14 +360,24 @@ class _$CartStateImpl extends _CartState {
 }
 
 abstract class _CartState extends CartState {
-  const factory _CartState({final List<CartItem> items, final double taxRate}) =
-      _$CartStateImpl;
+  const factory _CartState(
+      {final List<CartItem> items,
+      final double taxRate,
+      final double subtotal,
+      final double taxAmount,
+      final double total}) = _$CartStateImpl;
   const _CartState._() : super._();
 
   @override
   List<CartItem> get items;
   @override
   double get taxRate;
+  @override
+  double get subtotal;
+  @override
+  double get taxAmount;
+  @override
+  double get total;
   @override
   @JsonKey(ignore: true)
   _$$CartStateImplCopyWith<_$CartStateImpl> get copyWith =>

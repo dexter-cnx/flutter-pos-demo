@@ -1,0 +1,4 @@
+enum BusinessMode {
+  retail,
+  restaurant,
+}

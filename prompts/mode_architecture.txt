@@ -1,0 +1,442 @@
+Read `AGENTS.md` first and follow it strictly.
+
+Task:
+Implement the **business mode architecture foundation** for `flutter-pos-demo` so the app can support multiple business modes in one codebase, starting with:
+- `retail`
+- `restaurant`
+
+This task is about **mode architecture**, not full business feature implementation.
+
+Main objective:
+Create a clean, extensible mode-driven architecture that allows the app to:
+- know which business mode is active
+- expose feature capabilities by mode
+- build navigation and routes by mode
+- plug in pricing and receipt strategies by mode
+- support mode-specific seed data later
+- stay compatible with the existing retail-first demo flow
+
+Important scope rules:
+- Do NOT implement full restaurant features yet
+- Do NOT build full table management, buffet flow, split bill, or kitchen ticket
+- Do NOT move business logic into widgets
+- Do NOT hardcode mode checks throughout the UI
+- Do NOT over-engineer with unnecessary plugin systems
+- Focus on a clean, practical foundation
+
+High-level deliverables:
+1. BusinessMode model
+2. BusinessModeDefinition contract
+3. FeatureCapability system
+4. BusinessModeRegistry
+5. Current active mode provider/state
+6. Mode-aware routing foundation
+7. Mode-aware navigation foundation
+8. Pricing strategy abstraction hook
+9. Receipt strategy abstraction hook
+10. Seed data strategy abstraction hook
+11. Minimal retail + restaurant mode definitions
+
+Architecture constraints:
+- Keep Clean Architecture
+- Keep Riverpod
+- Keep go_router
+- Keep Isar
+- Keep business logic out of widgets
+- Keep current retail flow working
+- Allow future modes such as cafe, clinic, warehouse without major refactor
+- Use capability-based design instead of scattering `if (mode == ...)`
+
+Target folder structure:
+
+lib/
+  app/
+    mode/
+      business_mode.dart
+      business_mode_definition.dart
+      business_mode_registry.dart
+      current_mode_provider.dart
+      feature_capability.dart
+      mode_feature_gate.dart
+    routing/
+      app_router.dart
+      route_registry.dart
+    shell/
+      app_shell.dart
+      app_nav_item.dart
+  modes/
+    retail/
+      retail_mode_definition.dart
+      retail_seed_data.dart
+    restaurant/
+      restaurant_mode_definition.dart
+      restaurant_seed_data.dart
+  shared/
+    domain/
+      entities/
+      value_objects/
+      repositories/
+      services/
+    data/
+    presentation/
+  features/
+    checkout/
+    receipt/
+    settings/
+
+Detailed implementation requirements:
+
+## 1. BusinessMode model
+
+Create a base business mode identity.
+
+Minimum:
+```dart
+enum BusinessMode {
+  retail,
+  restaurant,
+}
+
+Rules:
+
+enum is only the identity, not the whole architecture
+avoid using this enum directly all over the app
+mode behavior must come from definitions/capabilities, not enum switch logic spread everywhere
+2. BusinessModeDefinition contract
+
+Create a contract that defines what each business mode contributes.
+
+Suggested shape:
+
+mode
+id
+displayName
+capabilities
+navItems
+buildRoutes()
+pricingEngine
+receiptComposer
+seedDataStrategy
+
+Example intent:
+
+abstract class BusinessModeDefinition {
+  BusinessMode get mode;
+  String get id;
+  String get displayName;
+
+  List<FeatureCapability> get capabilities;
+  List<AppNavItem> get navItems;
+  List<RouteBase> buildRoutes();
+
+  OrderPricingEngine get pricingEngine;
+  ReceiptComposer get receiptComposer;
+  SeedDataStrategy get seedDataStrategy;
+}
+
+Rules:
+
+keep this clean and practical
+no plugin-heavy over-engineering
+this contract is the main extension point for future modes
+3. FeatureCapability system
+
+Create a capability-based feature model.
+
+Suggested capabilities:
+
+productCatalog
+cart
+checkout
+receipt
+orderHistory
+reporting
+inventoryTracking
+barcodeScanning
+promptPayPayment
+cardPayment
+printerSupport
+tableManagement
+diningSession
+headcountPricing
+buffetPricing
+extraChargeItems
+kitchenTicket
+splitBill
+
+Create:
+
+feature_capability.dart
+a provider or gate helper to check if a capability is enabled for current mode
+
+Rules:
+
+UI should query capabilities, not compare mode everywhere
+routing/menu construction can also use capabilities if helpful
+4. BusinessModeRegistry
+
+Create a registry that resolves BusinessModeDefinition by current mode.
+
+Requirements:
+
+register retail definition
+register restaurant definition
+fail clearly if mode definition is missing
+keep registration explicit and readable
+
+Suggested provider:
+
+businessModeRegistryProvider
+currentModeDefinitionProvider
+5. Current mode state / persistence
+
+Create a provider/state layer that determines the active business mode.
+
+Requirements:
+
+load current active mode from shared settings/app profile
+expose current mode via Riverpod
+expose current mode definition via provider
+allow future switching without requiring immediate UI for switching
+
+Use existing or newly created shared settings/app profile infrastructure if available.
+If necessary, create minimal support for:
+
+activeModeId
+
+Rules:
+
+do not build a complex multi-profile system yet
+single active mode is enough for now
+6. Mode-aware navigation foundation
+
+Create a way for each mode to contribute navigation items.
+
+Requirements:
+
+keep a shared AppNavItem
+current shell reads nav items from current mode definition
+current retail flow still works
+restaurant can contribute different nav items even if screens are still placeholders/minimal
+
+Example retail nav:
+
+POS
+History
+Inventory
+Settings
+
+Example restaurant nav:
+
+Tables
+History
+Reports
+Settings
+
+Rules:
+
+keep shell generic
+mode-specific labels/routes come from mode definition, not shell internals
+7. Mode-aware routing foundation
+
+Create a routing composition approach where app routes are:
+
+shared routes
+plus current mode routes
+
+Requirements:
+
+keep existing retail routes working
+add minimal restaurant route placeholders if needed
+keep structure ready for future growth
+
+Suggested approach:
+
+SharedRoutes.build()
+definition.buildRoutes()
+compose in app_router.dart
+
+Rules:
+
+do not overcomplicate route registry
+avoid giant switch statements spread across files
+8. Pricing strategy abstraction hook
+
+Create or wire a clean abstraction for pricing by mode.
+
+Goal:
+checkout must not hardcode all future business pricing inside widget/UI.
+
+Required:
+
+OrderPricingEngine interface if not already present
+retail mode returns retail pricing engine
+restaurant mode returns restaurant pricing engine placeholder or minimal implementation hook
+
+Rules:
+
+do not implement full buffet pricing yet unless trivial scaffolding is needed
+but create the architecture hook now
+keep existing retail flow working
+9. Receipt strategy abstraction hook
+
+Create or wire a clean abstraction for receipt composition by mode.
+
+Goal:
+printer/receipt pipeline is shared, but content differs by business mode.
+
+Required:
+
+current mode definition exposes ReceiptComposer
+retail mode uses retail/default receipt composer
+restaurant mode can use a placeholder or minimal specialized composer hook
+
+Rules:
+
+do not implement full restaurant receipt if not needed yet
+architecture first
+10. Seed data strategy abstraction hook
+
+Create a small abstraction so different modes can seed different demo data later.
+
+Required:
+
+SeedDataStrategy contract
+RetailSeedDataStrategy
+RestaurantSeedDataStrategy placeholder/minimal
+current mode definition exposes seed strategy
+
+Rules:
+
+do not overbuild seeding system
+just make it clear and extensible
+11. RetailModeDefinition
+
+Create a concrete retail mode definition.
+
+Retail mode should include capabilities such as:
+
+productCatalog
+cart
+checkout
+receipt
+orderHistory
+reporting
+inventoryTracking
+barcodeScanning
+promptPayPayment
+cardPayment
+printerSupport
+
+Retail mode should:
+
+provide retail nav items
+provide retail pricing engine
+provide retail receipt composer
+provide retail seed data strategy
+keep current retail-first demo behavior intact
+12. RestaurantModeDefinition
+
+Create a concrete restaurant mode definition.
+
+Restaurant mode should include capabilities such as:
+
+productCatalog
+cart
+checkout
+receipt
+orderHistory
+reporting
+printerSupport
+tableManagement
+diningSession
+headcountPricing
+buffetPricing
+extraChargeItems
+promptPayPayment
+cardPayment
+
+Restaurant mode should:
+
+provide restaurant nav items
+provide restaurant pricing engine hook
+provide restaurant receipt composer hook
+provide restaurant seed data hook
+contribute minimal routes/placeholders where needed
+NOT implement full restaurant flow yet
+13. Shared app shell integration
+
+Integrate current mode navigation into the app shell.
+
+Requirements:
+
+shell reads nav items from current mode definition
+shell itself remains business-mode agnostic
+no hardcoded "retail" or "restaurant" assumptions in shell internals
+existing screens still render correctly
+14. Settings/app profile integration
+
+Use shared settings/app profile to store:
+
+activeModeId
+
+If this does not exist yet, add the minimal entity/model/repository support required.
+
+Rules:
+
+do not build full settings UI for switching mode unless trivial
+focus on infrastructure first
+15. Scope control
+
+Allowed:
+
+mode identity
+mode definitions
+capability system
+registry/providers
+nav/routing foundation
+pricing/receipt/seed hooks
+retail + restaurant definition files
+minimal placeholder screens/routes if needed for wiring
+
+Not allowed:
+
+full table management
+full buffet calculations
+split bill
+kitchen ticket
+advanced inventory work
+barcode workflow expansion
+large UI redesign unrelated to mode architecture
+16. Code quality requirements
+small focused files
+clear naming
+no dead code
+minimal but useful comments
+widgets stay thin
+providers stay manageable
+avoid enum-switch sprawl
+keep imports tidy
+follow repo folder conventions and style
+17. Verification checklist
+
+Before finishing, ensure:
+
+retail flow still works
+app can resolve current mode safely
+shell nav can change by mode
+routes can be composed by mode
+capability checks are available
+pricing/receipt hooks are mode-based
+no obvious compile/provider/import mismatches remain
+18. Final output format
+
+At the end, provide:
+
+Task Summary
+Files Created
+Files Modified
+Key Design Notes
+Manual Setup Required
+Risks / Tradeoffs
+Next Recommended Step

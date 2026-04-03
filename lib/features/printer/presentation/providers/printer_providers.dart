@@ -8,8 +8,8 @@ import '../../domain/entities/printer_device.dart';
 import '../../domain/entities/printer_status.dart';
 import '../../domain/repositories/printer_repository.dart';
 import '../../domain/services/receipt_print_service.dart';
-import '../../../../features/receipt/domain/services/retail_receipt_composer.dart';
 import '../../../../features/receipt/domain/services/thermal_receipt_renderer.dart';
+import '../../../../app/mode/current_mode_provider.dart';
 
 part 'printer_providers.g.dart';
 
@@ -35,9 +35,11 @@ PrinterRepository printerRepository(Ref ref) {
 
 @riverpod
 ReceiptPrintService receiptPrintService(Ref ref) {
+  final definition = ref.watch(currentModeDefinitionProvider);
+
   return ReceiptPrintService(
     printerRepository: ref.watch(printerRepositoryProvider),
-    receiptComposer: RetailReceiptComposer(),
+    receiptComposer: definition.receiptComposer,
     renderer: ThermalReceiptRenderer(), // Default to thermal for now
   );
 }

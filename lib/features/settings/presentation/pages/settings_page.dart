@@ -7,6 +7,9 @@ import '../../../../app/bootstrap.dart';
 import '../../../../app/layout/responsive_layout.dart';
 import '../../../../app/l10n/localization.dart';
 import '../../../../app/widgets/async_state_view.dart';
+import '../../../../app/mode/business_mode_registry.dart';
+import '../../../../app/mode/current_mode_provider.dart';
+import '../../../../app/router/app_router.dart';
 import '../../domain/entities/store_profile.dart';
 import '../providers/settings_providers.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
@@ -170,6 +173,10 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
                 ),
+              ),
+              SizedBox(
+                width: cardWidth,
+                child: const _BusinessModeCard(),
               ),
               SizedBox(
                 width: cardWidth,
@@ -522,6 +529,122 @@ class _StoreProfileCardState extends ConsumerState<_StoreProfileCard> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('settings.save_profile_success'.tr())),
     );
+  }
+}
+
+class _BusinessModeCard extends ConsumerWidget {
+  const _BusinessModeCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileAsync = ref.watch(appProfileNotifierProvider);
+    final registry = ref.watch(businessModeRegistryProvider);
+
+    return _SettingsCard(
+      title: 'settings.business_mode'.tr(),
+      child: profileAsync.when(
+        data: (profile) => Column(
+          children: registry.values.map((definition) {
+            final isActive = profile.activeModeId == definition.id;
+            return Card(
+              elevation: isActive ? 4 : 0,
+              color: isActive
+                  ? Theme.of(context).colorScheme.primaryContainer.withAlpha(50)
+                  : Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(
+                  color: isActive
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.outlineVariant,
+                  width: isActive ? 2 : 1,
+                ),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: isActive ? null : () => _switchMode(context, ref, definition.id),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      Icon(
+                        definition.id == 'retail' 
+                            ? Icons.storefront_outlined 
+                            : Icons.restaurant_menu_outlined,
+                        color: isActive ? Theme.of(context).colorScheme.primary : null,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              definition.displayName,
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: isActive ? FontWeight.bold : null,
+                                color: isActive ? Theme.of(context).colorScheme.primary : null,
+                              ),
+                            ),
+                            Text(
+                              definition.id == 'retail'
+                                  ? 'settings.business_mode_retail_desc'.tr()
+                                  : 'settings.business_mode_restaurant_desc'.tr(),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (isActive)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'settings.business_mode_active'.tr(),
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        loading: () => const AppLoadingState(compact: true),
+        error: (error, _) => Text(error.toString()),
+      ),
+    );
+  }
+
+  Future<void> _switchMode(BuildContext context, WidgetRef ref, String modeId) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('settings.business_mode'.tr()),
+        content: Text('settings.business_mode_switch_confirm'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('common.cancel'.tr()),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('common.confirm'.tr()),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await ref.read(appProfileNotifierProvider.notifier).updateMode(modeId);
+      // Invalidate the router provider to force a full navigation rebind
+      ref.invalidate(appRouterProvider);
+    }
   }
 }
 

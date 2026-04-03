@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../app/mode/current_mode_provider.dart';
 import '../../../../app/bootstrap.dart';
 import '../../domain/entities/product.dart';
 
@@ -20,14 +20,13 @@ class CartState with _$CartState {
   const factory CartState({
     @Default([]) List<CartItem> items,
     @Default(0.07) double taxRate,
+    @Default(0.0) double subtotal,
+    @Default(0.0) double taxAmount,
+    @Default(0.0) double total,
   }) = _CartState;
 
   const CartState._();
 
-  double get subtotal =>
-      items.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
-  double get taxAmount => subtotal * taxRate;
-  double get total => subtotal + taxAmount;
   int get totalItems => items.fold(0, (sum, item) => sum + item.quantity);
 }
 
@@ -36,7 +35,9 @@ class Cart extends _$Cart {
   static const _webCartDraftKey = 'web_cart_draft_v1';
 
   @override
-  CartState build() => _restoreDraft();
+  CartState build() {
+    return _restoreDraft();
+  }
 
   void addItem(Product product) {
     if (!product.isAvailable || product.stockQuantity <= 0) return;
@@ -44,31 +45,31 @@ class Cart extends _$Cart {
     final existingIndex = state.items.indexWhere(
       (item) => item.product.id == product.id,
     );
+    
+    List<CartItem> updatedItems;
     if (existingIndex != -1) {
       final nextQuantity = state.items[existingIndex].quantity + 1;
       if (nextQuantity > product.stockQuantity) return;
 
-      final updatedItems = List<CartItem>.from(state.items);
+      updatedItems = List<CartItem>.from(state.items);
       updatedItems[existingIndex] = updatedItems[existingIndex].copyWith(
         quantity: nextQuantity,
       );
-      state = state.copyWith(items: updatedItems);
-      _persistDraft();
     } else {
-      state = state.copyWith(
-        items: [
-          ...state.items,
-          CartItem(product: product),
-        ],
-      );
-      _persistDraft();
+      updatedItems = [
+        ...state.items,
+        CartItem(product: product),
+      ];
     }
+
+    state = _applyCalculations(state.copyWith(items: updatedItems));
+    _persistDraft();
   }
 
   void removeItem(String productId) {
-    state = state.copyWith(
+    state = _applyCalculations(state.copyWith(
       items: state.items.where((item) => item.product.id != productId).toList(),
-    );
+    ));
     _persistDraft();
   }
 
@@ -90,22 +91,37 @@ class Cart extends _$Cart {
       updatedItems[itemIndex] = updatedItems[itemIndex].copyWith(
         quantity: newQuantity,
       );
-      state = state.copyWith(items: updatedItems);
+      state = _applyCalculations(state.copyWith(items: updatedItems));
       _persistDraft();
     }
   }
 
   void clearCart() {
-    state = const CartState();
+    state = _applyCalculations(const CartState());
     _persistDraft();
+  }
+
+  CartState _applyCalculations(CartState currentState) {
+    final modeDef = ref.read(currentModeDefinitionProvider);
+    final engine = modeDef.pricingEngine;
+
+    final subtotal = engine.calculateSubtotal(currentState.items);
+    final taxAmount = engine.calculateTax(subtotal, currentState.taxRate);
+    final total = engine.calculateTotal(subtotal, taxAmount);
+
+    return currentState.copyWith(
+      subtotal: subtotal,
+      taxAmount: taxAmount,
+      total: total,
+    );
   }
 
   CartState _restoreDraft() {
     final prefs = sharedPreferences;
-    if (prefs == null || isar != null) return const CartState();
+    if (prefs == null || isar != null) return _applyCalculations(const CartState());
 
     final raw = prefs.getString(_webCartDraftKey);
-    if (raw == null || raw.isEmpty) return const CartState();
+    if (raw == null || raw.isEmpty) return _applyCalculations(const CartState());
 
     try {
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
@@ -114,9 +130,9 @@ class Cart extends _$Cart {
           .map(_decodeCartItem)
           .toList();
       final taxRate = (decoded['taxRate'] as num?)?.toDouble() ?? 0.07;
-      return CartState(items: items, taxRate: taxRate);
+      return _applyCalculations(CartState(items: items, taxRate: taxRate));
     } catch (_) {
-      return const CartState();
+      return _applyCalculations(const CartState());
     }
   }
 

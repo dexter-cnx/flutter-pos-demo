@@ -3,12 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:thai_pos_demo/features/settings/domain/entities/store_profile.dart';
 import 'package:thai_pos_demo/features/settings/domain/repositories/settings_repository.dart';
 import 'package:thai_pos_demo/features/settings/presentation/providers/settings_providers.dart';
+import 'package:thai_pos_demo/shared/domain/entities/app_profile.dart';
 
 class _FakeSettingsRepository implements SettingsRepository {
   _FakeSettingsRepository(this.profile);
 
   StoreProfile profile;
   StoreProfile? savedProfile;
+  AppProfile appProfileRecord = const AppProfile(activeModeId: 'retail');
 
   @override
   Future<StoreProfile> getStoreProfile() async => profile;
@@ -17,6 +19,14 @@ class _FakeSettingsRepository implements SettingsRepository {
   Future<void> saveStoreProfile(StoreProfile profile) async {
     savedProfile = profile;
     this.profile = profile;
+  }
+
+  @override
+  Future<AppProfile> getAppProfile() async => appProfileRecord;
+
+  @override
+  Future<void> saveAppProfile(AppProfile profile) async {
+    appProfileRecord = profile;
   }
 }
 
