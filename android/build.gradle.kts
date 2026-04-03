@@ -1,3 +1,13 @@
+// Redirect build output to {projectRoot}/build so Flutter tooling can find the APK.
+// Required for Gradle 8.14 + AGP 8.11 where the automatic redirect no longer works.
+val newBuildDir = rootProject.layout.projectDirectory.dir("../build")
+rootProject.layout.buildDirectory.set(newBuildDir)
+
+subprojects {
+    val newSubBuildDir = newBuildDir.dir(project.name)
+    project.layout.buildDirectory.set(newSubBuildDir)
+}
+
 allprojects {
     repositories {
         google()
