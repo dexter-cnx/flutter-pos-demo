@@ -39,7 +39,10 @@ class Cart extends _$Cart {
 
   @override
   CartState build() {
+    // Watch dependencies to ensure the cart rebuilds when they change
     final sessionId = ref.watch(activeDiningSessionIdProvider);
+    // ignore: unused_local_variable
+    final modeDef = ref.watch(currentModeDefinitionProvider);
     
     if (sessionId != null) {
       // In Restaurant Mode - Sync with session
@@ -47,7 +50,7 @@ class Cart extends _$Cart {
       
       return sessionAsync.maybeWhen(
         data: (session) {
-          if (session == null) return const CartState();
+          if (session == null) return const CartState(items: []);
           
           final items = session.items.map((m) => CartItem(
             product: Product(
@@ -61,16 +64,16 @@ class Cart extends _$Cart {
             quantity: m.quantity,
           )).toList();
 
-          return CartState(
+          // We return the state with calculated totals based on current pricing engine
+          return _applyCalculations(CartState(
             items: items,
             taxRate: 0.07,
-            subtotal: session.subtotal,
-            taxAmount: session.taxAmount,
-            total: session.total,
             sessionId: sessionId,
-          );
+          ));
         },
-        orElse: () => state.sessionId == sessionId ? state : const CartState(),
+        // IMPORTANT: Never read 'state' inside build() before initialization.
+        // Return a loading-safe state instead.
+        orElse: () => CartState(sessionId: sessionId),
       );
     }
 

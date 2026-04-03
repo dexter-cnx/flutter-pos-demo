@@ -69,7 +69,22 @@
     "pay": "ชำระเงิน",
     "total": "ยอดรวมสุทธิ",
     "empty_products": "ยังไม่มีสินค้าให้ขาย",
-    "empty_products_hint": "เพิ่มหรือ seed สินค้าก่อนเริ่มขายจากหน้านี้"
+    "empty_products_hint": "เพิ่มหรือ seed สินค้าก่อนเริ่มขายจากหน้านี้",
+    "nav": {
+      "home": "แดชบอร์ด",
+      "sale": "เริ่มการขาย",
+      "history": "ประวัติการขาย",
+      "inventory": "สต็อกสินค้า",
+      "settings": "ตั้งค่า",
+      "restaurant_tables": "โต๊ะ"
+    },
+    "restaurant": {
+      "table_available": "ว่าง",
+      "table_occupied": "มีลูกค้า",
+      "table_cleaning": "รอทำความสะอาด",
+      "open_table": "เปิดโต๊ะ {}",
+      "enter_headcount": "ระบุจำนวนลูกค้า"
+    }
   },
   "inventory": {
     "title": "คลังสินค้า",
@@ -128,7 +143,12 @@
     "confirm_reset_web_action": "รีเซ็ตข้อมูลเดโม",
     "reset_web_success": "รีเซ็ตข้อมูลเดโมบนเว็บเรียบร้อยแล้ว",
     "logout_title": "ออกจากระบบ",
-    "logout_confirm": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?"
+    "logout_confirm": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
+    "business_mode": "โหมดการทำงาน",
+    "business_mode_retail_desc": "ระบบขายสินค้าทั่วไปแบบเรียบง่าย",
+    "business_mode_restaurant_desc": "ระบบจัดการโต๊ะและงานสำหรับร้านอาหาร",
+    "business_mode_switch_confirm": "การเปลี่ยนโหมดจะเริ่มระบบการนำทางใหม่ ต้องการไปต่อหรือไม่",
+    "business_mode_active": "กำลังใช้งาน"
   },
   "common": {
     "pay": "ชำระเงิน",

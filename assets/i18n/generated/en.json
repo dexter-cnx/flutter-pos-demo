@@ -69,7 +69,22 @@
     "pay": "Checkout",
     "total": "Total",
     "empty_products": "No products available",
-    "empty_products_hint": "Add or seed products to start selling from this screen."
+    "empty_products_hint": "Add or seed products to start selling from this screen.",
+    "nav": {
+      "home": "Dashboard",
+      "sale": "New Sale",
+      "history": "History",
+      "inventory": "Inventory",
+      "settings": "Settings",
+      "restaurant_tables": "Tables"
+    },
+    "restaurant": {
+      "table_available": "Available",
+      "table_occupied": "Occupied",
+      "table_cleaning": "Cleaning",
+      "open_table": "Open Table {}",
+      "enter_headcount": "Enter headcount"
+    }
   },
   "inventory": {
     "title": "Inventory",
@@ -128,7 +143,12 @@
     "confirm_reset_web_action": "Reset Demo Data",
     "reset_web_success": "Web demo data has been reset.",
     "logout_title": "Logout",
-    "logout_confirm": "Are you sure you want to log out?"
+    "logout_confirm": "Are you sure you want to log out?",
+    "business_mode": "Business Mode",
+    "business_mode_retail_desc": "Simple checkout flow for general products.",
+    "business_mode_restaurant_desc": "Table-based ordering and restaurant-specific workflows.",
+    "business_mode_switch_confirm": "Switching mode will restart the app navigation. Continue?",
+    "business_mode_active": "Active"
   },
   "common": {
     "pay": "Pay Now",
