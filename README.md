@@ -8,7 +8,18 @@ This project keeps machine-specific configuration local to each developer machin
 
 - Install the latest stable Flutter SDK.
 - Run `flutter pub get` after cloning the project.
-- Use `dart format .`, `flutter analyze`, and `flutter test` before sending changes.
+
+### Makefile (Recommended)
+
+To simplify common tasks, you can use `make` (or `.\make.ps1` on Windows):
+- `make get` / `.\make.ps1 get` - Run `flutter pub get`
+- `make gen-i18n` / `.\make.ps1 gen-i18n` - Sync translations from CSV to JSON
+- `make build-runner` / `.\make.ps1 build-runner` - Run code generation
+- `make format` / `.\make.ps1 format` - Format code
+- `make analyze` / `.\make.ps1 analyze` - Analyze code
+- `make fix-web` / `.\make.ps1 fix-web` - Apply Isar web fixes
+- `make run-web` / `.\make.ps1 run-web` - Run on Chrome
+- `make run-windows` / `.\make.ps1 run-windows` - Run on Windows
 
 ### Android
 

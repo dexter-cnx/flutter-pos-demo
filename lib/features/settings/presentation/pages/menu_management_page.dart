@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -100,39 +101,42 @@ class _MenuManagementPageState extends ConsumerState<MenuManagementPage>
     }
   }
 
-  Future<String?> _pickAndCropImage(BuildContext context) async {
-    final picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    if (image == null || !context.mounted) return null;
-
-    final croppedFile = await ImageCropper().cropImage(
-      sourcePath: image.path,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'menu.browse_image'.tr(),
-          toolbarColor: Theme.of(context).colorScheme.primary,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.square,
-          lockAspectRatio: true,
-        ),
-        IOSUiSettings(
-          title: 'menu.browse_image'.tr(),
-          aspectRatioLockEnabled: true,
-        ),
-        WebUiSettings(
-          context: context,
-          presentStyle: WebPresentStyle.dialog,
-          size: const CropperSize(width: 500, height: 500),
-        ),
-      ],
-    );
-
-    if (croppedFile == null || !context.mounted) return null;
-    return croppedFile.path;
-  }
 }
 
+Future<String?> _pickAndCropImage(BuildContext context) async {
+  final picker = ImagePicker();
+  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+  if (image == null || !context.mounted) return null;
+
+  final croppedFile = await ImageCropper().cropImage(
+    sourcePath: image.path,
+    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+    uiSettings: [
+      AndroidUiSettings(
+        toolbarTitle: 'menu.browse_image'.tr(),
+        toolbarColor: Theme.of(context).colorScheme.primary,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.square,
+        lockAspectRatio: true,
+        hideBottomControls: true,
+      ),
+      IOSUiSettings(
+        title: 'menu.browse_image'.tr(),
+        aspectRatioLockEnabled: true,
+        resetAspectRatioEnabled: false,
+        aspectRatioPickerButtonHidden: true,
+      ),
+      WebUiSettings(
+        context: context,
+        presentStyle: WebPresentStyle.dialog,
+        size: const CropperSize(width: 500, height: 500),
+      ),
+    ],
+  );
+
+  if (croppedFile == null || !context.mounted) return null;
+  return croppedFile.path;
+}
 class _CategoryListTab extends ConsumerWidget {
   const _CategoryListTab();
 
@@ -432,7 +436,9 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
             ? 'menu.add_category'.tr()
             : 'menu.edit_category'.tr(),
       ),
-      content: SingleChildScrollView(
+      scrollable: true,
+      content: SizedBox(
+        width: 400,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -441,17 +447,29 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
                 padding: const EdgeInsets.only(bottom: 16),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    _imageController.text,
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 120,
-                      color: Colors.grey.shade200,
-                      child: const Icon(Icons.broken_image_outlined, size: 40),
-                    ),
-                  ),
+                  child: _imageController.text.startsWith('http') || kIsWeb
+                      ? Image.network(
+                          _imageController.text,
+                          height: 120,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 120,
+                            color: Colors.grey.shade200,
+                            child: const Icon(Icons.broken_image_outlined, size: 40),
+                          ),
+                        )
+                      : Image.file(
+                          File(_imageController.text),
+                          height: 120,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 120,
+                            color: Colors.grey.shade200,
+                            child: const Icon(Icons.broken_image_outlined, size: 40),
+                          ),
+                        ),
                 ),
               ),
             TextField(
@@ -481,9 +499,7 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
                 labelText: 'menu.image_url_hint'.tr(),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    final parentState = context
-                        .findAncestorStateOfType<_MenuManagementPageState>();
-                    final path = await parentState?._pickAndCropImage(context);
+                    final path = await _pickAndCropImage(context);
                     if (path != null) {
                       setState(() => _imageController.text = path);
                     }
@@ -579,7 +595,9 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
             ? 'menu.add_product'.tr()
             : 'menu.edit_product'.tr(),
       ),
-      content: SingleChildScrollView(
+      scrollable: true,
+      content: SizedBox(
+        width: 400,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -588,17 +606,29 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
                 padding: const EdgeInsets.only(bottom: 16),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    _imageController.text,
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 120,
-                      color: Colors.grey.shade200,
-                      child: const Icon(Icons.broken_image_outlined, size: 40),
-                    ),
-                  ),
+                  child: _imageController.text.startsWith('http') || kIsWeb
+                      ? Image.network(
+                          _imageController.text,
+                          height: 120,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 120,
+                            color: Colors.grey.shade200,
+                            child: const Icon(Icons.broken_image_outlined, size: 40),
+                          ),
+                        )
+                      : Image.file(
+                          File(_imageController.text),
+                          height: 120,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            height: 120,
+                            color: Colors.grey.shade200,
+                            child: const Icon(Icons.broken_image_outlined, size: 40),
+                          ),
+                        ),
                 ),
               ),
             TextField(
@@ -665,9 +695,7 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
                 labelText: 'menu.image_url_hint'.tr(),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    final parentState = context
-                        .findAncestorStateOfType<_MenuManagementPageState>();
-                    final path = await parentState?._pickAndCropImage(context);
+                    final path = await _pickAndCropImage(context);
                     if (path != null) {
                       setState(() => _imageController.text = path);
                     }

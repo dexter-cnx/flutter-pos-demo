@@ -79,11 +79,12 @@ This file defines the **repo-wide operating rules** for all Agent Teams (Antigra
 2. อ่าน `antigravity/rules/00-read-order.md` → `global.md` → `flutter.md`
 3. ใช้ workflow จาก `antigravity/workflows/`
 4. ใช้ skill และ template จาก toolkit
-5. หลังทำเสร็จแต่ละ feature ต้องรัน:
-   - `flutter pub get`
-   - `dart format .`
-   - `flutter analyze`
-   - `flutter test` (ถ้ามี)
+5. หลังทำเสร็จแต่ละ feature ควรใช้ **Makefile** (หรือ `.\make.ps1` บน Windows) เพื่อความรวดเร็ว:
+   - `make gen-i18n` (ถ้าแก้ไขคำแปล)
+   - `make build-runner` (ถ้าแก้ไข model/provider)
+   - `make format`
+   - `make analyze`
+   - หรือรัน `flutter pub get`, `dart format .`, `flutter analyze` ตามลำดับ
 
 ---
 

@@ -243,38 +243,42 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     color: theme.colorScheme.primary.withValues(alpha: 0.08),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildLanguageSelector(alignment: Alignment.centerLeft),
-                    const Spacer(),
-                    Text(
-                      'app.title'.tr(),
-                      style: theme.textTheme.displayLarge?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w800,
-                        height: 1.0,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: 460,
-                      child: Text(
-                        'login.subtitle'.tr(),
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          height: 1.35,
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        buildLanguageSelector(alignment: Alignment.centerLeft),
+                        const SizedBox(height: 32),
+                        Text(
+                          'app.title'.tr(),
+                          style: theme.textTheme.displayLarge?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w800,
+                            height: 1.0,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: 460,
+                          child: Text(
+                            'login.subtitle'.tr(),
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              height: 1.35,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        buildLandscapeBadge('login.demo_hint'.tr()),
+                        const SizedBox(height: 12),
+                        buildLandscapeBadge('settings.offline_first'.tr()),
+                        const SizedBox(height: 12),
+                        buildLandscapeBadge('settings.storage_ready'.tr()),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    buildLandscapeBadge('login.demo_hint'.tr()),
-                    const SizedBox(height: 12),
-                    buildLandscapeBadge('settings.offline_first'.tr()),
-                    const SizedBox(height: 12),
-                    buildLandscapeBadge('settings.storage_ready'.tr()),
-                    const Spacer(),
-                  ],
+                  ),
                 ),
               );
             }
@@ -470,35 +474,48 @@ class _AdminLoginDialogState extends ConsumerState<_AdminLoginDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('login.admin_entry'.tr()),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _usernameController,
-            decoration: InputDecoration(
-              labelText: 'login.username'.tr(),
-              prefixIcon: const Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _passwordController,
-            obscureText: _obscurePassword,
-            decoration: InputDecoration(
-              labelText: 'login.password'.tr(),
-              prefixIcon: const Icon(Icons.lock_outline),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _obscurePassword
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                ),
-                onPressed: () =>
-                    setState(() => _obscurePassword = !_obscurePassword),
+      scrollable: true,
+      content: SizedBox(
+        width: 400, // ดีสำหรับ Tablet/Desktop
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'login.username'.tr(),
+                prefixIcon: const Icon(Icons.person_outline),
               ),
+              textInputAction: TextInputAction.next,
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              obscureText: _obscurePassword,
+              decoration: InputDecoration(
+                labelText: 'login.password'.tr(),
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscurePassword
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                  onPressed: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
+                ),
+              ),
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) {
+                ref.read(authNotifierProvider.notifier).loginWithAdmin(
+                      _usernameController.text,
+                      _passwordController.text,
+                    );
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
