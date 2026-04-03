@@ -15,6 +15,8 @@ login.admin_entry,Admin Login,สำหรับแอดมิน
 login.username,Username,ชื่อผู้ใช้งาน
 login.password,Password,รหัสผ่าน
 login.sign_in,Sign In,เข้าสู่ระบบ
+login.admin_hint,Demo: admin / admin123,เดโม: admin / admin123
+login.pin_hint,Any 4 digits,ตัวเลข 4 หลักใดก็ได้
 menu.browse_image,Pick Image,เลือกรูปภาพ
 menu.image_url_hint,Or enter Image URL,หรือใส่ URL รูปภาพ
 menu.web_image_warning,On Web, images are read only. Use URL for persistence in this demo.,บนเว็บรูปภาพเป็นแบบอ่านอย่างเดียว โปรดใช้ URL เพื่อบันทึกลงฐานข้อมูลในตัวอย่างนี้
@@ -176,3 +178,5 @@ menu.confirm_delete_title,Delete {}?,ลบ {} หรือไม่
 menu.confirm_delete_message,This action cannot be undone.,การกระทำนี้ไม่สามารถย้อนกลับได้
 menu.empty_categories,No categories found.,ไม่พบหมวดหมู่สินค้า
 menu.empty_products,No products found.,ไม่พบสินค้า
+settings.logout_title,Logout,ออกจากระบบ
+settings.logout_confirm,Are you sure you want to log out?,คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?

@@ -23,7 +23,9 @@
     "admin_entry": "สำหรับแอดมิน",
     "username": "ชื่อผู้ใช้งาน",
     "password": "รหัสผ่าน",
-    "sign_in": "เข้าสู่ระบบ"
+    "sign_in": "เข้าสู่ระบบ",
+    "admin_hint": "เดโม: admin / admin123",
+    "pin_hint": "ตัวเลข 4 หลักใดก็ได้"
   },
   "menu": {
     "browse_image": "เลือกรูปภาพ",
@@ -124,7 +126,9 @@
     "confirm_reset_web_title": "รีเซ็ตข้อมูลเดโมบนเว็บหรือไม่",
     "confirm_reset_web_message": "orders",
     "confirm_reset_web_action": "รีเซ็ตข้อมูลเดโม",
-    "reset_web_success": "รีเซ็ตข้อมูลเดโมบนเว็บเรียบร้อยแล้ว"
+    "reset_web_success": "รีเซ็ตข้อมูลเดโมบนเว็บเรียบร้อยแล้ว",
+    "logout_title": "ออกจากระบบ",
+    "logout_confirm": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?"
   },
   "common": {
     "pay": "ชำระเงิน",

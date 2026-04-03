@@ -23,7 +23,9 @@
     "admin_entry": "Admin Login",
     "username": "Username",
     "password": "Password",
-    "sign_in": "Sign In"
+    "sign_in": "Sign In",
+    "admin_hint": "Demo: admin / admin123",
+    "pin_hint": "Any 4 digits"
   },
   "menu": {
     "browse_image": "Pick Image",
@@ -124,7 +126,9 @@
     "confirm_reset_web_title": "Reset web demo data?",
     "confirm_reset_web_message": "This will clear web-persisted settings",
     "confirm_reset_web_action": "Reset Demo Data",
-    "reset_web_success": "Web demo data has been reset."
+    "reset_web_success": "Web demo data has been reset.",
+    "logout_title": "Logout",
+    "logout_confirm": "Are you sure you want to log out?"
   },
   "common": {
     "pay": "Pay Now",

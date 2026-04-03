@@ -154,33 +154,45 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             }
 
             Widget buildPinIndicators() {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (index) {
-                  final filled = index < _pin.length;
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: indicatorGap),
-                    width: indicatorSize,
-                    height: indicatorSize,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: filled
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.surfaceContainerHigh,
-                      boxShadow: filled
-                          ? [
-                              BoxShadow(
-                                color: theme.colorScheme.primary.withValues(
-                                  alpha: 0.5,
-                                ),
-                                blurRadius: 10,
-                                spreadRadius: 2,
-                              ),
-                            ]
-                          : null,
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(4, (index) {
+                      final filled = index < _pin.length;
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: indicatorGap),
+                        width: indicatorSize,
+                        height: indicatorSize,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: filled
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.surfaceContainerHigh,
+                          boxShadow: filled
+                              ? [
+                                  BoxShadow(
+                                    color: theme.colorScheme.primary.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'login.pin_hint'.tr(),
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.hintColor.withValues(alpha: 0.6),
                     ),
-                  );
-                }),
+                  ),
+                ],
               );
             }
 
@@ -480,6 +492,14 @@ class _AdminLoginDialogState extends ConsumerState<_AdminLoginDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text(
+              'login.admin_hint'.tr(),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _usernameController,
               decoration: InputDecoration(

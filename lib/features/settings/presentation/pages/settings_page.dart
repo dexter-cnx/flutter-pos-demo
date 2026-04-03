@@ -34,6 +34,49 @@ class SettingsPage extends ConsumerWidget {
           onPressed: () => context.go('/'),
         ),
         title: Text('settings.title'.tr()),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'settings.logout_title'.tr(),
+            onPressed: () async {
+              final authState = ref.read(authNotifierProvider);
+              final isAdmin = authState.value == 'admin';
+
+              if (isAdmin) {
+                ref.read(authNotifierProvider.notifier).logout();
+                if (context.mounted) context.go('/login');
+                return;
+              }
+
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('settings.logout_title'.tr()),
+                  content: Text('settings.logout_confirm'.tr()),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('common.cancel'.tr()),
+                    ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                        foregroundColor: Theme.of(context).colorScheme.onError,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text('settings.logout_title'.tr()),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmed == true && context.mounted) {
+                ref.read(authNotifierProvider.notifier).logout();
+                if (context.mounted) context.go('/login');
+              }
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: LayoutBuilder(
