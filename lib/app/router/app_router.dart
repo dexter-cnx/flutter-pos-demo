@@ -10,6 +10,8 @@ import '../../features/settings/presentation/pages/menu_management_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/printer/presentation/screens/printer_settings_screen.dart';
 
+import '../shell/app_shell.dart';
+
 final appRouter = GoRouter(
   initialLocation: '/login',
   routes: [
@@ -18,25 +20,54 @@ final appRouter = GoRouter(
       name: 'login',
       builder: (context, state) => const LoginPage(),
     ),
-    GoRoute(
-      path: '/',
-      name: 'pos',
-      builder: (context, state) => const PosPage(),
+    ShellRoute(
+      builder: (context, state, child) => AppShell(
+        location: state.uri.toString(),
+        child: child,
+      ),
+      routes: [
+        GoRoute(
+          path: '/',
+          name: 'pos',
+          builder: (context, state) => const PosPage(),
+        ),
+        GoRoute(
+          path: '/home',
+          name: 'home',
+          builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
+          path: '/history',
+          name: 'history',
+          builder: (context, state) => const OrderHistoryPage(),
+        ),
+        GoRoute(
+          path: '/inventory',
+          name: 'inventory',
+          builder: (context, state) => const InventoryPage(),
+        ),
+        GoRoute(
+          path: '/settings',
+          name: 'settings',
+          builder: (context, state) => const SettingsPage(),
+        ),
+        GoRoute(
+          path: '/menu-management',
+          name: 'menu_management',
+          builder: (context, state) => const MenuManagementPage(),
+        ),
+        GoRoute(
+          path: '/settings/printer',
+          name: 'printer_settings',
+          builder: (context, state) => const PrinterSettingsScreen(),
+        ),
+      ],
     ),
+    // Standard pages without shell
     GoRoute(
       path: '/checkout',
       name: 'checkout',
       builder: (context, state) => const CheckoutPage(),
-    ),
-    GoRoute(
-      path: '/history',
-      name: 'history',
-      builder: (context, state) => const OrderHistoryPage(),
-    ),
-    GoRoute(
-      path: '/inventory',
-      name: 'inventory',
-      builder: (context, state) => const InventoryPage(),
     ),
     GoRoute(
       path: '/receipt/:orderId',
@@ -49,26 +80,6 @@ final appRouter = GoRouter(
 
         return ReceiptPreviewPage(orderId: orderId);
       },
-    ),
-    GoRoute(
-      path: '/settings',
-      name: 'settings',
-      builder: (context, state) => const SettingsPage(),
-    ),
-    GoRoute(
-      path: '/menu-management',
-      name: 'menu_management',
-      builder: (context, state) => const MenuManagementPage(),
-    ),
-    GoRoute(
-      path: '/settings/printer',
-      name: 'printer_settings',
-      builder: (context, state) => const PrinterSettingsScreen(),
-    ),
-    GoRoute(
-      path: '/home',
-      name: 'home',
-      builder: (context, state) => const HomePage(),
     ),
   ],
 );

@@ -17,10 +17,6 @@ class OrderHistoryPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('history.title'.tr()),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => context.go('/'),
-        ),
       ),
       body: ordersAsync.when(
         data: (orders) => orders.isEmpty

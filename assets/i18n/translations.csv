@@ -198,6 +198,11 @@ printer.default_label,Default,ค่าเริ่มต้น
 printer.default_saved,{} set as default printer.,ตั้ง {} เป็นเครื่องพิมพ์เริ่มต้นแล้ว
 printer.test_print,Test Print,ทดสอบพิมพ์
 printer.test_print_success,Test print sent successfully.,ส่งการทดสอบพิมพ์เรียบร้อยแล้ว
+pos.nav.home,Dashboard,แดชบอร์ด
+pos.nav.sale,New Sale,เริ่มการขาย
+pos.nav.history,History,ประวัติการขาย
+pos.nav.inventory,Inventory,สต็อกสินค้า
+pos.nav.settings,Settings,ตั้งค่า
 printer.test_print_failed,Test print failed. Check connection.,ทดสอบพิมพ์ล้มเหลว โปรดตรวจสอบการเชื่อมต่อ
 printer.connected_success,Connected to {},เชื่อมต่อกับ {} แล้ว
 printer.connect_failed,Connection failed. Make sure the printer is on and paired.,เชื่อมต่อล้มเหลว โปรดตรวจสอบว่าเครื่องพิมพ์เปิดอยู่และจับคู่ไว้

@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../app/layout/responsive_layout.dart';
 import '../../../../app/widgets/async_state_view.dart';
@@ -27,20 +26,6 @@ class PosPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('pos.title'.tr()),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.inventory_2_outlined),
-            onPressed: () => context.go('/inventory'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () => context.go('/history'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => context.go('/settings'),
-          ),
-        ],
       ),
       body: SafeArea(
         child: LayoutBuilder(

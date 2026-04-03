@@ -59,7 +59,7 @@ final printerRepositoryProvider =
 
 typedef PrinterRepositoryRef = AutoDisposeProviderRef<PrinterRepository>;
 String _$receiptPrintServiceHash() =>
-    r'8a352ce71f7c0710245f403dc6e73c8bd8c2e6f9';
+    r'a6d6ba64af8e63dd5d779ce9fc17a7588ccd4987';
 
 /// See also [receiptPrintService].
 @ProviderFor(receiptPrintService)

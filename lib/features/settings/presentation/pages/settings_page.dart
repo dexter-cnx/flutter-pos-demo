@@ -29,10 +29,6 @@ class SettingsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => context.go('/'),
-        ),
         title: Text('settings.title'.tr()),
         actions: [
           IconButton(

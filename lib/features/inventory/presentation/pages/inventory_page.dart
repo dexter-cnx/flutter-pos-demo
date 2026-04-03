@@ -20,10 +20,6 @@ class InventoryPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => context.go('/'),
-        ),
         title: Text('inventory.title'.tr()),
         actions: [
           Padding(
