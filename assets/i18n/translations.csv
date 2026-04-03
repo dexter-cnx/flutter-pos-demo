@@ -11,6 +11,10 @@ login.feature_pos_ready.title,POS-ready layout,เลย์เอาต์พร
 login.feature_pos_ready.body,The login screen uses the extra width in landscape mode instead of squeezing everything into the center.,หน้าเข้าสู่ระบบใช้พื้นที่แนวนอนให้คุ้มค่าแทนการบีบทุกอย่างไว้ตรงกลาง
 login.feature_demo.title,Demo mode,โหมดเดโม
 login.feature_demo.body,Use any 4-digit numeric PIN to enter the app and explore the flow safely.,ใช้ PIN ตัวเลข 4 หลักใดก็ได้เพื่อเข้าสู่แอปและลองใช้งานได้อย่างปลอดภัย
+login.admin_entry,Admin Login,สำหรับแอดมิน
+login.username,Username,ชื่อผู้ใช้งาน
+login.password,Password,รหัสผ่าน
+login.sign_in,Sign In,เข้าสู่ระบบ
 dashboard.title,Dashboard,แดชบอร์ด
 pos.title,Point of Sale,ขายหน้าร้าน
 inventory.title,Inventory,คลังสินค้า
@@ -145,3 +149,27 @@ receipt.share_failed,Unable to share receipt PDF.,ไม่สามารถแ
 receipt.footer,This is a demo receipt for preview and printing flow.,ใบเสร็จนี้เป็นเดโมสำหรับตัวอย่างการแสดงผลและการพิมพ์
 receipt.not_found,Receipt not found,ไม่พบใบเสร็จ
 receipt.not_found_hint,We could not find receipt {}.,ไม่พบข้อมูลใบเสร็จ {}
+menu.title,Menu Management,จัดการเมนูอาหาร
+menu.category_title,Category Management,จัดการหมวดหมู่สินค้า
+menu.product_title,Product Management,จัดการสินค้า
+menu.add_category,Add Category,เพิ่มหมวดหมู่
+menu.edit_category,Edit Category,แก้ไขหมวดหมู่
+menu.delete_category,Delete Category,ลบหมวดหมู่
+menu.category_name,Category Name,ชื่อหมวดหมู่
+menu.sort_order,Sort Order,ลำดับการแสดงผล
+menu.add_product,Add Product,เพิ่มสินค้า
+menu.edit_product,Edit Product,แก้ไขสินค้า
+menu.delete_product,Delete Product,ลบสินค้า
+menu.product_name,Product Name,ชื่อสินค้า
+menu.price,Price,ราคา
+menu.sku,SKU / Barcode,รหัสสินค้า / บาร์โค้ด
+menu.stock,Stock Quantity,จำนวนสต็อก
+menu.image_url,Image URL,ลิงก์รูปภาพ
+menu.select_category,Select Category,เลือกหมวดหมู่
+menu.is_available,Is Available,พร้อมขาย
+menu.save_success,Saved successfully.,บันทึกข้อมูลเรียบร้อยแล้ว
+menu.delete_success,Deleted successfully.,ลบข้อมูลเรียบร้อยแล้ว
+menu.confirm_delete_title,Delete {}?,ลบ {} หรือไม่
+menu.confirm_delete_message,This action cannot be undone.,การกระทำนี้ไม่สามารถย้อนกลับได้
+menu.empty_categories,No categories found.,ไม่พบหมวดหมู่สินค้า
+menu.empty_products,No products found.,ไม่พบสินค้า

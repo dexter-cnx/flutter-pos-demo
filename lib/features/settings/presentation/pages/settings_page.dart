@@ -10,6 +10,7 @@ import '../../../../app/widgets/async_state_view.dart';
 import '../../domain/entities/store_profile.dart';
 import '../providers/settings_providers.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../../pos/presentation/providers/pos_providers.dart';
 
@@ -171,6 +172,12 @@ class SettingsPage extends ConsumerWidget {
                               icon: const Icon(Icons.delete_sweep_outlined),
                               label: Text('settings.clear_orders'.tr()),
                             ),
+                            if (ref.watch(authNotifierProvider).value == 'admin')
+                              OutlinedButton.icon(
+                                onPressed: () => context.go('/menu-management'),
+                                icon: const Icon(Icons.restaurant_menu_outlined),
+                                label: Text('menu.title'.tr()),
+                              ),
                             OutlinedButton.icon(
                               onPressed: () => context.go('/inventory'),
                               icon: const Icon(Icons.inventory_2_outlined),

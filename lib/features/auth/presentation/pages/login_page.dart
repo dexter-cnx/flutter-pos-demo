@@ -46,13 +46,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     ref.listen<AsyncValue<String?>>(authNotifierProvider, (previous, next) {
       next.whenData((role) {
-        if (role != null) {
+        if (role == 'admin') {
+          context.go('/menu-management');
+        } else if (role == 'staff') {
           context.go('/');
         }
       });
     });
 
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(16),
+        child: TextButton.icon(
+          onPressed: () => _showAdminLogin(context, ref),
+          icon: const Icon(Icons.admin_panel_settings_outlined),
+          label: Text('login.admin_entry'.tr()),
+          style: TextButton.styleFrom(
+            foregroundColor: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: LayoutBuilder(
@@ -422,6 +435,55 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           label: 'common.backspace'.tr(),
           child: Center(child: Icon(icon, size: 32)),
         ),
+      ),
+    );
+  }
+
+  void _showAdminLogin(BuildContext context, WidgetRef ref) {
+    final usernameController = TextEditingController();
+    final passwordController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('login.admin_entry'.tr()),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: usernameController,
+              decoration: InputDecoration(
+                labelText: 'login.username'.tr(),
+                prefixIcon: const Icon(Icons.person_outline),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'login.password'.tr(),
+                prefixIcon: const Icon(Icons.lock_outline),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('common.cancel'.tr()),
+          ),
+          FilledButton(
+            onPressed: () {
+              ref.read(authNotifierProvider.notifier).loginWithAdmin(
+                    usernameController.text,
+                    passwordController.text,
+                  );
+              Navigator.of(context).pop();
+            },
+            child: Text('login.sign_in'.tr()),
+          ),
+        ],
       ),
     );
   }

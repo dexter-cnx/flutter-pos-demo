@@ -70,6 +70,74 @@ class SharedPrefsPosRepository implements PosRepository {
     await _saveProducts(prefs, updated);
   }
 
+  @override
+  Future<void> upsertCategory(Category category) async {
+    final prefs = sharedPreferences;
+    if (prefs == null) return;
+
+    await _ensureSeeded(prefs);
+    final categories = _readCategories(prefs);
+    final index = categories.indexWhere((c) => c.id == category.id);
+
+    final updated = List<Category>.from(categories);
+    if (index >= 0) {
+      updated[index] = category;
+    } else {
+      updated.add(category);
+    }
+
+    await prefs.setString(
+      _categoriesKey,
+      jsonEncode(_encodeCategories(updated)),
+    );
+  }
+
+  @override
+  Future<void> deleteCategory(String id) async {
+    final prefs = sharedPreferences;
+    if (prefs == null) return;
+
+    await _ensureSeeded(prefs);
+    final categories = _readCategories(prefs);
+    categories.removeWhere((c) => c.id == id);
+
+    await prefs.setString(
+      _categoriesKey,
+      jsonEncode(_encodeCategories(categories)),
+    );
+  }
+
+  @override
+  Future<void> upsertProduct(Product product) async {
+    final prefs = sharedPreferences;
+    if (prefs == null) return;
+
+    await _ensureSeeded(prefs);
+    final products = _readProducts(prefs);
+    final index = products.indexWhere((p) => p.id == product.id);
+
+    final updated = List<Product>.from(products);
+    if (index >= 0) {
+      updated[index] = product;
+    } else {
+      updated.add(product);
+    }
+
+    await _saveProducts(prefs, updated);
+  }
+
+  @override
+  Future<void> deleteProduct(String id) async {
+    final prefs = sharedPreferences;
+    if (prefs == null) return;
+
+    await _ensureSeeded(prefs);
+    final products = _readProducts(prefs);
+    products.removeWhere((p) => p.id == id);
+
+    await _saveProducts(prefs, products);
+  }
+
   Future<void> _ensureSeeded(SharedPreferences prefs) async {
     if (prefs.containsKey(_categoriesKey) && prefs.containsKey(_productsKey)) {
       return;

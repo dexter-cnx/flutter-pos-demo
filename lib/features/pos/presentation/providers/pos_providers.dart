@@ -86,11 +86,46 @@ class InventoryActions extends _$InventoryActions {
     _invalidateInventoryViews();
   }
 
+  Future<void> upsertCategory(Category category) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.watch(posRepositoryProvider).upsertCategory(category);
+      ref.invalidate(categoriesProvider);
+      ref.invalidate(categoryCountProvider);
+      _invalidateInventoryViews();
+    });
+  }
+
+  Future<void> deleteCategory(String id) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.watch(posRepositoryProvider).deleteCategory(id);
+      ref.invalidate(categoriesProvider);
+      ref.invalidate(categoryCountProvider);
+      _invalidateInventoryViews();
+    });
+  }
+
+  Future<void> upsertProduct(Product product) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.watch(posRepositoryProvider).upsertProduct(product);
+      _invalidateInventoryViews();
+    });
+  }
+
+  Future<void> deleteProduct(String id) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.watch(posRepositoryProvider).deleteProduct(id);
+      _invalidateInventoryViews();
+    });
+  }
+
   void _invalidateInventoryViews() {
     ref.invalidate(productsProvider);
     ref.invalidate(inventoryProductsProvider);
     ref.invalidate(productCountProvider);
     ref.invalidate(lowStockCountProvider);
-    state = const AsyncData(null);
   }
 }

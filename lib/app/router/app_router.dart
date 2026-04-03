@@ -6,6 +6,7 @@ import '../../features/inventory/presentation/pages/inventory_page.dart';
 import '../../features/orders/presentation/pages/order_history_page.dart';
 import '../../features/pos/presentation/pages/pos_page.dart';
 import '../../features/receipt/presentation/pages/receipt_preview_page.dart';
+import '../../features/settings/presentation/pages/menu_management_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 
 final appRouter = GoRouter(
@@ -52,6 +53,11 @@ final appRouter = GoRouter(
       path: '/settings',
       name: 'settings',
       builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(
+      path: '/menu-management',
+      name: 'menu_management',
+      builder: (context, state) => const MenuManagementPage(),
     ),
     GoRoute(
       path: '/home',

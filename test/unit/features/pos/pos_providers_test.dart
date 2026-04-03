@@ -34,6 +34,18 @@ class _FakePosRepository implements PosRepository {
   Future<void> restockProduct(String productId, int quantity) async {
     lastRestocked = _RestockCall(productId: productId, quantity: quantity);
   }
+
+  @override
+  Future<void> upsertCategory(Category category) async {}
+
+  @override
+  Future<void> deleteCategory(String id) async {}
+
+  @override
+  Future<void> upsertProduct(Product product) async {}
+
+  @override
+  Future<void> deleteProduct(String id) async {}
 }
 
 class _RestockCall {
