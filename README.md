@@ -35,3 +35,7 @@ This project keeps machine-specific configuration local to each developer machin
 
 - This repository is offline-first and demo-oriented, so local setup should work without backend dependencies.
 - If Android builds fail after moving machines, the first thing to check is `JAVA_HOME`.
+
+### Web Demo
+
+[Demo](https://dexter-cnx.github.io/flutter-pos-demo/)
