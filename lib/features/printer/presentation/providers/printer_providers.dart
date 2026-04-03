@@ -9,6 +9,7 @@ import '../../domain/entities/printer_status.dart';
 import '../../domain/repositories/printer_repository.dart';
 import '../../domain/services/receipt_print_service.dart';
 import '../../../../features/receipt/domain/services/retail_receipt_composer.dart';
+import '../../../../features/receipt/domain/services/thermal_receipt_renderer.dart';
 
 part 'printer_providers.g.dart';
 
@@ -37,6 +38,7 @@ ReceiptPrintService receiptPrintService(Ref ref) {
   return ReceiptPrintService(
     printerRepository: ref.watch(printerRepositoryProvider),
     receiptComposer: RetailReceiptComposer(),
+    renderer: ThermalReceiptRenderer(), // Default to thermal for now
   );
 }
 

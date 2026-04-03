@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../app/bootstrap.dart';
-import '../../../checkout/presentation/providers/checkout_providers.dart';
+import '../../../payment/domain/entities/payment_method.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../data/models/order_model.dart';
 import '../../data/services/web_order_storage.dart';

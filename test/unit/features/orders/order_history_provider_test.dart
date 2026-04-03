@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thai_pos_demo/features/checkout/presentation/providers/checkout_providers.dart';
+import 'package:thai_pos_demo/features/payment/domain/entities/payment_method.dart';
 import 'package:thai_pos_demo/features/orders/presentation/providers/order_history_provider.dart';
 import 'package:thai_pos_demo/features/pos/domain/entities/product.dart';
 import 'package:thai_pos_demo/features/pos/presentation/providers/cart_provider.dart';

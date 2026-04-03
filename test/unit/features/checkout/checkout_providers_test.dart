@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:thai_pos_demo/features/payment/domain/entities/payment_method.dart';
+import 'package:thai_pos_demo/features/payment/domain/entities/payment_status.dart';
 import 'package:thai_pos_demo/features/checkout/presentation/providers/checkout_providers.dart';
 
 void main() {
@@ -22,10 +24,10 @@ void main() {
       expect(container.read(cashReceivedProvider), 0);
     });
 
-    test('payment simulation defaults to idle', () {
+    test('payment simulation defaults to pending', () {
       expect(
         container.read(paymentSimulationStateProvider),
-        PaymentSimulationState.idle,
+        PaymentStatus.pending,
       );
     });
 
@@ -38,12 +40,12 @@ void main() {
 
     test('allows simulation state updates', () {
       final notifier = container.read(paymentSimulationStateProvider.notifier);
-      notifier.state = PaymentSimulationState.processing;
-      notifier.state = PaymentSimulationState.approved;
+      notifier.state = PaymentStatus.processing;
+      notifier.state = PaymentStatus.approved;
 
       expect(
         container.read(paymentSimulationStateProvider),
-        PaymentSimulationState.approved,
+        PaymentStatus.approved,
       );
     });
   });

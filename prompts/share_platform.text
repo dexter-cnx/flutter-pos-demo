@@ -1,0 +1,397 @@
+Read `AGENTS.md` first and follow it strictly.
+
+Task:
+Implement the **shared platform foundation** for `flutter-pos-demo` so the app can grow into a multi-mode POS system later, while keeping the current retail-first flow intact.
+
+Scope:
+This task is ONLY about **shared platform capabilities**.
+Do NOT implement retail-only or restaurant-only business features yet, unless needed as minimal support scaffolding.
+
+Main objective:
+Create the reusable platform layer that all business modes can share, especially:
+- printer foundation
+- receipt/document pipeline
+- payment framework cleanup
+- settings/app profile foundation
+- app shell cleanup
+- storage/persistence cleanup where needed
+
+Architecture constraints:
+- Keep Clean Architecture
+- Keep Riverpod
+- Keep go_router
+- Keep Isar
+- Keep business logic out of widgets
+- Do not hardcode retail-only assumptions into shared platform code
+- Do not implement business mode logic yet beyond minimal future-ready hooks
+- Shared platform must be reusable by future modes like retail, restaurant, cafe, clinic, etc.
+
+Important non-goals:
+Do NOT implement:
+- table management
+- buffet pricing
+- split bill
+- kitchen ticket
+- restaurant-specific receipt
+- inventory-heavy retail enhancements
+- barcode-heavy workflows
+- full business mode switching UI
+
+High-level deliverables:
+1. Printer foundation
+2. Receipt/document foundation
+3. Payment foundation cleanup
+4. Settings/app profile foundation
+5. Shared app shell foundation
+6. Shared storage cleanup if needed
+
+Target structure:
+
+lib/
+  app/
+    bootstrap/
+    config/
+    routing/
+    shell/
+  core/
+    constants/
+    errors/
+    utils/
+    result/
+    money/
+    localization/
+    design_system/
+  shared/
+    domain/
+      entities/
+      value_objects/
+      repositories/
+      services/
+      usecases/
+    data/
+      models/
+      datasources/
+      repositories/
+    presentation/
+      providers/
+      widgets/
+  features/
+    printer/
+    receipt/
+    payment/
+    settings/
+    order_history/
+    reporting/
+
+Detailed implementation requirements:
+
+## 1. Printer Foundation
+
+Create a shared Bluetooth printer feature that is business-mode agnostic.
+
+Required capabilities:
+- discover paired printers
+- connect / disconnect
+- remember default printer
+- expose printer status
+- test print
+- print raw ESC/POS bytes
+- safe error handling
+
+Suggested structure:
+
+lib/features/printer/
+  domain/
+    entities/
+      printer_device.dart
+      printer_status.dart
+    repositories/
+      printer_repository.dart
+    services/
+      receipt_print_service.dart
+    usecases/
+      get_paired_printers.dart
+      connect_printer.dart
+      disconnect_printer.dart
+      print_bytes.dart
+      save_default_printer.dart
+      load_default_printer.dart
+  data/
+    datasources/
+      bluetooth_printer_datasource.dart
+      printer_prefs_datasource.dart
+    repositories/
+      printer_repository_impl.dart
+  presentation/
+    providers/
+      printer_providers.dart
+    screens/
+      printer_settings_screen.dart
+    widgets/
+      printer_status_badge.dart
+      printer_device_tile.dart
+
+Rules:
+- plugin access must exist only inside datasource layer
+- checkout must not call Bluetooth plugin directly
+- printer code must not know retail vs restaurant receipt layout
+- Android-first implementation is acceptable
+- iOS-ready abstraction is preferred
+
+Use dependencies if needed:
+- `print_bluetooth_thermal`
+- `esc_pos_utils_plus`
+
+## 2. Receipt / Document Foundation
+
+Create a shared receipt/document pipeline.
+
+Goal:
+Separate:
+- receipt composition
+- document rendering
+- printer transport
+
+Required components:
+- shared receipt document model
+- receipt composer contract
+- ESC/POS rendering path
+- PDF rendering hook or adapter-friendly structure
+- receipt preview-ready data structure
+
+Suggested files:
+
+lib/features/receipt/
+  domain/
+    entities/
+      receipt_document.dart
+      receipt_line.dart
+    services/
+      receipt_composer.dart
+      esc_pos_receipt_renderer.dart
+  presentation/
+    providers/
+      receipt_providers.dart
+      receipt_preview_state.dart
+
+Rules:
+- shared foundation only
+- do not implement restaurant-specific receipt layout yet
+- a minimal retail-style receipt composer is acceptable as a default example, but keep it generic enough to be replaced later
+- composer must not talk to Bluetooth directly
+- renderer must not contain checkout logic
+
+Minimum receipt content support:
+- store name
+- transaction id
+- date/time
+- line items
+- subtotal
+- tax
+- total
+- payment summary
+- footer note
+
+## 3. Payment Foundation Cleanup
+
+Create or refactor shared payment entities and flow so future modes can reuse them.
+
+Required shared concepts:
+- payment method
+- payment status
+- payment summary
+- tendered amount
+- change amount
+- finalized transaction result
+
+Suggested files:
+
+lib/features/payment/
+  domain/
+    entities/
+      payment_method.dart
+      payment_status.dart
+      payment_summary.dart
+    services/
+      payment_calculator.dart
+
+Rules:
+- keep shared and generic
+- do not implement split bill or advanced restaurant flows yet
+- keep current retail checkout flow working
+- avoid putting totals logic inside UI widgets
+
+## 4. Settings / App Profile Foundation
+
+Create a shared settings/app profile layer that can support future multi-mode behavior.
+
+Required:
+- app profile entity/model
+- persisted store profile basics
+- persisted default printer reference
+- locale/theme settings
+- future-ready active mode field
+
+Suggested files:
+
+lib/shared/domain/entities/
+  app_profile.dart
+  store_profile.dart
+
+lib/features/settings/
+  domain/
+    repositories/
+      settings_repository.dart
+  data/
+    datasources/
+      settings_local_datasource.dart
+    repositories/
+      settings_repository_impl.dart
+  presentation/
+    providers/
+      settings_providers.dart
+    screens/
+      settings_screen.dart
+
+Suggested app profile fields:
+- storeName
+- localeCode
+- themeMode
+- activeModeId
+- defaultPrinterId
+- updatedAt
+
+Rules:
+- activeModeId can exist now even if full business mode system is not implemented yet
+- settings code must remain business-mode agnostic
+- do not build full mode switching UI unless trivial
+
+## 5. Shared App Shell Foundation
+
+Refactor or create a shared app shell that is ready for future mode-specific navigation, but does not yet implement full mode architecture.
+
+Required:
+- reusable scaffold/shell
+- sidebar/nav container or top-level navigation area
+- content area
+- room for future nav injection
+
+Suggested files:
+
+lib/app/shell/
+  app_shell.dart
+  app_nav_item.dart
+
+Rules:
+- keep shell generic
+- do not hardcode restaurant-only or retail-only terminology in shell internals
+- current retail demo flow should still work inside the shell
+- tablet-friendly layout is preferred
+
+## 6. Shared Storage / Persistence Cleanup
+
+Review storage responsibilities and create cleaner shared persistence boundaries where needed.
+
+Required:
+- shared persistence for app profile/settings
+- shared persistence for base transaction history if touched
+- printer preference persistence
+- support for future extra collections without rewriting foundation
+
+Suggested shared model/data files if needed:
+- app_profile_model.dart
+- store_profile_model.dart
+- settings_entry_model.dart
+
+Rules:
+- do not over-engineer migrations if unnecessary
+- keep Isar usage coherent with current repo
+- avoid leaking storage model concerns into presentation
+
+## 7. Presentation / Provider Rules
+
+For all shared platform features:
+- use Riverpod providers
+- keep widgets thin
+- prefer clear async state handling
+- surface user-friendly printer and settings errors
+- avoid giant controller/provider files
+
+## 8. Integration Expectations
+
+Integrate the shared platform into the app without breaking current flow.
+
+Required integration:
+- printer settings screen reachable from settings area
+- receipt pipeline usable by checkout flow
+- payment entities usable by checkout flow
+- app shell wraps main content cleanly
+- app still works when printer is never configured
+
+Graceful degradation:
+- if no printer configured, checkout still succeeds
+- if print fails, payment success remains valid
+- if Bluetooth unavailable, app does not crash
+
+## 9. Code Quality Requirements
+
+- small focused files
+- no dead code
+- no fake TODO scaffolding unless necessary
+- clear naming
+- immutable models when practical
+- comments only where needed
+- keep imports tidy
+- follow existing repo style and folder conventions
+- no business logic in widgets
+
+## 10. Scope Control
+
+This task is about the **platform**, not business features.
+
+Allowed:
+- shared printer
+- shared receipt pipeline
+- shared payment models/services
+- shared settings/app profile
+- shared shell
+- shared persistence cleanup
+
+Not allowed:
+- restaurant table flow
+- buffet logic
+- split bill
+- retail inventory overhaul
+- barcode workflow expansion
+- full business mode feature implementation
+
+## 11. Deliverables
+
+At the end, provide:
+1. Task Summary
+2. Files Created
+3. Files Modified
+4. Key Design Notes
+5. Manual Setup Required
+6. Risks / Tradeoffs
+7. Next Recommended Step
+
+## 12. Verification Checklist
+
+Before finishing, ensure:
+- app can still run without printer configured
+- checkout flow is not tightly coupled to Bluetooth plugin
+- receipt composition is separated from printer transport
+- settings/app profile can persist shared config
+- shell is reusable
+- code is ready for later business mode architecture work
+- no obvious compile/import/provider mismatches remain
+
+Preferred response format:
+## Task Summary
+## Files Created
+## Files Modified
+## Key Design Notes
+## Manual Setup Required
+## Risks / Tradeoffs
+## Next Recommended Step

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../app/bootstrap.dart';
-import '../../../checkout/presentation/providers/checkout_providers.dart';
+import '../../../payment/domain/entities/payment_method.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../models/order_model.dart';
 

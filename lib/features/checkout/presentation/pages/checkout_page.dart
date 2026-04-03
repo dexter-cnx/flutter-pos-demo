@@ -18,6 +18,8 @@ import '../providers/checkout_providers.dart';
 import '../services/promptpay_qr_service.dart';
 import '../../../printer/presentation/providers/printer_providers.dart';
 import '../../../printer/domain/entities/printer_status.dart';
+import '../../../payment/domain/entities/payment_method.dart';
+import '../../../payment/domain/entities/payment_status.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -70,21 +72,21 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
   void _resetSimulationState() {
     ref.read(paymentSimulationStateProvider.notifier).state =
-        PaymentSimulationState.idle;
+        PaymentStatus.pending;
   }
 
   Future<void> _simulateCardApproval() async {
     ref.read(paymentSimulationStateProvider.notifier).state =
-        PaymentSimulationState.processing;
+        PaymentStatus.processing;
     await Future<void>.delayed(const Duration(milliseconds: 1200));
     if (!mounted) return;
     ref.read(paymentSimulationStateProvider.notifier).state =
-        PaymentSimulationState.approved;
+        PaymentStatus.approved;
   }
 
   void _markQrAsPaid() {
     ref.read(paymentSimulationStateProvider.notifier).state =
-        PaymentSimulationState.approved;
+        PaymentStatus.approved;
   }
 
   Future<void> _copyReference(BuildContext context, String reference) async {
@@ -241,7 +243,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         method != PaymentMethod.cash || receivedAmount >= amountDue;
     final hasApprovedDigitalPayment =
         method == PaymentMethod.cash ||
-        simulationState == PaymentSimulationState.approved;
+        simulationState == PaymentStatus.approved;
     final canConfirmPayment =
         hasItems &&
         hasEnteredCash &&
@@ -571,7 +573,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     double amountDue,
     double receivedAmount,
     double change,
-    PaymentSimulationState simulationState,
+    PaymentStatus simulationState,
     AsyncValue<StoreProfile> storeProfileAsync,
     VoidCallback onConfirm,
   ) {
@@ -705,7 +707,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     BuildContext context,
     StoreProfile storeProfile,
     double amountDue,
-    PaymentSimulationState simulationState,
+    PaymentStatus simulationState,
   ) {
     final qrData = PromptPayQrService.build(
       storeName: storeProfile.storeName,
@@ -789,11 +791,11 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 label: Text('checkout.copy_reference'.tr()),
               ),
               FilledButton.icon(
-                onPressed: simulationState == PaymentSimulationState.approved
+                onPressed: simulationState == PaymentStatus.approved
                     ? null
                     : _markQrAsPaid,
                 icon: Icon(
-                  simulationState == PaymentSimulationState.approved
+                  simulationState == PaymentStatus.approved
                       ? Icons.check_circle_outline
                       : Icons.qr_code_2_rounded,
                 ),
@@ -816,7 +818,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
   Widget _buildCardSection(
     BuildContext context,
-    PaymentSimulationState simulationState,
+    PaymentStatus simulationState,
   ) {
     final theme = Theme.of(context);
 
@@ -855,12 +857,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           const SizedBox(height: 12),
           FilledButton.icon(
             onPressed:
-                simulationState == PaymentSimulationState.processing ||
-                    simulationState == PaymentSimulationState.approved
+                simulationState == PaymentStatus.processing ||
+                    simulationState == PaymentStatus.approved
                 ? null
                 : _simulateCardApproval,
             icon: Icon(
-              simulationState == PaymentSimulationState.approved
+              simulationState == PaymentStatus.approved
                   ? Icons.check_circle_outline
                   : Icons.credit_card,
             ),
@@ -873,7 +875,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
   Widget _buildSimulationStatus(
     BuildContext context,
-    PaymentSimulationState simulationState, {
+    PaymentStatus simulationState, {
     required String idleText,
     required String processingText,
     required String approvedText,
@@ -884,20 +886,25 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     late final Color color;
 
     switch (simulationState) {
-      case PaymentSimulationState.idle:
+      case PaymentStatus.pending:
         icon = Icons.schedule_outlined;
         text = idleText;
         color = theme.colorScheme.secondary;
         break;
-      case PaymentSimulationState.processing:
+      case PaymentStatus.processing:
         icon = Icons.sync_rounded;
         text = processingText;
         color = theme.colorScheme.tertiary;
         break;
-      case PaymentSimulationState.approved:
+      case PaymentStatus.approved:
         icon = Icons.verified_rounded;
         text = approvedText;
         color = Colors.green;
+        break;
+      default:
+        icon = Icons.error_outline_rounded;
+        text = 'Status: ${simulationState.name}';
+        color = theme.colorScheme.error;
         break;
     }
 

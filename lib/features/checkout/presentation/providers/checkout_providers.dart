@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-enum PaymentMethod { cash, qr, card }
-
-enum PaymentSimulationState { idle, processing, approved }
+import '../../../../features/payment/domain/entities/payment_method.dart';
+import '../../../../features/payment/domain/entities/payment_status.dart';
 
 final selectedPaymentMethodProvider = StateProvider<PaymentMethod>(
   (ref) => PaymentMethod.cash,
@@ -10,6 +8,6 @@ final selectedPaymentMethodProvider = StateProvider<PaymentMethod>(
 
 final cashReceivedProvider = StateProvider<double>((ref) => 0);
 
-final paymentSimulationStateProvider = StateProvider<PaymentSimulationState>(
-  (ref) => PaymentSimulationState.idle,
+final paymentSimulationStateProvider = StateProvider<PaymentStatus>(
+  (ref) => PaymentStatus.pending,
 );
