@@ -160,4 +160,16 @@ class MockPosRepository implements PosRepository {
 
   @override
   Future<void> restockProduct(String productId, int quantity) async {}
+
+  @override
+  Future<void> upsertCategory(Category category) async {}
+
+  @override
+  Future<void> deleteCategory(String id) async {}
+
+  @override
+  Future<void> upsertProduct(Product product) async {}
+
+  @override
+  Future<void> deleteProduct(String id) async {}
 }

@@ -46,13 +46,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     ref.listen<AsyncValue<String?>>(authNotifierProvider, (previous, next) {
       next.whenData((role) {
-        if (role != null) {
+        if (role == 'admin') {
+          context.go('/menu-management');
+        } else if (role == 'staff') {
           context.go('/');
         }
       });
     });
 
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(16),
+        child: TextButton.icon(
+          onPressed: () => _showAdminLogin(context, ref),
+          icon: const Icon(Icons.admin_panel_settings_outlined),
+          label: Text('login.admin_entry'.tr()),
+          style: TextButton.styleFrom(
+            foregroundColor: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: LayoutBuilder(
@@ -141,33 +154,45 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             }
 
             Widget buildPinIndicators() {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (index) {
-                  final filled = index < _pin.length;
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: indicatorGap),
-                    width: indicatorSize,
-                    height: indicatorSize,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: filled
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.surfaceContainerHigh,
-                      boxShadow: filled
-                          ? [
-                              BoxShadow(
-                                color: theme.colorScheme.primary.withValues(
-                                  alpha: 0.5,
-                                ),
-                                blurRadius: 10,
-                                spreadRadius: 2,
-                              ),
-                            ]
-                          : null,
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(4, (index) {
+                      final filled = index < _pin.length;
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: indicatorGap),
+                        width: indicatorSize,
+                        height: indicatorSize,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: filled
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.surfaceContainerHigh,
+                          boxShadow: filled
+                              ? [
+                                  BoxShadow(
+                                    color: theme.colorScheme.primary.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'login.pin_hint'.tr(),
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.hintColor.withValues(alpha: 0.6),
                     ),
-                  );
-                }),
+                  ),
+                ],
               );
             }
 
@@ -230,38 +255,42 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     color: theme.colorScheme.primary.withValues(alpha: 0.08),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildLanguageSelector(alignment: Alignment.centerLeft),
-                    const Spacer(),
-                    Text(
-                      'app.title'.tr(),
-                      style: theme.textTheme.displayLarge?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w800,
-                        height: 1.0,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: 460,
-                      child: Text(
-                        'login.subtitle'.tr(),
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          height: 1.35,
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        buildLanguageSelector(alignment: Alignment.centerLeft),
+                        const SizedBox(height: 32),
+                        Text(
+                          'app.title'.tr(),
+                          style: theme.textTheme.displayLarge?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w800,
+                            height: 1.0,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: 460,
+                          child: Text(
+                            'login.subtitle'.tr(),
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              height: 1.35,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        buildLandscapeBadge('login.demo_hint'.tr()),
+                        const SizedBox(height: 12),
+                        buildLandscapeBadge('settings.offline_first'.tr()),
+                        const SizedBox(height: 12),
+                        buildLandscapeBadge('settings.storage_ready'.tr()),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    buildLandscapeBadge('login.demo_hint'.tr()),
-                    const SizedBox(height: 12),
-                    buildLandscapeBadge('settings.offline_first'.tr()),
-                    const SizedBox(height: 12),
-                    buildLandscapeBadge('settings.storage_ready'.tr()),
-                    const Spacer(),
-                  ],
+                  ),
                 ),
               );
             }
@@ -423,6 +452,109 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Center(child: Icon(icon, size: 32)),
         ),
       ),
+    );
+  }
+
+  void _showAdminLogin(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => const _AdminLoginDialog(),
+    );
+  }
+}
+
+class _AdminLoginDialog extends ConsumerStatefulWidget {
+  const _AdminLoginDialog();
+
+  @override
+  ConsumerState<_AdminLoginDialog> createState() => _AdminLoginDialogState();
+}
+
+class _AdminLoginDialogState extends ConsumerState<_AdminLoginDialog> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('login.admin_entry'.tr()),
+      scrollable: true,
+      content: SizedBox(
+        width: 400, // ดีสำหรับ Tablet/Desktop
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'login.admin_hint'.tr(),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'login.username'.tr(),
+                prefixIcon: const Icon(Icons.person_outline),
+              ),
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              obscureText: _obscurePassword,
+              decoration: InputDecoration(
+                labelText: 'login.password'.tr(),
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscurePassword
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                  onPressed: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
+                ),
+              ),
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) {
+                ref.read(authNotifierProvider.notifier).loginWithAdmin(
+                      _usernameController.text,
+                      _passwordController.text,
+                    );
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('common.cancel'.tr()),
+        ),
+        FilledButton(
+          onPressed: () {
+            ref
+                .read(authNotifierProvider.notifier)
+                .loginWithAdmin(
+                  _usernameController.text,
+                  _passwordController.text,
+                );
+            Navigator.of(context).pop();
+          },
+          child: Text('login.sign_in'.tr()),
+        ),
+      ],
     );
   }
 }

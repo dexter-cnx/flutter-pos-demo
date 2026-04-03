@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,32 +42,46 @@ class ProductCard extends ConsumerWidget {
                     child: Container(
                       color: theme.colorScheme.surfaceContainerHighest,
                       child: product.imageUrl != null
-                          ? Image.network(
-                              product.imageUrl!,
-                              fit: BoxFit.cover,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return const Center(
-                                      child: SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
+                          ? (product.imageUrl!.startsWith('http') || kIsWeb)
+                              ? Image.network(
+                                  product.imageUrl!,
+                                  fit: BoxFit.contain,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return const Center(
+                                          child: SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                  errorBuilder: (_, __, ___) => Center(
+                                    child: Icon(
+                                      Icons.fastfood_rounded,
+                                      size: 48,
+                                      color: theme.colorScheme.primary.withValues(
+                                        alpha: 0.5,
                                       ),
-                                    );
-                                  },
-                              errorBuilder: (_, __, ___) => Center(
-                                child: Icon(
-                                  Icons.fastfood_rounded,
-                                  size: 48,
-                                  color: theme.colorScheme.primary.withValues(
-                                    alpha: 0.5,
+                                    ),
                                   ),
-                                ),
-                              ),
-                            )
+                                )
+                              : Image.file(
+                                  File(product.imageUrl!),
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (_, __, ___) => Center(
+                                    child: Icon(
+                                      Icons.fastfood_rounded,
+                                      size: 48,
+                                      color: theme.colorScheme.primary.withValues(
+                                        alpha: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                )
                           : Center(
                               child: Icon(
                                 Icons.fastfood_rounded,

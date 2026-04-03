@@ -19,7 +19,42 @@
     "feature_demo": {
       "title": "Demo mode",
       "body": "Use any 4-digit numeric PIN to enter the app and explore the flow safely."
-    }
+    },
+    "admin_entry": "Admin Login",
+    "username": "Username",
+    "password": "Password",
+    "sign_in": "Sign In",
+    "admin_hint": "Demo: admin / admin123",
+    "pin_hint": "Any 4 digits"
+  },
+  "menu": {
+    "browse_image": "Pick Image",
+    "image_url_hint": "Or enter Image URL",
+    "web_image_warning": "On Web",
+    "title": "Menu Management",
+    "category_title": "Category Management",
+    "product_title": "Product Management",
+    "add_category": "Add Category",
+    "edit_category": "Edit Category",
+    "delete_category": "Delete Category",
+    "category_name": "Category Name",
+    "sort_order": "Sort Order",
+    "add_product": "Add Product",
+    "edit_product": "Edit Product",
+    "delete_product": "Delete Product",
+    "product_name": "Product Name",
+    "price": "Price",
+    "sku": "SKU / Barcode",
+    "stock": "Stock Quantity",
+    "image_url": "Image URL",
+    "select_category": "Select Category",
+    "is_available": "Is Available",
+    "save_success": "Saved successfully.",
+    "delete_success": "Deleted successfully.",
+    "confirm_delete_title": "Delete {}?",
+    "confirm_delete_message": "This action cannot be undone.",
+    "empty_categories": "No categories found.",
+    "empty_products": "No products found."
   },
   "dashboard": {
     "title": "Dashboard"
@@ -91,7 +126,9 @@
     "confirm_reset_web_title": "Reset web demo data?",
     "confirm_reset_web_message": "This will clear web-persisted settings",
     "confirm_reset_web_action": "Reset Demo Data",
-    "reset_web_success": "Web demo data has been reset."
+    "reset_web_success": "Web demo data has been reset.",
+    "logout_title": "Logout",
+    "logout_confirm": "Are you sure you want to log out?"
   },
   "common": {
     "pay": "Pay Now",

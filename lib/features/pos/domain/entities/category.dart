@@ -8,5 +8,6 @@ class Category with _$Category {
     required String id,
     required String name,
     @Default(0) int sortOrder,
+    String? imageUrl,
   }) = _Category;
 }

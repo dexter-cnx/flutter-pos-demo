@@ -6,7 +6,7 @@ part of 'order_history_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ordersHash() => r'709073178552c2afbbdf9aae733ab9648c7648e4';
+String _$ordersHash() => r'07daf038f476a03c148559fa83623c15450b25c4';
 
 /// See also [orders].
 @ProviderFor(orders)
@@ -21,7 +21,7 @@ final ordersProvider = AutoDisposeFutureProvider<List<OrderModel>>.internal(
 );
 
 typedef OrdersRef = AutoDisposeFutureProviderRef<List<OrderModel>>;
-String _$orderReceiptHash() => r'5d28ae86474c7e5d3510baa0e1f5d3cd1a2b0b10';
+String _$orderReceiptHash() => r'fef0b4d09baad33287c088ccf058934368ab7158';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -160,7 +160,7 @@ class _OrderReceiptProviderElement
   int get orderId => (origin as OrderReceiptProvider).orderId;
 }
 
-String _$orderCountHash() => r'7629264847415940638eaeace672d683a8805650';
+String _$orderCountHash() => r'c5f8051f7bbc6fb34806655d64598baa162d6c92';
 
 /// See also [orderCount].
 @ProviderFor(orderCount)
@@ -175,7 +175,7 @@ final orderCountProvider = AutoDisposeFutureProvider<int>.internal(
 );
 
 typedef OrderCountRef = AutoDisposeFutureProviderRef<int>;
-String _$orderHistoryHash() => r'82dffe693d378ddd47768fb30b9df7f624231184';
+String _$orderHistoryHash() => r'9c0c8b27c53c92a34479c2cc55963a6cb93ded1c';
 
 /// See also [OrderHistory].
 @ProviderFor(OrderHistory)

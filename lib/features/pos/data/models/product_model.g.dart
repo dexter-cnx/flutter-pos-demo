@@ -15,7 +15,7 @@ extension GetProductModelCollection on Isar {
 
 const ProductModelSchema = CollectionSchema(
   name: r'products',
-  id: -(660435731 * 1000000000 + 964459972),
+  id: -660435731964459972,
   properties: {
     r'imageUrl': PropertySchema(
       id: 0,
@@ -43,7 +43,7 @@ const ProductModelSchema = CollectionSchema(
   idName: r'id',
   indexes: {
     r'name': IndexSchema(
-      id: (879695947 * 1000000000 + 855722453),
+      id: 879695947855722453,
       name: r'name',
       unique: true,
       replace: false,
@@ -58,7 +58,7 @@ const ProductModelSchema = CollectionSchema(
   },
   links: {
     r'category': LinkSchema(
-      id: (3390130794 * 1000000000 + 282947987),
+      id: 3390130794282947987,
       name: r'category',
       target: r'categories',
       single: true,

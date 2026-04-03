@@ -10,6 +10,7 @@ import '../../../../app/widgets/async_state_view.dart';
 import '../../domain/entities/store_profile.dart';
 import '../providers/settings_providers.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../../pos/presentation/providers/pos_providers.dart';
 
@@ -33,6 +34,49 @@ class SettingsPage extends ConsumerWidget {
           onPressed: () => context.go('/'),
         ),
         title: Text('settings.title'.tr()),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'settings.logout_title'.tr(),
+            onPressed: () async {
+              final authState = ref.read(authNotifierProvider);
+              final isAdmin = authState.value == 'admin';
+
+              if (isAdmin) {
+                ref.read(authNotifierProvider.notifier).logout();
+                if (context.mounted) context.go('/login');
+                return;
+              }
+
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('settings.logout_title'.tr()),
+                  content: Text('settings.logout_confirm'.tr()),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('common.cancel'.tr()),
+                    ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                        foregroundColor: Theme.of(context).colorScheme.onError,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text('settings.logout_title'.tr()),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmed == true && context.mounted) {
+                ref.read(authNotifierProvider.notifier).logout();
+                if (context.mounted) context.go('/login');
+              }
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: LayoutBuilder(
@@ -171,6 +215,15 @@ class SettingsPage extends ConsumerWidget {
                               icon: const Icon(Icons.delete_sweep_outlined),
                               label: Text('settings.clear_orders'.tr()),
                             ),
+                            if (ref.watch(authNotifierProvider).value ==
+                                'admin')
+                              OutlinedButton.icon(
+                                onPressed: () => context.go('/menu-management'),
+                                icon: const Icon(
+                                  Icons.restaurant_menu_outlined,
+                                ),
+                                label: Text('menu.title'.tr()),
+                              ),
                             OutlinedButton.icon(
                               onPressed: () => context.go('/inventory'),
                               icon: const Icon(Icons.inventory_2_outlined),

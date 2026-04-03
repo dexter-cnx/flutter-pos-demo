@@ -19,7 +19,42 @@
     "feature_demo": {
       "title": "โหมดเดโม",
       "body": "ใช้ PIN ตัวเลข 4 หลักใดก็ได้เพื่อเข้าสู่แอปและลองใช้งานได้อย่างปลอดภัย"
-    }
+    },
+    "admin_entry": "สำหรับแอดมิน",
+    "username": "ชื่อผู้ใช้งาน",
+    "password": "รหัสผ่าน",
+    "sign_in": "เข้าสู่ระบบ",
+    "admin_hint": "เดโม: admin / admin123",
+    "pin_hint": "ตัวเลข 4 หลักใดก็ได้"
+  },
+  "menu": {
+    "browse_image": "เลือกรูปภาพ",
+    "image_url_hint": "หรือใส่ URL รูปภาพ",
+    "web_image_warning": "images are read only. Use URL for persistence in this demo.",
+    "title": "จัดการเมนูอาหาร",
+    "category_title": "จัดการหมวดหมู่สินค้า",
+    "product_title": "จัดการสินค้า",
+    "add_category": "เพิ่มหมวดหมู่",
+    "edit_category": "แก้ไขหมวดหมู่",
+    "delete_category": "ลบหมวดหมู่",
+    "category_name": "ชื่อหมวดหมู่",
+    "sort_order": "ลำดับการแสดงผล",
+    "add_product": "เพิ่มสินค้า",
+    "edit_product": "แก้ไขสินค้า",
+    "delete_product": "ลบสินค้า",
+    "product_name": "ชื่อสินค้า",
+    "price": "ราคา",
+    "sku": "รหัสสินค้า / บาร์โค้ด",
+    "stock": "จำนวนสต็อก",
+    "image_url": "ลิงก์รูปภาพ",
+    "select_category": "เลือกหมวดหมู่",
+    "is_available": "พร้อมขาย",
+    "save_success": "บันทึกข้อมูลเรียบร้อยแล้ว",
+    "delete_success": "ลบข้อมูลเรียบร้อยแล้ว",
+    "confirm_delete_title": "ลบ {} หรือไม่",
+    "confirm_delete_message": "การกระทำนี้ไม่สามารถย้อนกลับได้",
+    "empty_categories": "ไม่พบหมวดหมู่สินค้า",
+    "empty_products": "ไม่พบสินค้า"
   },
   "dashboard": {
     "title": "แดชบอร์ด"
@@ -91,7 +126,9 @@
     "confirm_reset_web_title": "รีเซ็ตข้อมูลเดโมบนเว็บหรือไม่",
     "confirm_reset_web_message": "orders",
     "confirm_reset_web_action": "รีเซ็ตข้อมูลเดโม",
-    "reset_web_success": "รีเซ็ตข้อมูลเดโมบนเว็บเรียบร้อยแล้ว"
+    "reset_web_success": "รีเซ็ตข้อมูลเดโมบนเว็บเรียบร้อยแล้ว",
+    "logout_title": "ออกจากระบบ",
+    "logout_confirm": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?"
   },
   "common": {
     "pay": "ชำระเงิน",

@@ -6,7 +6,7 @@ part of 'pos_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$posRepositoryHash() => r'68b6531588ac1f209270a7c19eb78f6b3e77b132';
+String _$posRepositoryHash() => r'c0c55d4b2c60cd12866208ca464f80d29d44a997';
 
 /// See also [posRepository].
 @ProviderFor(posRepository)
@@ -129,7 +129,7 @@ final selectedCategoryIdProvider =
     );
 
 typedef _$SelectedCategoryId = AutoDisposeNotifier<String?>;
-String _$inventoryActionsHash() => r'6c63633ebb460dde0d1efbfad883815879faa12b';
+String _$inventoryActionsHash() => r'761d82a264492ba06db5e9c6a34105c17d549a78';
 
 /// See also [InventoryActions].
 @ProviderFor(InventoryActions)

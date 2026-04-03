@@ -85,6 +85,73 @@ class LocalPosRepository implements PosRepository {
     });
   }
 
+  @override
+  Future<void> upsertCategory(Category category) async {
+    final database = isar;
+    if (database == null) return;
+
+    final model = CategoryModel()
+      ..id = int.tryParse(category.id) ?? Isar.autoIncrement
+      ..name = category.name
+      ..sortOrder = category.sortOrder
+      ..imageUrl = category.imageUrl;
+
+    await database.writeTxn(() => database.categoryModels.put(model));
+  }
+
+  @override
+  Future<void> deleteCategory(String id) async {
+    final database = isar;
+    final categoryId = int.tryParse(id);
+    if (database == null || categoryId == null) return;
+
+    await database.writeTxn(() async {
+      // Find products related to this category and unlink them?
+      // Or just delete if that's the intention.
+      // The current PosRepository interface doesn't specify cascading.
+      await database.categoryModels.delete(categoryId);
+    });
+  }
+
+  @override
+  Future<void> upsertProduct(Product product) async {
+    final database = isar;
+    if (database == null) return;
+
+    final model = ProductModel()
+      ..id = int.tryParse(product.id) ?? Isar.autoIncrement
+      ..name = product.name
+      ..price = product.price
+      ..sku = product.sku
+      ..stockQuantity = product.stockQuantity
+      ..imageUrl = product.imageUrl
+      ..isAvailable = product.isAvailable;
+
+    if (product.category != null) {
+      final categoryId = int.tryParse(product.category!.id);
+      if (categoryId != null) {
+        final categoryModel = await database.categoryModels.get(categoryId);
+        if (categoryModel != null) {
+          model.category.value = categoryModel;
+        }
+      }
+    }
+
+    await database.writeTxn(() async {
+      await database.productModels.put(model);
+      await model.category.save();
+    });
+  }
+
+  @override
+  Future<void> deleteProduct(String id) async {
+    final database = isar;
+    final productId = int.tryParse(id);
+    if (database == null || productId == null) return;
+
+    await database.writeTxn(() => database.productModels.delete(productId));
+  }
+
   Category _mapCategory(CategoryModel model) {
     return Category(
       id: model.id.toString(),

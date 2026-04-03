@@ -77,12 +77,36 @@ class InventoryActions extends _$InventoryActions {
   FutureOr<void> build() {}
 
   Future<void> deductStock(Map<String, int> quantitiesByProductId) async {
-    await ref.watch(posRepositoryProvider).deductStock(quantitiesByProductId);
+    await ref.read(posRepositoryProvider).deductStock(quantitiesByProductId);
     _invalidateInventoryViews();
   }
 
   Future<void> restockProduct(String productId, int quantity) async {
-    await ref.watch(posRepositoryProvider).restockProduct(productId, quantity);
+    await ref.read(posRepositoryProvider).restockProduct(productId, quantity);
+    _invalidateInventoryViews();
+  }
+
+  Future<void> upsertCategory(Category category) async {
+    await ref.read(posRepositoryProvider).upsertCategory(category);
+    ref.invalidate(categoriesProvider);
+    ref.invalidate(categoryCountProvider);
+    _invalidateInventoryViews();
+  }
+
+  Future<void> deleteCategory(String id) async {
+    await ref.read(posRepositoryProvider).deleteCategory(id);
+    ref.invalidate(categoriesProvider);
+    ref.invalidate(categoryCountProvider);
+    _invalidateInventoryViews();
+  }
+
+  Future<void> upsertProduct(Product product) async {
+    await ref.read(posRepositoryProvider).upsertProduct(product);
+    _invalidateInventoryViews();
+  }
+
+  Future<void> deleteProduct(String id) async {
+    await ref.read(posRepositoryProvider).deleteProduct(id);
     _invalidateInventoryViews();
   }
 
@@ -91,6 +115,5 @@ class InventoryActions extends _$InventoryActions {
     ref.invalidate(inventoryProductsProvider);
     ref.invalidate(productCountProvider);
     ref.invalidate(lowStockCountProvider);
-    state = const AsyncData(null);
   }
 }
