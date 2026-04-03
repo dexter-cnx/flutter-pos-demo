@@ -12,14 +12,14 @@ part of 'category.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$Category {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   int get sortOrder => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CategoryCopyWith<Category> get copyWith =>
@@ -31,7 +31,7 @@ abstract class $CategoryCopyWith<$Res> {
   factory $CategoryCopyWith(Category value, $Res Function(Category) then) =
       _$CategoryCopyWithImpl<$Res, Category>;
   @useResult
-  $Res call({String id, String name, int sortOrder});
+  $Res call({String id, String name, int sortOrder, String? imageUrl});
 }
 
 /// @nodoc
@@ -50,24 +50,26 @@ class _$CategoryCopyWithImpl<$Res, $Val extends Category>
     Object? id = null,
     Object? name = null,
     Object? sortOrder = null,
+    Object? imageUrl = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-            sortOrder: null == sortOrder
-                ? _value.sortOrder
-                : sortOrder // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      sortOrder: null == sortOrder
+          ? _value.sortOrder
+          : sortOrder // ignore: cast_nullable_to_non_nullable
+              as int,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
   }
 }
 
@@ -75,12 +77,11 @@ class _$CategoryCopyWithImpl<$Res, $Val extends Category>
 abstract class _$$CategoryImplCopyWith<$Res>
     implements $CategoryCopyWith<$Res> {
   factory _$$CategoryImplCopyWith(
-    _$CategoryImpl value,
-    $Res Function(_$CategoryImpl) then,
-  ) = __$$CategoryImplCopyWithImpl<$Res>;
+          _$CategoryImpl value, $Res Function(_$CategoryImpl) then) =
+      __$$CategoryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, int sortOrder});
+  $Res call({String id, String name, int sortOrder, String? imageUrl});
 }
 
 /// @nodoc
@@ -88,9 +89,8 @@ class __$$CategoryImplCopyWithImpl<$Res>
     extends _$CategoryCopyWithImpl<$Res, _$CategoryImpl>
     implements _$$CategoryImplCopyWith<$Res> {
   __$$CategoryImplCopyWithImpl(
-    _$CategoryImpl _value,
-    $Res Function(_$CategoryImpl) _then,
-  ) : super(_value, _then);
+      _$CategoryImpl _value, $Res Function(_$CategoryImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -98,34 +98,37 @@ class __$$CategoryImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? sortOrder = null,
+    Object? imageUrl = freezed,
   }) {
-    return _then(
-      _$CategoryImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-        sortOrder: null == sortOrder
-            ? _value.sortOrder
-            : sortOrder // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
+    return _then(_$CategoryImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      sortOrder: null == sortOrder
+          ? _value.sortOrder
+          : sortOrder // ignore: cast_nullable_to_non_nullable
+              as int,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
   }
 }
 
 /// @nodoc
 
 class _$CategoryImpl implements _Category {
-  const _$CategoryImpl({
-    required this.id,
-    required this.name,
-    this.sortOrder = 0,
-  });
+  const _$CategoryImpl(
+      {required this.id,
+      required this.name,
+      this.sortOrder = 0,
+      this.imageUrl});
 
   @override
   final String id;
@@ -134,10 +137,12 @@ class _$CategoryImpl implements _Category {
   @override
   @JsonKey()
   final int sortOrder;
+  @override
+  final String? imageUrl;
 
   @override
   String toString() {
-    return 'Category(id: $id, name: $name, sortOrder: $sortOrder)';
+    return 'Category(id: $id, name: $name, sortOrder: $sortOrder, imageUrl: $imageUrl)';
   }
 
   @override
@@ -148,11 +153,13 @@ class _$CategoryImpl implements _Category {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.sortOrder, sortOrder) ||
-                other.sortOrder == sortOrder));
+                other.sortOrder == sortOrder) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, sortOrder);
+  int get hashCode => Object.hash(runtimeType, id, name, sortOrder, imageUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -162,11 +169,11 @@ class _$CategoryImpl implements _Category {
 }
 
 abstract class _Category implements Category {
-  const factory _Category({
-    required final String id,
-    required final String name,
-    final int sortOrder,
-  }) = _$CategoryImpl;
+  const factory _Category(
+      {required final String id,
+      required final String name,
+      final int sortOrder,
+      final String? imageUrl}) = _$CategoryImpl;
 
   @override
   String get id;
@@ -174,6 +181,8 @@ abstract class _Category implements Category {
   String get name;
   @override
   int get sortOrder;
+  @override
+  String? get imageUrl;
   @override
   @JsonKey(ignore: true)
   _$$CategoryImplCopyWith<_$CategoryImpl> get copyWith =>

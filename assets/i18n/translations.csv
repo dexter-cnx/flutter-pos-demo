@@ -15,6 +15,9 @@ login.admin_entry,Admin Login,สำหรับแอดมิน
 login.username,Username,ชื่อผู้ใช้งาน
 login.password,Password,รหัสผ่าน
 login.sign_in,Sign In,เข้าสู่ระบบ
+menu.browse_image,Pick Image,เลือกรูปภาพ
+menu.image_url_hint,Or enter Image URL,หรือใส่ URL รูปภาพ
+menu.web_image_warning,On Web, images are read only. Use URL for persistence in this demo.,บนเว็บรูปภาพเป็นแบบอ่านอย่างเดียว โปรดใช้ URL เพื่อบันทึกลงฐานข้อมูลในตัวอย่างนี้
 dashboard.title,Dashboard,แดชบอร์ด
 pos.title,Point of Sale,ขายหน้าร้าน
 inventory.title,Inventory,คลังสินค้า

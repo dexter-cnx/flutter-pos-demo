@@ -12,8 +12,7 @@ part of 'product.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$Product {
@@ -35,16 +34,15 @@ abstract class $ProductCopyWith<$Res> {
   factory $ProductCopyWith(Product value, $Res Function(Product) then) =
       _$ProductCopyWithImpl<$Res, Product>;
   @useResult
-  $Res call({
-    String id,
-    String name,
-    double price,
-    String sku,
-    int stockQuantity,
-    bool isAvailable,
-    String? imageUrl,
-    Category? category,
-  });
+  $Res call(
+      {String id,
+      String name,
+      double price,
+      String sku,
+      int stockQuantity,
+      bool isAvailable,
+      String? imageUrl,
+      Category? category});
 
   $CategoryCopyWith<$Res>? get category;
 }
@@ -71,43 +69,40 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? imageUrl = freezed,
     Object? category = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-            price: null == price
-                ? _value.price
-                : price // ignore: cast_nullable_to_non_nullable
-                      as double,
-            sku: null == sku
-                ? _value.sku
-                : sku // ignore: cast_nullable_to_non_nullable
-                      as String,
-            stockQuantity: null == stockQuantity
-                ? _value.stockQuantity
-                : stockQuantity // ignore: cast_nullable_to_non_nullable
-                      as int,
-            isAvailable: null == isAvailable
-                ? _value.isAvailable
-                : isAvailable // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            imageUrl: freezed == imageUrl
-                ? _value.imageUrl
-                : imageUrl // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            category: freezed == category
-                ? _value.category
-                : category // ignore: cast_nullable_to_non_nullable
-                      as Category?,
-          )
-          as $Val,
-    );
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      price: null == price
+          ? _value.price
+          : price // ignore: cast_nullable_to_non_nullable
+              as double,
+      sku: null == sku
+          ? _value.sku
+          : sku // ignore: cast_nullable_to_non_nullable
+              as String,
+      stockQuantity: null == stockQuantity
+          ? _value.stockQuantity
+          : stockQuantity // ignore: cast_nullable_to_non_nullable
+              as int,
+      isAvailable: null == isAvailable
+          ? _value.isAvailable
+          : isAvailable // ignore: cast_nullable_to_non_nullable
+              as bool,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      category: freezed == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as Category?,
+    ) as $Val);
   }
 
   @override
@@ -126,21 +121,19 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
 /// @nodoc
 abstract class _$$ProductImplCopyWith<$Res> implements $ProductCopyWith<$Res> {
   factory _$$ProductImplCopyWith(
-    _$ProductImpl value,
-    $Res Function(_$ProductImpl) then,
-  ) = __$$ProductImplCopyWithImpl<$Res>;
+          _$ProductImpl value, $Res Function(_$ProductImpl) then) =
+      __$$ProductImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    String id,
-    String name,
-    double price,
-    String sku,
-    int stockQuantity,
-    bool isAvailable,
-    String? imageUrl,
-    Category? category,
-  });
+  $Res call(
+      {String id,
+      String name,
+      double price,
+      String sku,
+      int stockQuantity,
+      bool isAvailable,
+      String? imageUrl,
+      Category? category});
 
   @override
   $CategoryCopyWith<$Res>? get category;
@@ -151,9 +144,8 @@ class __$$ProductImplCopyWithImpl<$Res>
     extends _$ProductCopyWithImpl<$Res, _$ProductImpl>
     implements _$$ProductImplCopyWith<$Res> {
   __$$ProductImplCopyWithImpl(
-    _$ProductImpl _value,
-    $Res Function(_$ProductImpl) _then,
-  ) : super(_value, _then);
+      _$ProductImpl _value, $Res Function(_$ProductImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -167,58 +159,55 @@ class __$$ProductImplCopyWithImpl<$Res>
     Object? imageUrl = freezed,
     Object? category = freezed,
   }) {
-    return _then(
-      _$ProductImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-        price: null == price
-            ? _value.price
-            : price // ignore: cast_nullable_to_non_nullable
-                  as double,
-        sku: null == sku
-            ? _value.sku
-            : sku // ignore: cast_nullable_to_non_nullable
-                  as String,
-        stockQuantity: null == stockQuantity
-            ? _value.stockQuantity
-            : stockQuantity // ignore: cast_nullable_to_non_nullable
-                  as int,
-        isAvailable: null == isAvailable
-            ? _value.isAvailable
-            : isAvailable // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        imageUrl: freezed == imageUrl
-            ? _value.imageUrl
-            : imageUrl // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        category: freezed == category
-            ? _value.category
-            : category // ignore: cast_nullable_to_non_nullable
-                  as Category?,
-      ),
-    );
+    return _then(_$ProductImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      price: null == price
+          ? _value.price
+          : price // ignore: cast_nullable_to_non_nullable
+              as double,
+      sku: null == sku
+          ? _value.sku
+          : sku // ignore: cast_nullable_to_non_nullable
+              as String,
+      stockQuantity: null == stockQuantity
+          ? _value.stockQuantity
+          : stockQuantity // ignore: cast_nullable_to_non_nullable
+              as int,
+      isAvailable: null == isAvailable
+          ? _value.isAvailable
+          : isAvailable // ignore: cast_nullable_to_non_nullable
+              as bool,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      category: freezed == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as Category?,
+    ));
   }
 }
 
 /// @nodoc
 
 class _$ProductImpl implements _Product {
-  const _$ProductImpl({
-    required this.id,
-    required this.name,
-    required this.price,
-    required this.sku,
-    this.stockQuantity = 0,
-    this.isAvailable = true,
-    this.imageUrl,
-    this.category,
-  });
+  const _$ProductImpl(
+      {required this.id,
+      required this.name,
+      required this.price,
+      required this.sku,
+      this.stockQuantity = 0,
+      this.isAvailable = true,
+      this.imageUrl,
+      this.category});
 
   @override
   final String id;
@@ -264,17 +253,8 @@ class _$ProductImpl implements _Product {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    name,
-    price,
-    sku,
-    stockQuantity,
-    isAvailable,
-    imageUrl,
-    category,
-  );
+  int get hashCode => Object.hash(runtimeType, id, name, price, sku,
+      stockQuantity, isAvailable, imageUrl, category);
 
   @JsonKey(ignore: true)
   @override
@@ -284,16 +264,15 @@ class _$ProductImpl implements _Product {
 }
 
 abstract class _Product implements Product {
-  const factory _Product({
-    required final String id,
-    required final String name,
-    required final double price,
-    required final String sku,
-    final int stockQuantity,
-    final bool isAvailable,
-    final String? imageUrl,
-    final Category? category,
-  }) = _$ProductImpl;
+  const factory _Product(
+      {required final String id,
+      required final String name,
+      required final double price,
+      required final String sku,
+      final int stockQuantity,
+      final bool isAvailable,
+      final String? imageUrl,
+      final Category? category}) = _$ProductImpl;
 
   @override
   String get id;

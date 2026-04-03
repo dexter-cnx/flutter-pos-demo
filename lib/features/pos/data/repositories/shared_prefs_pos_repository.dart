@@ -207,6 +207,7 @@ class SharedPrefsPosRepository implements PosRepository {
             'id': category.id,
             'name': category.name,
             'sortOrder': category.sortOrder,
+            'imageUrl': category.imageUrl,
           },
         )
         .toList();
@@ -234,6 +235,7 @@ class SharedPrefsPosRepository implements PosRepository {
       id: json['id'] as String,
       name: json['name'] as String,
       sortOrder: json['sortOrder'] as int? ?? 0,
+      imageUrl: json['imageUrl'] as String?,
     );
   }
 

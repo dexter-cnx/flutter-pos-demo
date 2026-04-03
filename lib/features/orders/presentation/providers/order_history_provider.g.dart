@@ -6,22 +6,21 @@ part of 'order_history_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ordersHash() => r'709073178552c2afbbdf9aae733ab9648c7648e4';
+String _$ordersHash() => r'07daf038f476a03c148559fa83623c15450b25c4';
 
 /// See also [orders].
 @ProviderFor(orders)
 final ordersProvider = AutoDisposeFutureProvider<List<OrderModel>>.internal(
   orders,
   name: r'ordersProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$ordersHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$ordersHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef OrdersRef = AutoDisposeFutureProviderRef<List<OrderModel>>;
-String _$orderReceiptHash() => r'5d28ae86474c7e5d3510baa0e1f5d3cd1a2b0b10';
+String _$orderReceiptHash() => r'fef0b4d09baad33287c088ccf058934368ab7158';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -54,15 +53,21 @@ class OrderReceiptFamily extends Family<AsyncValue<OrderModel?>> {
   const OrderReceiptFamily();
 
   /// See also [orderReceipt].
-  OrderReceiptProvider call(int orderId) {
-    return OrderReceiptProvider(orderId);
+  OrderReceiptProvider call(
+    int orderId,
+  ) {
+    return OrderReceiptProvider(
+      orderId,
+    );
   }
 
   @override
   OrderReceiptProvider getProviderOverride(
     covariant OrderReceiptProvider provider,
   ) {
-    return call(provider.orderId);
+    return call(
+      provider.orderId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -83,19 +88,24 @@ class OrderReceiptFamily extends Family<AsyncValue<OrderModel?>> {
 /// See also [orderReceipt].
 class OrderReceiptProvider extends AutoDisposeFutureProvider<OrderModel?> {
   /// See also [orderReceipt].
-  OrderReceiptProvider(int orderId)
-    : this._internal(
-        (ref) => orderReceipt(ref as OrderReceiptRef, orderId),
-        from: orderReceiptProvider,
-        name: r'orderReceiptProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$orderReceiptHash,
-        dependencies: OrderReceiptFamily._dependencies,
-        allTransitiveDependencies:
-            OrderReceiptFamily._allTransitiveDependencies,
-        orderId: orderId,
-      );
+  OrderReceiptProvider(
+    int orderId,
+  ) : this._internal(
+          (ref) => orderReceipt(
+            ref as OrderReceiptRef,
+            orderId,
+          ),
+          from: orderReceiptProvider,
+          name: r'orderReceiptProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$orderReceiptHash,
+          dependencies: OrderReceiptFamily._dependencies,
+          allTransitiveDependencies:
+              OrderReceiptFamily._allTransitiveDependencies,
+          orderId: orderId,
+        );
 
   OrderReceiptProvider._internal(
     super._createNotifier, {
@@ -152,43 +162,40 @@ mixin OrderReceiptRef on AutoDisposeFutureProviderRef<OrderModel?> {
 }
 
 class _OrderReceiptProviderElement
-    extends AutoDisposeFutureProviderElement<OrderModel?>
-    with OrderReceiptRef {
+    extends AutoDisposeFutureProviderElement<OrderModel?> with OrderReceiptRef {
   _OrderReceiptProviderElement(super.provider);
 
   @override
   int get orderId => (origin as OrderReceiptProvider).orderId;
 }
 
-String _$orderCountHash() => r'7629264847415940638eaeace672d683a8805650';
+String _$orderCountHash() => r'c5f8051f7bbc6fb34806655d64598baa162d6c92';
 
 /// See also [orderCount].
 @ProviderFor(orderCount)
 final orderCountProvider = AutoDisposeFutureProvider<int>.internal(
   orderCount,
   name: r'orderCountProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$orderCountHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$orderCountHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 typedef OrderCountRef = AutoDisposeFutureProviderRef<int>;
-String _$orderHistoryHash() => r'82dffe693d378ddd47768fb30b9df7f624231184';
+String _$orderHistoryHash() => r'9c0c8b27c53c92a34479c2cc55963a6cb93ded1c';
 
 /// See also [OrderHistory].
 @ProviderFor(OrderHistory)
 final orderHistoryProvider =
     AutoDisposeAsyncNotifierProvider<OrderHistory, void>.internal(
-      OrderHistory.new,
-      name: r'orderHistoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$orderHistoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  OrderHistory.new,
+  name: r'orderHistoryProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$orderHistoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$OrderHistory = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint

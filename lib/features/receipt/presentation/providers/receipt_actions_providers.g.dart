@@ -34,7 +34,9 @@ abstract class _$DownloadedReceiptPath
     extends BuildlessAutoDisposeNotifier<String?> {
   late final int orderId;
 
-  String? build(int orderId);
+  String? build(
+    int orderId,
+  );
 }
 
 /// See also [DownloadedReceiptPath].
@@ -47,15 +49,21 @@ class DownloadedReceiptPathFamily extends Family<String?> {
   const DownloadedReceiptPathFamily();
 
   /// See also [DownloadedReceiptPath].
-  DownloadedReceiptPathProvider call(int orderId) {
-    return DownloadedReceiptPathProvider(orderId);
+  DownloadedReceiptPathProvider call(
+    int orderId,
+  ) {
+    return DownloadedReceiptPathProvider(
+      orderId,
+    );
   }
 
   @override
   DownloadedReceiptPathProvider getProviderOverride(
     covariant DownloadedReceiptPathProvider provider,
   ) {
-    return call(provider.orderId);
+    return call(
+      provider.orderId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -77,19 +85,21 @@ class DownloadedReceiptPathFamily extends Family<String?> {
 class DownloadedReceiptPathProvider
     extends AutoDisposeNotifierProviderImpl<DownloadedReceiptPath, String?> {
   /// See also [DownloadedReceiptPath].
-  DownloadedReceiptPathProvider(int orderId)
-    : this._internal(
-        () => DownloadedReceiptPath()..orderId = orderId,
-        from: downloadedReceiptPathProvider,
-        name: r'downloadedReceiptPathProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$downloadedReceiptPathHash,
-        dependencies: DownloadedReceiptPathFamily._dependencies,
-        allTransitiveDependencies:
-            DownloadedReceiptPathFamily._allTransitiveDependencies,
-        orderId: orderId,
-      );
+  DownloadedReceiptPathProvider(
+    int orderId,
+  ) : this._internal(
+          () => DownloadedReceiptPath()..orderId = orderId,
+          from: downloadedReceiptPathProvider,
+          name: r'downloadedReceiptPathProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$downloadedReceiptPathHash,
+          dependencies: DownloadedReceiptPathFamily._dependencies,
+          allTransitiveDependencies:
+              DownloadedReceiptPathFamily._allTransitiveDependencies,
+          orderId: orderId,
+        );
 
   DownloadedReceiptPathProvider._internal(
     super._createNotifier, {
@@ -104,8 +114,12 @@ class DownloadedReceiptPathProvider
   final int orderId;
 
   @override
-  String? runNotifierBuild(covariant DownloadedReceiptPath notifier) {
-    return notifier.build(orderId);
+  String? runNotifierBuild(
+    covariant DownloadedReceiptPath notifier,
+  ) {
+    return notifier.build(
+      orderId,
+    );
   }
 
   @override
@@ -126,7 +140,7 @@ class DownloadedReceiptPathProvider
 
   @override
   AutoDisposeNotifierProviderElement<DownloadedReceiptPath, String?>
-  createElement() {
+      createElement() {
     return _DownloadedReceiptPathProviderElement(this);
   }
 
@@ -157,6 +171,5 @@ class _DownloadedReceiptPathProviderElement
   @override
   int get orderId => (origin as DownloadedReceiptPathProvider).orderId;
 }
-
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

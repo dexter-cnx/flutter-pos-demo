@@ -440,51 +440,79 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void _showAdminLogin(BuildContext context, WidgetRef ref) {
-    final usernameController = TextEditingController();
-    final passwordController = TextEditingController();
-
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('login.admin_entry'.tr()),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: usernameController,
-              decoration: InputDecoration(
-                labelText: 'login.username'.tr(),
-                prefixIcon: const Icon(Icons.person_outline),
-              ),
+      builder: (context) => const _AdminLoginDialog(),
+    );
+  }
+}
+
+class _AdminLoginDialog extends ConsumerStatefulWidget {
+  const _AdminLoginDialog();
+
+  @override
+  ConsumerState<_AdminLoginDialog> createState() => _AdminLoginDialogState();
+}
+
+class _AdminLoginDialogState extends ConsumerState<_AdminLoginDialog> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('login.admin_entry'.tr()),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _usernameController,
+            decoration: InputDecoration(
+              labelText: 'login.username'.tr(),
+              prefixIcon: const Icon(Icons.person_outline),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'login.password'.tr(),
-                prefixIcon: const Icon(Icons.lock_outline),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('common.cancel'.tr()),
           ),
-          FilledButton(
-            onPressed: () {
-              ref.read(authNotifierProvider.notifier).loginWithAdmin(
-                    usernameController.text,
-                    passwordController.text,
-                  );
-              Navigator.of(context).pop();
-            },
-            child: Text('login.sign_in'.tr()),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _passwordController,
+            obscureText: _obscurePassword,
+            decoration: InputDecoration(
+              labelText: 'login.password'.tr(),
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                ),
+                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+              ),
+            ),
           ),
         ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('common.cancel'.tr()),
+        ),
+        FilledButton(
+          onPressed: () {
+            ref.read(authNotifierProvider.notifier).loginWithAdmin(
+                  _usernameController.text,
+                  _passwordController.text,
+                );
+            Navigator.of(context).pop();
+          },
+          child: Text('login.sign_in'.tr()),
+        ),
+      ],
     );
   }
 }

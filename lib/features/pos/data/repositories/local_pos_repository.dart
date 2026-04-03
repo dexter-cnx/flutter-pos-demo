@@ -93,7 +93,8 @@ class LocalPosRepository implements PosRepository {
     final model = CategoryModel()
       ..id = int.tryParse(category.id) ?? Isar.autoIncrement
       ..name = category.name
-      ..sortOrder = category.sortOrder;
+      ..sortOrder = category.sortOrder
+      ..imageUrl = category.imageUrl;
 
     await database.writeTxn(() => database.categoryModels.put(model));
   }

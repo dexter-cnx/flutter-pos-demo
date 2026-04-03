@@ -1,7 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import '../../../../app/layout/responsive_layout.dart';
 import '../../../../app/widgets/async_state_view.dart';
@@ -90,6 +93,38 @@ class _MenuManagementPageState extends ConsumerState<MenuManagementPage>
         builder: (context) => const _UpsertProductDialog(),
       );
     }
+  }
+
+  Future<String?> _pickAndCropImage(BuildContext context) async {
+    final picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null || !context.mounted) return null;
+
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: image.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'menu.browse_image'.tr(),
+          toolbarColor: Theme.of(context).colorScheme.primary,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'menu.browse_image'.tr(),
+          aspectRatioLockEnabled: true,
+        ),
+        WebUiSettings(
+          context: context,
+          presentStyle: WebPresentStyle.dialog,
+          size: const CropperSize(width: 500, height: 500),
+        ),
+      ],
+    );
+
+    if (croppedFile == null || !context.mounted) return null;
+    return croppedFile.path;
   }
 }
 
@@ -320,18 +355,22 @@ class _UpsertCategoryDialog extends ConsumerStatefulWidget {
 class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _orderController;
+  late final TextEditingController _imageController;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.category?.name);
     _orderController = TextEditingController(text: (widget.category?.sortOrder ?? 0).toString());
+    _imageController = TextEditingController(text: widget.category?.imageUrl);
+    _imageController.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _orderController.dispose();
+    _imageController.dispose();
     super.dispose();
   }
 
@@ -339,20 +378,68 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.category == null ? 'menu.add_category'.tr() : 'menu.edit_category'.tr()),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _nameController,
-            decoration: InputDecoration(labelText: 'menu.category_name'.tr()),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _orderController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'menu.sort_order'.tr()),
-          ),
-        ],
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_imageController.text.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    _imageController.text,
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 120,
+                      color: Colors.grey.shade200,
+                      child: const Icon(Icons.broken_image_outlined, size: 40),
+                    ),
+                  ),
+                ),
+              ),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'menu.category_name'.tr()),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _orderController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'menu.sort_order'.tr()),
+            ),
+            const SizedBox(height: 12),
+            if (kIsWeb)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  'menu.web_image_warning'.tr(),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.orange.shade800,
+                  ),
+                ),
+              ),
+            TextField(
+              controller: _imageController,
+              decoration: InputDecoration(
+                labelText: 'menu.image_url_hint'.tr(),
+                suffixIcon: IconButton(
+                  onPressed: () async {
+                    final parentState = context.findAncestorStateOfType<_MenuManagementPageState>();
+                    final path = await parentState?._pickAndCropImage(context);
+                    if (path != null) {
+                      setState(() => _imageController.text = path);
+                    }
+                  },
+                  icon: const Icon(Icons.add_photo_alternate_outlined),
+                  tooltip: 'menu.browse_image'.tr(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(onPressed: () => context.pop(), child: Text('common.cancel'.tr())),
@@ -362,6 +449,7 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
               id: widget.category?.id ?? '', // Repository handles autoincrement if empty
               name: _nameController.text.trim(),
               sortOrder: int.tryParse(_orderController.text.trim()) ?? 0,
+              imageUrl: _imageController.text.trim().isEmpty ? null : _imageController.text.trim(),
             );
             await ref.read(inventoryActionsProvider.notifier).upsertCategory(category);
             if (context.mounted) context.pop();
@@ -399,6 +487,7 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
     _stockController = TextEditingController(text: widget.product?.stockQuantity.toString());
     _imageController = TextEditingController(text: widget.product?.imageUrl);
     _selectedCategoryId = widget.product?.category?.id;
+    _imageController.addListener(() => setState(() {}));
   }
 
   @override
@@ -421,6 +510,24 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (_imageController.text.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    _imageController.text,
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 120,
+                      color: Colors.grey.shade200,
+                      child: const Icon(Icons.broken_image_outlined, size: 40),
+                    ),
+                  ),
+                ),
+              ),
             TextField(
               controller: _nameController,
               decoration: InputDecoration(labelText: 'menu.product_name'.tr()),
@@ -463,9 +570,32 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
               decoration: InputDecoration(labelText: 'menu.sku'.tr()),
             ),
             const SizedBox(height: 12),
+            if (kIsWeb)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  'menu.web_image_warning'.tr(),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.orange.shade800,
+                  ),
+                ),
+              ),
             TextField(
               controller: _imageController,
-              decoration: InputDecoration(labelText: 'menu.image_url'.tr()),
+              decoration: InputDecoration(
+                labelText: 'menu.image_url_hint'.tr(),
+                suffixIcon: IconButton(
+                  onPressed: () async {
+                    final parentState = context.findAncestorStateOfType<_MenuManagementPageState>();
+                    final path = await parentState?._pickAndCropImage(context);
+                    if (path != null) {
+                      setState(() => _imageController.text = path);
+                    }
+                  },
+                  icon: const Icon(Icons.add_photo_alternate_outlined),
+                  tooltip: 'menu.browse_image'.tr(),
+                ),
+              ),
             ),
           ],
         ),
