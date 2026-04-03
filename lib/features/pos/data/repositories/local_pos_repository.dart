@@ -106,8 +106,8 @@ class LocalPosRepository implements PosRepository {
     if (database == null || categoryId == null) return;
 
     await database.writeTxn(() async {
-      // Find products related to this category and unlink them? 
-      // Or just delete if that's the intention. 
+      // Find products related to this category and unlink them?
+      // Or just delete if that's the intention.
       // The current PosRepository interface doesn't specify cascading.
       await database.categoryModels.delete(categoryId);
     });

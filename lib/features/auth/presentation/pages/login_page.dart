@@ -489,9 +489,12 @@ class _AdminLoginDialogState extends ConsumerState<_AdminLoginDialog> {
               prefixIcon: const Icon(Icons.lock_outline),
               suffixIcon: IconButton(
                 icon: Icon(
-                  _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                  _obscurePassword
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
                 ),
-                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                onPressed: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
               ),
             ),
           ),
@@ -504,7 +507,9 @@ class _AdminLoginDialogState extends ConsumerState<_AdminLoginDialog> {
         ),
         FilledButton(
           onPressed: () {
-            ref.read(authNotifierProvider.notifier).loginWithAdmin(
+            ref
+                .read(authNotifierProvider.notifier)
+                .loginWithAdmin(
                   _usernameController.text,
                   _passwordController.text,
                 );

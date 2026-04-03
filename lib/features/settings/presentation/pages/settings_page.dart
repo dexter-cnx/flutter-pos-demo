@@ -172,10 +172,13 @@ class SettingsPage extends ConsumerWidget {
                               icon: const Icon(Icons.delete_sweep_outlined),
                               label: Text('settings.clear_orders'.tr()),
                             ),
-                            if (ref.watch(authNotifierProvider).value == 'admin')
+                            if (ref.watch(authNotifierProvider).value ==
+                                'admin')
                               OutlinedButton.icon(
                                 onPressed: () => context.go('/menu-management'),
-                                icon: const Icon(Icons.restaurant_menu_outlined),
+                                icon: const Icon(
+                                  Icons.restaurant_menu_outlined,
+                                ),
                                 label: Text('menu.title'.tr()),
                               ),
                             OutlinedButton.icon(

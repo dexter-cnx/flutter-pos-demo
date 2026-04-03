@@ -11,6 +11,6 @@ class CategoryModel {
   late String name;
 
   late int sortOrder;
-  
+
   String? imageUrl;
 }

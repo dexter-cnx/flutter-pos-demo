@@ -57,26 +57,31 @@ class _MenuManagementPageState extends ConsumerState<MenuManagementPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: 'menu.category_title'.tr(), icon: const Icon(Icons.category_outlined)),
-            Tab(text: 'menu.product_title'.tr(), icon: const Icon(Icons.restaurant_menu_outlined)),
+            Tab(
+              text: 'menu.category_title'.tr(),
+              icon: const Icon(Icons.category_outlined),
+            ),
+            Tab(
+              text: 'menu.product_title'.tr(),
+              icon: const Icon(Icons.restaurant_menu_outlined),
+            ),
           ],
         ),
       ),
       body: SafeArea(
         child: TabBarView(
           controller: _tabController,
-          children: const [
-            _CategoryListTab(),
-            _ProductListTab(),
-          ],
+          children: const [_CategoryListTab(), _ProductListTab()],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showUpsertDialog(),
         icon: const Icon(Icons.add),
-        label: Text(_tabController.index == 0 
-          ? 'menu.add_category'.tr() 
-          : 'menu.add_product'.tr()),
+        label: Text(
+          _tabController.index == 0
+              ? 'menu.add_category'.tr()
+              : 'menu.add_product'.tr(),
+        ),
       ),
     );
   }
@@ -154,7 +159,9 @@ class _CategoryListTab extends ConsumerWidget {
             return Card(
               child: ListTile(
                 title: Text(category.name),
-                subtitle: Text('menu.sort_order'.tr(args: ['${category.sortOrder}'])),
+                subtitle: Text(
+                  'menu.sort_order'.tr(args: ['${category.sortOrder}']),
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -162,7 +169,8 @@ class _CategoryListTab extends ConsumerWidget {
                       icon: const Icon(Icons.edit_outlined),
                       onPressed: () => showDialog(
                         context: context,
-                        builder: (context) => _UpsertCategoryDialog(category: category),
+                        builder: (context) =>
+                            _UpsertCategoryDialog(category: category),
                       ),
                     ),
                     IconButton(
@@ -184,21 +192,35 @@ class _CategoryListTab extends ConsumerWidget {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, Category category) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('menu.confirm_delete_title'.tr(args: [category.name])),
-        content: Text('menu.confirm_delete_message'.tr()),
-        actions: [
-          TextButton(onPressed: () => context.pop(false), child: Text('common.cancel'.tr())),
-          FilledButton(onPressed: () => context.pop(true), child: Text('menu.delete_category'.tr())),
-        ],
-      ),
-    ) ?? false;
+  Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    Category category,
+  ) async {
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('menu.confirm_delete_title'.tr(args: [category.name])),
+            content: Text('menu.confirm_delete_message'.tr()),
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(false),
+                child: Text('common.cancel'.tr()),
+              ),
+              FilledButton(
+                onPressed: () => context.pop(true),
+                child: Text('menu.delete_category'.tr()),
+              ),
+            ],
+          ),
+        ) ??
+        false;
 
     if (confirmed) {
-      await ref.read(inventoryActionsProvider.notifier).deleteCategory(category.id);
+      await ref
+          .read(inventoryActionsProvider.notifier)
+          .deleteCategory(category.id);
     }
   }
 }
@@ -271,7 +293,9 @@ class _ProductManagementCard extends ConsumerWidget {
                     product.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 PopupMenuButton<String>(
@@ -279,7 +303,8 @@ class _ProductManagementCard extends ConsumerWidget {
                     if (value == 'edit') {
                       await showDialog(
                         context: context,
-                        builder: (context) => _UpsertProductDialog(product: product),
+                        builder: (context) =>
+                            _UpsertProductDialog(product: product),
                       );
                     } else if (value == 'delete') {
                       await _confirmDelete(context, ref, product);
@@ -300,7 +325,11 @@ class _ProductManagementCard extends ConsumerWidget {
                       value: 'delete',
                       child: Row(
                         children: [
-                          const Icon(Icons.delete_outline, size: 20, color: Colors.red),
+                          const Icon(
+                            Icons.delete_outline,
+                            size: 20,
+                            color: Colors.red,
+                          ),
                           const SizedBox(width: 8),
                           Text('menu.delete_product'.tr()),
                         ],
@@ -312,7 +341,11 @@ class _ProductManagementCard extends ConsumerWidget {
             ),
             Text('${product.sku} • \u0E3F${product.price.toStringAsFixed(2)}'),
             const Spacer(),
-            Text('inventory.stock_remaining'.tr(args: ['${product.stockQuantity}'])),
+            Text(
+              'inventory.stock_remaining'.tr(
+                args: ['${product.stockQuantity}'],
+              ),
+            ),
             const SizedBox(height: 8),
             Chip(
               label: Text(product.category?.name ?? 'n/a'),
@@ -324,21 +357,35 @@ class _ProductManagementCard extends ConsumerWidget {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, Product product) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('menu.confirm_delete_title'.tr(args: [product.name])),
-        content: Text('menu.confirm_delete_message'.tr()),
-        actions: [
-          TextButton(onPressed: () => context.pop(false), child: Text('common.cancel'.tr())),
-          FilledButton(onPressed: () => context.pop(true), child: Text('menu.delete_product'.tr())),
-        ],
-      ),
-    ) ?? false;
+  Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    Product product,
+  ) async {
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('menu.confirm_delete_title'.tr(args: [product.name])),
+            content: Text('menu.confirm_delete_message'.tr()),
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(false),
+                child: Text('common.cancel'.tr()),
+              ),
+              FilledButton(
+                onPressed: () => context.pop(true),
+                child: Text('menu.delete_product'.tr()),
+              ),
+            ],
+          ),
+        ) ??
+        false;
 
     if (confirmed) {
-      await ref.read(inventoryActionsProvider.notifier).deleteProduct(product.id);
+      await ref
+          .read(inventoryActionsProvider.notifier)
+          .deleteProduct(product.id);
     }
   }
 }
@@ -349,7 +396,8 @@ class _UpsertCategoryDialog extends ConsumerStatefulWidget {
   final Category? category;
 
   @override
-  ConsumerState<_UpsertCategoryDialog> createState() => _UpsertCategoryDialogState();
+  ConsumerState<_UpsertCategoryDialog> createState() =>
+      _UpsertCategoryDialogState();
 }
 
 class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
@@ -361,7 +409,9 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.category?.name);
-    _orderController = TextEditingController(text: (widget.category?.sortOrder ?? 0).toString());
+    _orderController = TextEditingController(
+      text: (widget.category?.sortOrder ?? 0).toString(),
+    );
     _imageController = TextEditingController(text: widget.category?.imageUrl);
     _imageController.addListener(() => setState(() {}));
   }
@@ -377,7 +427,11 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.category == null ? 'menu.add_category'.tr() : 'menu.edit_category'.tr()),
+      title: Text(
+        widget.category == null
+            ? 'menu.add_category'.tr()
+            : 'menu.edit_category'.tr(),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -427,7 +481,8 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
                 labelText: 'menu.image_url_hint'.tr(),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    final parentState = context.findAncestorStateOfType<_MenuManagementPageState>();
+                    final parentState = context
+                        .findAncestorStateOfType<_MenuManagementPageState>();
                     final path = await parentState?._pickAndCropImage(context);
                     if (path != null) {
                       setState(() => _imageController.text = path);
@@ -442,16 +497,25 @@ class _UpsertCategoryDialogState extends ConsumerState<_UpsertCategoryDialog> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => context.pop(), child: Text('common.cancel'.tr())),
+        TextButton(
+          onPressed: () => context.pop(),
+          child: Text('common.cancel'.tr()),
+        ),
         FilledButton(
           onPressed: () async {
             final category = Category(
-              id: widget.category?.id ?? '', // Repository handles autoincrement if empty
+              id:
+                  widget.category?.id ??
+                  '', // Repository handles autoincrement if empty
               name: _nameController.text.trim(),
               sortOrder: int.tryParse(_orderController.text.trim()) ?? 0,
-              imageUrl: _imageController.text.trim().isEmpty ? null : _imageController.text.trim(),
+              imageUrl: _imageController.text.trim().isEmpty
+                  ? null
+                  : _imageController.text.trim(),
             );
-            await ref.read(inventoryActionsProvider.notifier).upsertCategory(category);
+            await ref
+                .read(inventoryActionsProvider.notifier)
+                .upsertCategory(category);
             if (context.mounted) context.pop();
           },
           child: Text('common.confirm'.tr()),
@@ -467,7 +531,8 @@ class _UpsertProductDialog extends ConsumerStatefulWidget {
   final Product? product;
 
   @override
-  ConsumerState<_UpsertProductDialog> createState() => _UpsertProductDialogState();
+  ConsumerState<_UpsertProductDialog> createState() =>
+      _UpsertProductDialogState();
 }
 
 class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
@@ -482,9 +547,13 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.product?.name);
-    _priceController = TextEditingController(text: widget.product?.price.toString());
+    _priceController = TextEditingController(
+      text: widget.product?.price.toString(),
+    );
     _skuController = TextEditingController(text: widget.product?.sku);
-    _stockController = TextEditingController(text: widget.product?.stockQuantity.toString());
+    _stockController = TextEditingController(
+      text: widget.product?.stockQuantity.toString(),
+    );
     _imageController = TextEditingController(text: widget.product?.imageUrl);
     _selectedCategoryId = widget.product?.category?.id;
     _imageController.addListener(() => setState(() {}));
@@ -505,7 +574,11 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
     final categoriesAsync = ref.watch(categoriesProvider);
 
     return AlertDialog(
-      title: Text(widget.product == null ? 'menu.add_product'.tr() : 'menu.edit_product'.tr()),
+      title: Text(
+        widget.product == null
+            ? 'menu.add_product'.tr()
+            : 'menu.edit_product'.tr(),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -537,8 +610,14 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
               data: (categories) => DropdownButtonFormField<String>(
                 // ignore: deprecated_member_use
                 value: _selectedCategoryId,
-                decoration: InputDecoration(labelText: 'menu.select_category'.tr()),
-                items: categories.map((c) => DropdownMenuItem(value: c.id, child: Text(c.name))).toList(),
+                decoration: InputDecoration(
+                  labelText: 'menu.select_category'.tr(),
+                ),
+                items: categories
+                    .map(
+                      (c) => DropdownMenuItem(value: c.id, child: Text(c.name)),
+                    )
+                    .toList(),
                 onChanged: (val) => setState(() => _selectedCategoryId = val),
               ),
               loading: () => const CircularProgressIndicator(),
@@ -586,7 +665,8 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
                 labelText: 'menu.image_url_hint'.tr(),
                 suffixIcon: IconButton(
                   onPressed: () async {
-                    final parentState = context.findAncestorStateOfType<_MenuManagementPageState>();
+                    final parentState = context
+                        .findAncestorStateOfType<_MenuManagementPageState>();
                     final path = await parentState?._pickAndCropImage(context);
                     if (path != null) {
                       setState(() => _imageController.text = path);
@@ -601,11 +681,17 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
         ),
       ),
       actions: [
-        TextButton(onPressed: () => context.pop(), child: Text('common.cancel'.tr())),
+        TextButton(
+          onPressed: () => context.pop(),
+          child: Text('common.cancel'.tr()),
+        ),
         FilledButton(
           onPressed: () async {
-            final category = _selectedCategoryId == null ? null : (await ref.read(categoriesProvider.future))
-                .firstWhere((c) => c.id == _selectedCategoryId);
+            final category = _selectedCategoryId == null
+                ? null
+                : (await ref.read(
+                    categoriesProvider.future,
+                  )).firstWhere((c) => c.id == _selectedCategoryId);
 
             final product = Product(
               id: widget.product?.id ?? '',
@@ -613,11 +699,16 @@ class _UpsertProductDialogState extends ConsumerState<_UpsertProductDialog> {
               price: double.tryParse(_priceController.text.trim()) ?? 0,
               sku: _skuController.text.trim(),
               stockQuantity: int.tryParse(_stockController.text.trim()) ?? 0,
-              isAvailable: (int.tryParse(_stockController.text.trim()) ?? 0) > 0,
-              imageUrl: _imageController.text.trim().isEmpty ? null : _imageController.text.trim(),
+              isAvailable:
+                  (int.tryParse(_stockController.text.trim()) ?? 0) > 0,
+              imageUrl: _imageController.text.trim().isEmpty
+                  ? null
+                  : _imageController.text.trim(),
               category: category,
             );
-            await ref.read(inventoryActionsProvider.notifier).upsertProduct(product);
+            await ref
+                .read(inventoryActionsProvider.notifier)
+                .upsertProduct(product);
             if (context.mounted) context.pop();
           },
           child: Text('common.confirm'.tr()),
