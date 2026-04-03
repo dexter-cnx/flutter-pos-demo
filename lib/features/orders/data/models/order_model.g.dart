@@ -15,7 +15,7 @@ extension GetOrderModelCollection on Isar {
 
 const OrderModelSchema = CollectionSchema(
   name: r'orders',
-  id: -6301435511226927877,
+  id: -(6301435511 * 1000000000 + 226927877),
   properties: {
     r'changeAmount': PropertySchema(
       id: 0,
@@ -62,7 +62,7 @@ const OrderModelSchema = CollectionSchema(
   idName: r'id',
   indexes: {
     r'createdAt': IndexSchema(
-      id: -3433535483987302584,
+      id: -(3433535483 * 1000000000 + 987302584),
       name: r'createdAt',
       unique: false,
       replace: false,
@@ -1377,7 +1377,7 @@ extension OrderModelQueryProperty
 
 const OrderItemModelSchema = Schema(
   name: r'OrderItemModel',
-  id: 3320497907544385651,
+  id: (3320497907 * 1000000000 + 544385651),
   properties: {
     r'lineTotal': PropertySchema(
       id: 0,
