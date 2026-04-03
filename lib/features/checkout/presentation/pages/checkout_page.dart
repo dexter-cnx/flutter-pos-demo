@@ -344,6 +344,173 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     );
   }
 
+  Widget _buildKeypadButton(
+    BuildContext context,
+    Widget child,
+    VoidCallback onPressed, {
+    Color? color,
+    Color? textColor,
+    double? aspectRatio = 1.3,
+  }) {
+    final theme = Theme.of(context);
+    Widget button = FilledButton.tonal(
+      style: FilledButton.styleFrom(
+        backgroundColor: color ?? theme.colorScheme.surfaceContainerHighest,
+        foregroundColor: textColor ?? theme.colorScheme.onSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        padding: aspectRatio != null
+            ? EdgeInsets.zero
+            : const EdgeInsets.symmetric(vertical: 20),
+      ),
+      onPressed: onPressed,
+      child: Center(
+        child: DefaultTextStyle(
+          style:
+              theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: textColor ?? theme.colorScheme.onSurface,
+              ) ??
+              const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          child: child,
+        ),
+      ),
+    );
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: aspectRatio != null
+            ? AspectRatio(aspectRatio: aspectRatio, child: button)
+            : button,
+      ),
+    );
+  }
+
+  Widget _buildNumberKeypad(BuildContext context, double amountDue) {
+    void onNumber(String n) {
+      String current = _receivedController.text.replaceAll(',', '');
+      if (current == '0' || current == '0.00' || current == '0.0') current = '';
+      current += n;
+      _receivedController.value = TextEditingValue(
+        text: current,
+        selection: TextSelection.collapsed(offset: current.length),
+      );
+      _onReceivedChanged(current);
+    }
+
+    void onClear() {
+      _receivedController.clear();
+      _onReceivedChanged('0');
+    }
+
+    void onDel() {
+      String current = _receivedController.text.replaceAll(',', '');
+      if (current.isNotEmpty) {
+        current = current.substring(0, current.length - 1);
+        if (current.isEmpty) {
+          _receivedController.clear();
+          _onReceivedChanged('0');
+        } else {
+          _receivedController.value = TextEditingValue(
+            text: current,
+            selection: TextSelection.collapsed(offset: current.length),
+          );
+          _onReceivedChanged(current);
+        }
+      }
+    }
+
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
+    final onPrimary = theme.colorScheme.onPrimary;
+    final secondary = theme.colorScheme.secondaryContainer;
+    final onSecondary = theme.colorScheme.onSecondaryContainer;
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            _buildKeypadButton(context, const Text('7'), () => onNumber('7')),
+            _buildKeypadButton(context, const Text('8'), () => onNumber('8')),
+            _buildKeypadButton(context, const Text('9'), () => onNumber('9')),
+            _buildKeypadButton(
+              context,
+              const Text('+10'),
+              () => _addReceivedAmount(10),
+              color: secondary,
+              textColor: onSecondary,
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            _buildKeypadButton(context, const Text('4'), () => onNumber('4')),
+            _buildKeypadButton(context, const Text('5'), () => onNumber('5')),
+            _buildKeypadButton(context, const Text('6'), () => onNumber('6')),
+            _buildKeypadButton(
+              context,
+              const Text('+100'),
+              () => _addReceivedAmount(100),
+              color: secondary,
+              textColor: onSecondary,
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            _buildKeypadButton(context, const Text('1'), () => onNumber('1')),
+            _buildKeypadButton(context, const Text('2'), () => onNumber('2')),
+            _buildKeypadButton(context, const Text('3'), () => onNumber('3')),
+            _buildKeypadButton(
+              context,
+              const Text('+500'),
+              () => _addReceivedAmount(500),
+              color: secondary,
+              textColor: onSecondary,
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            _buildKeypadButton(
+              context,
+              const Text('C'),
+              onClear,
+              textColor: theme.colorScheme.error,
+            ),
+            _buildKeypadButton(context, const Text('0'), () => onNumber('0')),
+            _buildKeypadButton(
+              context,
+              const Icon(Icons.backspace_outlined, size: 24),
+              onDel,
+            ),
+            _buildKeypadButton(
+              context,
+              const Text('+1000'),
+              () => _addReceivedAmount(1000),
+              color: secondary,
+              textColor: onSecondary,
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _buildKeypadButton(
+              context,
+              Text('checkout.exact_amount'.tr()),
+              () => _setReceivedAmount(amountDue),
+              color: primary,
+              textColor: onPrimary,
+              aspectRatio: 5.2,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget _buildPaymentPanel(
     BuildContext context,
     bool enabled,
@@ -396,33 +563,32 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
               if (isCash) ...[
                 TextField(
                   controller: _receivedController,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
+                  readOnly: true,
+                  showCursor: true,
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   decoration: InputDecoration(
                     labelText: 'checkout.enter_received'.tr(),
                     prefixText: '\u0E3F',
-                  ),
-                  onChanged: _onReceivedChanged,
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    OutlinedButton(
-                      onPressed: () => _setReceivedAmount(amountDue),
-                      child: Text('checkout.exact_amount'.tr()),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    for (final amount in const [10, 100, 500, 1000])
-                      OutlinedButton(
-                        onPressed: () => _addReceivedAmount(amount.toDouble()),
-                        child: Text(
-                          'checkout.add_cash_amount'.tr(args: ['$amount']),
-                        ),
-                      ),
-                  ],
+                    filled: true,
+                    fillColor: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 24,
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 16),
+                _buildNumberKeypad(context, amountDue),
                 if (receivedAmount > 0 && receivedAmount < amountDue) ...[
                   const SizedBox(height: 12),
                   Text(
