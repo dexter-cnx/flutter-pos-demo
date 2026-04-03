@@ -16,6 +16,8 @@ import '../../../settings/domain/entities/store_profile.dart';
 import '../../../settings/presentation/providers/settings_providers.dart';
 import '../providers/checkout_providers.dart';
 import '../services/promptpay_qr_service.dart';
+import '../../../printer/presentation/providers/printer_providers.dart';
+import '../../../printer/domain/entities/printer_status.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -123,12 +125,63 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     _resetSimulationState();
     _receivedController.clear();
 
-    if (orderId != null) {
+    // Ask user whether to print — does not block navigation
+    if (orderId != null && context.mounted) {
+      _askPrintReceipt(context, ref, orderId);
       context.go('/receipt/$orderId');
       return;
     }
 
     context.go('/');
+  }
+
+  Future<void> _askPrintReceipt(
+    BuildContext context,
+    WidgetRef ref,
+    int orderId,
+  ) async {
+    final status = ref.read(printerStatusNotifierProvider);
+    final defaultPrinter = await ref.read(defaultPrinterProvider.future);
+    final hasPrinter =
+        status == PrinterStatus.connected || defaultPrinter != null;
+    if (!hasPrinter || !context.mounted) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('printer.print_receipt_title'.tr()),
+        content: Text('printer.print_receipt_confirm'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text('common.cancel'.tr()),
+          ),
+          FilledButton.icon(
+            icon: const Icon(Icons.print_outlined),
+            label: Text('printer.print'.tr()),
+            onPressed: () => Navigator.of(ctx).pop(true),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      final order = await ref.read(orderReceiptProvider(orderId).future);
+      final storeProfile =
+          await ref.read(storeProfileProvider.future);
+      if (order == null) return;
+      await ref.read(receiptPrintServiceProvider).printOrder(
+            order: order,
+            storeProfile: storeProfile,
+          );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('printer.print_failed'.tr()),
+      ));
+    }
   }
 
   String _paymentLabel(PaymentMethod method) {

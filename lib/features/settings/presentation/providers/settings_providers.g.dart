@@ -13,14 +13,14 @@ String _$settingsRepositoryHash() =>
 @ProviderFor(settingsRepository)
 final settingsRepositoryProvider =
     AutoDisposeProvider<SettingsRepository>.internal(
-      settingsRepository,
-      name: r'settingsRepositoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$settingsRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  settingsRepository,
+  name: r'settingsRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$settingsRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef SettingsRepositoryRef = AutoDisposeProviderRef<SettingsRepository>;
 String _$storeProfileHash() => r'96e3371393d69129e89a58426f2f2a6582da45f9';
@@ -30,9 +30,8 @@ String _$storeProfileHash() => r'96e3371393d69129e89a58426f2f2a6582da45f9';
 final storeProfileProvider = AutoDisposeFutureProvider<StoreProfile>.internal(
   storeProfile,
   name: r'storeProfileProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$storeProfileHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$storeProfileHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -60,14 +59,14 @@ String _$settingsControllerHash() =>
 @ProviderFor(SettingsController)
 final settingsControllerProvider =
     AutoDisposeAsyncNotifierProvider<SettingsController, void>.internal(
-      SettingsController.new,
-      name: r'settingsControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$settingsControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  SettingsController.new,
+  name: r'settingsControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$settingsControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$SettingsController = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint

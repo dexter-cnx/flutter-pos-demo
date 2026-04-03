@@ -8,6 +8,7 @@ import '../../features/pos/presentation/pages/pos_page.dart';
 import '../../features/receipt/presentation/pages/receipt_preview_page.dart';
 import '../../features/settings/presentation/pages/menu_management_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/printer/presentation/screens/printer_settings_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -58,6 +59,11 @@ final appRouter = GoRouter(
       path: '/menu-management',
       name: 'menu_management',
       builder: (context, state) => const MenuManagementPage(),
+    ),
+    GoRoute(
+      path: '/settings/printer',
+      name: 'printer_settings',
+      builder: (context, state) => const PrinterSettingsScreen(),
     ),
     GoRoute(
       path: '/home',

@@ -28,9 +28,8 @@ String _$categoriesHash() => r'b6c80ecf7c95a29393d93558798552adb235b9d5';
 final categoriesProvider = AutoDisposeFutureProvider<List<Category>>.internal(
   categories,
   name: r'categoriesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$categoriesHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$categoriesHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -58,9 +57,8 @@ String _$productsHash() => r'b1268e82504fee42d6c6c0aab8239153b57ba924';
 final productsProvider = AutoDisposeFutureProvider<List<Product>>.internal(
   products,
   name: r'productsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$productsHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$productsHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -72,14 +70,14 @@ String _$inventoryProductsHash() => r'7ed0fad9f7b1b1904a3447f7b19538260f35e38b';
 @ProviderFor(inventoryProducts)
 final inventoryProductsProvider =
     AutoDisposeFutureProvider<List<Product>>.internal(
-      inventoryProducts,
-      name: r'inventoryProductsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$inventoryProductsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  inventoryProducts,
+  name: r'inventoryProductsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$inventoryProductsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef InventoryProductsRef = AutoDisposeFutureProviderRef<List<Product>>;
 String _$productCountHash() => r'66ea9c8698b0200c05cee799703499985f2fa261';
@@ -89,9 +87,8 @@ String _$productCountHash() => r'66ea9c8698b0200c05cee799703499985f2fa261';
 final productCountProvider = AutoDisposeFutureProvider<int>.internal(
   productCount,
   name: r'productCountProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$productCountHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$productCountHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -119,30 +116,30 @@ String _$selectedCategoryIdHash() =>
 @ProviderFor(SelectedCategoryId)
 final selectedCategoryIdProvider =
     AutoDisposeNotifierProvider<SelectedCategoryId, String?>.internal(
-      SelectedCategoryId.new,
-      name: r'selectedCategoryIdProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$selectedCategoryIdHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  SelectedCategoryId.new,
+  name: r'selectedCategoryIdProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$selectedCategoryIdHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$SelectedCategoryId = AutoDisposeNotifier<String?>;
-String _$inventoryActionsHash() => r'761d82a264492ba06db5e9c6a34105c17d549a78';
+String _$inventoryActionsHash() => r'f7933b5a7b9d8ef09e96d841eebfc64bf18b5e22';
 
 /// See also [InventoryActions].
 @ProviderFor(InventoryActions)
 final inventoryActionsProvider =
     AutoDisposeAsyncNotifierProvider<InventoryActions, void>.internal(
-      InventoryActions.new,
-      name: r'inventoryActionsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$inventoryActionsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  InventoryActions.new,
+  name: r'inventoryActionsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$inventoryActionsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$InventoryActions = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint

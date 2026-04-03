@@ -186,6 +186,24 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(
                 width: cardWidth,
                 child: _SettingsCard(
+                  title: 'printer.title'.tr(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('printer.settings_hint'.tr()),
+                      const SizedBox(height: 16),
+                      FilledButton.icon(
+                        onPressed: () => context.go('/settings/printer'),
+                        icon: const Icon(Icons.bluetooth_outlined),
+                        label: Text('printer.open_settings'.tr()),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: cardWidth,
+                child: _SettingsCard(
                   title: 'settings.management'.tr(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

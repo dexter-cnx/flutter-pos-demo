@@ -12,8 +12,7 @@ part of 'cart_provider.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$CartItem {
@@ -47,20 +46,20 @@ class _$CartItemCopyWithImpl<$Res, $Val extends CartItem>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? product = null, Object? quantity = null}) {
-    return _then(
-      _value.copyWith(
-            product: null == product
-                ? _value.product
-                : product // ignore: cast_nullable_to_non_nullable
-                      as Product,
-            quantity: null == quantity
-                ? _value.quantity
-                : quantity // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
+  $Res call({
+    Object? product = null,
+    Object? quantity = null,
+  }) {
+    return _then(_value.copyWith(
+      product: null == product
+          ? _value.product
+          : product // ignore: cast_nullable_to_non_nullable
+              as Product,
+      quantity: null == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as int,
+    ) as $Val);
   }
 
   @override
@@ -76,9 +75,8 @@ class _$CartItemCopyWithImpl<$Res, $Val extends CartItem>
 abstract class _$$CartItemImplCopyWith<$Res>
     implements $CartItemCopyWith<$Res> {
   factory _$$CartItemImplCopyWith(
-    _$CartItemImpl value,
-    $Res Function(_$CartItemImpl) then,
-  ) = __$$CartItemImplCopyWithImpl<$Res>;
+          _$CartItemImpl value, $Res Function(_$CartItemImpl) then) =
+      __$$CartItemImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({Product product, int quantity});
@@ -92,25 +90,25 @@ class __$$CartItemImplCopyWithImpl<$Res>
     extends _$CartItemCopyWithImpl<$Res, _$CartItemImpl>
     implements _$$CartItemImplCopyWith<$Res> {
   __$$CartItemImplCopyWithImpl(
-    _$CartItemImpl _value,
-    $Res Function(_$CartItemImpl) _then,
-  ) : super(_value, _then);
+      _$CartItemImpl _value, $Res Function(_$CartItemImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? product = null, Object? quantity = null}) {
-    return _then(
-      _$CartItemImpl(
-        product: null == product
-            ? _value.product
-            : product // ignore: cast_nullable_to_non_nullable
-                  as Product,
-        quantity: null == quantity
-            ? _value.quantity
-            : quantity // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
+  $Res call({
+    Object? product = null,
+    Object? quantity = null,
+  }) {
+    return _then(_$CartItemImpl(
+      product: null == product
+          ? _value.product
+          : product // ignore: cast_nullable_to_non_nullable
+              as Product,
+      quantity: null == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
   }
 }
 
@@ -151,10 +149,8 @@ class _$CartItemImpl implements _CartItem {
 }
 
 abstract class _CartItem implements CartItem {
-  const factory _CartItem({
-    required final Product product,
-    final int quantity,
-  }) = _$CartItemImpl;
+  const factory _CartItem(
+      {required final Product product, final int quantity}) = _$CartItemImpl;
 
   @override
   Product get product;
@@ -196,20 +192,20 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? items = null, Object? taxRate = null}) {
-    return _then(
-      _value.copyWith(
-            items: null == items
-                ? _value.items
-                : items // ignore: cast_nullable_to_non_nullable
-                      as List<CartItem>,
-            taxRate: null == taxRate
-                ? _value.taxRate
-                : taxRate // ignore: cast_nullable_to_non_nullable
-                      as double,
-          )
-          as $Val,
-    );
+  $Res call({
+    Object? items = null,
+    Object? taxRate = null,
+  }) {
+    return _then(_value.copyWith(
+      items: null == items
+          ? _value.items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<CartItem>,
+      taxRate: null == taxRate
+          ? _value.taxRate
+          : taxRate // ignore: cast_nullable_to_non_nullable
+              as double,
+    ) as $Val);
   }
 }
 
@@ -217,9 +213,8 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
 abstract class _$$CartStateImplCopyWith<$Res>
     implements $CartStateCopyWith<$Res> {
   factory _$$CartStateImplCopyWith(
-    _$CartStateImpl value,
-    $Res Function(_$CartStateImpl) then,
-  ) = __$$CartStateImplCopyWithImpl<$Res>;
+          _$CartStateImpl value, $Res Function(_$CartStateImpl) then) =
+      __$$CartStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<CartItem> items, double taxRate});
@@ -230,36 +225,35 @@ class __$$CartStateImplCopyWithImpl<$Res>
     extends _$CartStateCopyWithImpl<$Res, _$CartStateImpl>
     implements _$$CartStateImplCopyWith<$Res> {
   __$$CartStateImplCopyWithImpl(
-    _$CartStateImpl _value,
-    $Res Function(_$CartStateImpl) _then,
-  ) : super(_value, _then);
+      _$CartStateImpl _value, $Res Function(_$CartStateImpl) _then)
+      : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? items = null, Object? taxRate = null}) {
-    return _then(
-      _$CartStateImpl(
-        items: null == items
-            ? _value._items
-            : items // ignore: cast_nullable_to_non_nullable
-                  as List<CartItem>,
-        taxRate: null == taxRate
-            ? _value.taxRate
-            : taxRate // ignore: cast_nullable_to_non_nullable
-                  as double,
-      ),
-    );
+  $Res call({
+    Object? items = null,
+    Object? taxRate = null,
+  }) {
+    return _then(_$CartStateImpl(
+      items: null == items
+          ? _value._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<CartItem>,
+      taxRate: null == taxRate
+          ? _value.taxRate
+          : taxRate // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
   }
 }
 
 /// @nodoc
 
 class _$CartStateImpl extends _CartState {
-  const _$CartStateImpl({
-    final List<CartItem> items = const [],
-    this.taxRate = 0.07,
-  }) : _items = items,
-       super._();
+  const _$CartStateImpl(
+      {final List<CartItem> items = const [], this.taxRate = 0.07})
+      : _items = items,
+        super._();
 
   final List<CartItem> _items;
   @override
@@ -290,10 +284,7 @@ class _$CartStateImpl extends _CartState {
 
   @override
   int get hashCode => Object.hash(
-    runtimeType,
-    const DeepCollectionEquality().hash(_items),
-    taxRate,
-  );
+      runtimeType, const DeepCollectionEquality().hash(_items), taxRate);
 
   @JsonKey(ignore: true)
   @override

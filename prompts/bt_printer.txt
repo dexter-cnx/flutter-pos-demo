@@ -1,0 +1,268 @@
+Read `AGENTS.md` first and follow it strictly.
+
+Task:
+Implement a Bluetooth thermal printer feature for `flutter-pos-demo` as an Android-first capability, with architecture ready to support restaurant mode and future business modes later.
+
+Goal:
+Add a production-grade printer foundation that supports:
+- paired Bluetooth printer discovery
+- connect / disconnect printer
+- remember last selected printer
+- test print
+- print ESC/POS receipt bytes
+- checkout success -> ask user whether to print receipt
+- clear separation between receipt composition and printer transport
+
+Important constraints:
+- Keep Clean Architecture
+- Keep Riverpod
+- Keep go_router
+- Do NOT put business logic in widgets
+- Do NOT call Bluetooth plugin directly from checkout UI
+- Printer integration must be abstracted behind repository/contracts
+- Receipt composition must be separated from Bluetooth writing
+- Android-first implementation is acceptable
+- Design code so retail mode works first, but restaurant mode can reuse the same printer pipeline later
+
+Dependencies to add:
+- `print_bluetooth_thermal`
+- `esc_pos_utils_plus`
+
+High-level architecture:
+1. `features/printer`
+   - Bluetooth device discovery
+   - connection lifecycle
+   - persistence of selected printer
+   - test print
+2. `features/receipt`
+   - compose ESC/POS bytes from transaction/receipt model
+3. `features/checkout`
+   - after successful checkout, show prompt to print
+   - call printer flow via use case/service, not plugin directly
+
+Create or modify files in this structure:
+
+lib/features/printer/
+  domain/
+    entities/
+      printer_device.dart
+      printer_status.dart
+    repositories/
+      printer_repository.dart
+    services/
+      receipt_print_service.dart
+    usecases/
+      get_paired_printers.dart
+      connect_printer.dart
+      disconnect_printer.dart
+      print_receipt.dart
+      save_default_printer.dart
+      load_default_printer.dart
+  data/
+    datasources/
+      bluetooth_printer_datasource.dart
+      printer_prefs_datasource.dart
+    repositories/
+      printer_repository_impl.dart
+  presentation/
+    providers/
+      printer_providers.dart
+    screens/
+      printer_settings_screen.dart
+    widgets/
+      printer_status_badge.dart
+      printer_device_tile.dart
+
+lib/features/receipt/
+  domain/
+    services/
+      receipt_composer.dart
+      retail_receipt_composer.dart
+
+If needed, also create supporting files under:
+- shared/domain/entities/
+- shared/domain/value_objects/
+- shared/data/
+- app/routing/
+
+Implementation details:
+
+1. Printer domain entities
+Create:
+- `PrinterDevice`
+  - id
+  - name
+  - address or identifier
+  - isConnected
+  - isDefault
+- `PrinterStatus`
+  - idle
+  - scanning
+  - connected
+  - disconnected
+  - printing
+  - error
+
+2. Printer repository contract
+Create a repository abstraction with methods similar to:
+- check permission / bluetooth availability if needed
+- get paired printers
+- connect(printerId)
+- disconnect()
+- testPrint()
+- printBytes(List<int> bytes)
+- saveDefaultPrinter(printerId)
+- loadDefaultPrinter()
+
+3. Datasources
+Create:
+- Bluetooth datasource wrapping `print_bluetooth_thermal`
+- Preferences datasource wrapping `shared_preferences`
+
+Bluetooth datasource responsibilities:
+- get paired devices
+- connect/disconnect
+- write bytes
+- test basic Bluetooth state
+- expose only clean app-facing models or raw plugin mapping internally
+
+Preferences datasource responsibilities:
+- persist default printer id/name
+- load default printer info
+
+4. Receipt composer
+Create:
+- `ReceiptComposer` abstract contract
+- `RetailReceiptComposer` implementation using `esc_pos_utils_plus`
+
+Retail receipt must support:
+- store name
+- transaction id
+- date time
+- line items
+- subtotal
+- VAT 7%
+- grand total
+- payment method
+- cash received / change if available
+- footer note
+
+Do not hardcode printer calls inside composer.
+Composer must only return ESC/POS bytes.
+
+5. Receipt print service
+Create a service/use case that:
+- receives a transaction or receipt model
+- calls `ReceiptComposer`
+- calls `PrinterRepository.printBytes(...)`
+
+6. Providers
+Create Riverpod providers for:
+- printer repository
+- paired printers list
+- current printer status
+- selected/default printer
+- connect/disconnect actions
+- test print action
+
+7. Printer settings screen
+Create `printer_settings_screen.dart` with:
+- current Bluetooth/connection status
+- refresh button
+- list of paired printers
+- connect button
+- disconnect button
+- mark printer as default
+- test print button
+- simple error message state
+- clean tablet-friendly layout
+
+Do not over-design UI.
+Keep it consistent with repo style.
+
+8. Checkout integration
+Modify checkout flow so that after successful payment:
+- if printer support is enabled and a printer is connected or default printer exists:
+  - show a confirmation dialog: "Print receipt?"
+- if user confirms:
+  - print receipt
+- if printing fails:
+  - show user-friendly error/snackbar
+  - do not break successful checkout result
+
+Do not auto-print immediately in the first implementation unless already trivial and safe.
+Prompt-first flow is preferred.
+
+9. Routing
+Add route for printer settings if needed:
+- `/settings/printer`
+
+Integrate from settings screen or settings menu only if consistent with current app structure.
+
+10. Error handling
+Add safe handling for:
+- no paired printers
+- Bluetooth disabled
+- permission unavailable
+- connection failure
+- print failure
+- no default printer configured
+
+Do not crash app because of printer errors.
+
+11. Persistence
+Store default printer locally.
+On app startup or first printer screen load:
+- load default printer
+- optionally show it in UI
+Auto reconnect can be deferred unless easy and safe to add cleanly.
+
+12. Scope control
+Implement only what is needed for:
+- paired printer selection
+- connect/disconnect
+- default printer persistence
+- test print
+- print retail receipt bytes after checkout prompt
+
+Do not implement:
+- kitchen ticket
+- split bill
+- restaurant receipt
+- image printing
+- QR code printing unless already trivial
+- background reconnect loops unless very clean
+
+13. Code quality requirements
+- Small focused files
+- Clear naming
+- No dead code
+- No placeholder TODOs without reason
+- Avoid plugin leakage outside datasource layer
+- Keep widgets thin
+- Prefer immutable models
+- Add comments only where needed
+- Make imports and folder placement consistent with repo conventions
+
+14. Deliverables
+At the end, provide:
+1. Summary of what was implemented
+2. Files created
+3. Files modified
+4. Any Android/iOS/macOS config changes required
+5. Any follow-up tasks recommended next
+
+15. Verification
+After implementation:
+- run analyzer mentally and avoid obvious compile errors
+- ensure providers and imports are coherent
+- ensure checkout path still works without printer configured
+- ensure printer feature can be ignored safely by users who never use it
+
+Preferred response format:
+## Task Summary
+## Files Created
+## Files Modified
+## Key Design Notes
+## Manual Setup Required
+## Next Recommended Step
