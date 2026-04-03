@@ -9,6 +9,7 @@ class OrderItemModel {
   late int quantity;
   late double unitPrice;
   late double lineTotal;
+  String? note;
 }
 
 @collection
@@ -34,4 +35,16 @@ class OrderModel {
   int? headcount;
 
   late List<OrderItemModel> items;
+
+  // Loyalty & Discount
+  int? customerId;
+  String? customerName;
+  String? customerPhone;
+
+  double discountAmount = 0;
+  String? promotionId;
+  String? promotionName;
+
+  double pointsEarned = 0;
+  double pointsRedeemed = 0;
 }

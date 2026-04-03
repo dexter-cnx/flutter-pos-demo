@@ -16,6 +16,7 @@ import '../../../orders/presentation/providers/order_history_provider.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../../pos/presentation/providers/pos_providers.dart';
+import '../../../../app/services/backup_service.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -200,6 +201,48 @@ class SettingsPage extends ConsumerWidget {
                         icon: const Icon(Icons.bluetooth_outlined),
                         label: Text('printer.open_settings'.tr()),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: cardWidth,
+                child: _SettingsCard(
+                  title: 'สำรองข้อมูล (Backup)',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       const Text('สำรองข้อมูลและกู้คืนฐานข้อมูลของคุณ'),
+                       const SizedBox(height: 16),
+                       Wrap(
+                         spacing: 12,
+                         runSpacing: 12,
+                         children: [
+                            FilledButton.icon(
+                               onPressed: () async {
+                                  if (isar == null) return;
+                                  try {
+                                    final service = BackupService(isar!);
+                                    await service.createBackup();
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('สำรองข้อมูลสำเร็จ')));
+                                    }
+                                  } catch (e) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('ผิดพลาด: $e')));
+                                    }
+                                  }
+                               }, 
+                               icon: const Icon(Icons.download), 
+                               label: const Text('สำรองข้อมูล ตอนนี้'),
+                            ),
+                            FilledButton.tonalIcon(
+                               onPressed: null, // Placeholder
+                               icon: const Icon(Icons.upload), 
+                               label: const Text('กู้คืนข้อมูล'),
+                            ),
+                         ],
+                       ),
                     ],
                   ),
                 ),

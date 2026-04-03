@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/printer_device.dart';
 import '../providers/printer_providers.dart';
 import '../widgets/printer_widgets.dart';
+import 'receipt_designer_screen.dart';
 
 class PrinterSettingsScreen extends ConsumerWidget {
   const PrinterSettingsScreen({super.key});
@@ -153,6 +154,49 @@ class PrinterSettingsScreen extends ConsumerWidget {
                 );
               },
             ),
+
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                const Icon(Icons.palette_outlined),
+                const SizedBox(width: 8),
+                Text(
+                  'receipt.designer_title'.tr(),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ref.watch(allTemplatesProvider).when(
+                  data: (templates) => Column(
+                    children: templates
+                        .map((t) => ListTile(
+                              leading: Icon(
+                                t.type == 'kitchen_ticket'
+                                    ? Icons.restaurant_menu
+                                    : Icons.receipt_long,
+                              ),
+                              title: Text(t.name),
+                              subtitle: Text(t.type == 'kitchen_ticket'
+                                  ? 'Kitchen Order'
+                                  : 'Store Receipt'),
+                              trailing: const Icon(Icons.chevron_right),
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ReceiptDesignerScreen(
+                                    templateId: t.id,
+                                  ),
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
           ],
         ),
       ),

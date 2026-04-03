@@ -4,10 +4,11 @@ import 'package:go_router/go_router.dart';
 import '../../app/mode/business_mode.dart';
 import '../../app/mode/business_mode_definition.dart';
 import '../../app/mode/feature_capability.dart';
+import '../../features/pos/presentation/pages/pos_page.dart';
+import '../../features/analytics/presentation/pages/dashboard_page.dart';
 import '../../app/shell/app_nav_item.dart';
 import '../../features/orders/presentation/pages/order_history_page.dart';
 import '../../features/inventory/presentation/pages/inventory_page.dart';
-import '../../features/pos/presentation/pages/pos_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/receipt/domain/services/receipt_composer.dart';
 import '../../features/receipt/domain/services/retail_receipt_composer.dart';
@@ -30,6 +31,9 @@ class RetailModeDefinition extends BusinessModeDefinition {
         FeatureCapability.receipt,
         FeatureCapability.orderHistory,
         FeatureCapability.reporting,
+        FeatureCapability.customerLoyalty,
+        FeatureCapability.promotionSystem,
+        FeatureCapability.pointsRedemption,
         FeatureCapability.inventoryTracking,
         FeatureCapability.barcodeScanning,
         FeatureCapability.promptPayPayment,
@@ -57,6 +61,12 @@ class RetailModeDefinition extends BusinessModeDefinition {
           selectedIcon: Icons.inventory_2,
           location: '/inventory',
         ),
+        const AppNavItem(
+          label: 'pos.nav.dashboard',
+          icon: Icons.dashboard_outlined,
+          selectedIcon: Icons.dashboard,
+          location: '/dashboard',
+        ),
         AppNavItem(
           label: 'pos.nav.settings',
           icon: Icons.settings_outlined,
@@ -70,7 +80,7 @@ class RetailModeDefinition extends BusinessModeDefinition {
     return [
       GoRoute(
         path: '/',
-        name: 'pos',
+        name: 'retail_home',
         builder: (context, state) => const PosPage(),
       ),
       GoRoute(
@@ -82,6 +92,11 @@ class RetailModeDefinition extends BusinessModeDefinition {
         path: '/inventory',
         name: 'inventory',
         builder: (context, state) => const InventoryPage(),
+      ),
+      GoRoute(
+        path: '/dashboard',
+        name: 'retail_dashboard',
+        builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
         path: '/settings',

@@ -10,6 +10,7 @@ import '../../features/orders/presentation/pages/order_history_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import 'presentation/pages/restaurant_main_page.dart';
 import 'presentation/pages/dining_session_page.dart';
+import '../../features/analytics/presentation/pages/dashboard_page.dart';
 
 class RestaurantModeDefinition implements BusinessModeDefinition {
   const RestaurantModeDefinition();
@@ -25,12 +26,21 @@ class RestaurantModeDefinition implements BusinessModeDefinition {
 
   @override
   List<FeatureCapability> get capabilities => [
+        FeatureCapability.splitBill,
+        FeatureCapability.reporting,
         FeatureCapability.tableManagement,
         FeatureCapability.diningSession,
         FeatureCapability.headcountPricing,
         FeatureCapability.buffetPricing,
         FeatureCapability.extraChargeItems,
         FeatureCapability.kitchenTicket,
+        FeatureCapability.visualFloorPlan,
+        FeatureCapability.floorPlanEditor,
+        FeatureCapability.customerLoyalty,
+        FeatureCapability.promotionSystem,
+        FeatureCapability.pointsRedemption,
+        FeatureCapability.receiptDesigner,
+        FeatureCapability.kitchenPrinter,
       ];
 
   @override
@@ -46,6 +56,12 @@ class RestaurantModeDefinition implements BusinessModeDefinition {
           icon: Icons.history_outlined,
           selectedIcon: Icons.history,
           location: '/history',
+        ),
+        const AppNavItem(
+          label: 'pos.nav.dashboard',
+          icon: Icons.dashboard_outlined,
+          selectedIcon: Icons.dashboard,
+          location: '/dashboard',
         ),
         const AppNavItem(
           label: 'pos.nav.settings',
@@ -75,6 +91,11 @@ class RestaurantModeDefinition implements BusinessModeDefinition {
         path: '/history',
         name: 'restaurant_history',
         builder: (context, state) => const OrderHistoryPage(),
+      ),
+      GoRoute(
+        path: '/dashboard',
+        name: 'restaurant_dashboard',
+        builder: (context, state) => const DashboardPage(),
       ),
       GoRoute(
         path: '/settings',
@@ -108,13 +129,23 @@ class RestaurantPricingEngine implements OrderPricingEngine {
 
   @override
   double calculateSubtotal(List<dynamic> items, {Map<String, dynamic>? metadata}) {
-    double subtotal = items.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
+    // 1) ยอดสินค้า à la carte
+    double itemsTotal = items.fold(0.0, (sum, item) => sum + (item.product.price * item.quantity));
+
+    // 2) ยอด Buffet (ถ้ามี)
+    final adultCount = (metadata?['adultCount'] as int?) ?? 0;
+    final childCount = (metadata?['childCount'] as int?) ?? 0;
+    final elderlyCount = (metadata?['elderlyCount'] as int?) ?? 0;
     
-    // Support for buffet/headcount charges via metadata
-    final headcount = (metadata?['headcount'] as int?) ?? 0;
-    final buffetPrice = (metadata?['buffetPrice'] as num?)?.toDouble() ?? 0.0;
-    
-    return subtotal + (headcount * buffetPrice);
+    final adultPrice = (metadata?['buffetAdultPrice'] as num?)?.toDouble() ?? 0.0;
+    final childPrice = (metadata?['buffetChildPrice'] as num?)?.toDouble() ?? 0.0;
+    final elderlyDiscount = (metadata?['elderlyDiscount'] as num?)?.toDouble() ?? 0.0;
+
+    final buffetTotal = (adultCount * adultPrice) +
+                        (childCount * childPrice) +
+                        (elderlyCount * adultPrice * (1 - elderlyDiscount));
+
+    return itemsTotal + buffetTotal;
   }
 
   @override

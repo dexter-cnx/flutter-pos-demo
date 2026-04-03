@@ -4,6 +4,8 @@ import '../../data/repositories/isar_dining_session_repository.dart';
 import '../../domain/repositories/dining_session_repository.dart';
 import '../../../tables/presentation/providers/table_providers.dart';
 
+import '../widgets/open_table_dialog.dart';
+
 part 'dining_providers.g.dart';
 
 @riverpod
@@ -26,11 +28,23 @@ class DiningSessionsNotifier extends _$DiningSessionsNotifier {
     return ref.watch(diningSessionRepositoryProvider).getActiveSessions();
   }
 
-  Future<int> openSession(int tableId, String tableName, int headcount) async {
+  Future<int> openSession(int tableId, String tableName, SessionConfig config) async {
+    int? parsedTierId;
+    if (config.buffetTier?.id != null) {
+      parsedTierId = int.tryParse(config.buffetTier!.id);
+    }
+
     final sessionId = await ref.read(diningSessionRepositoryProvider).openSession(
       tableId,
       tableName,
-      headcount,
+      adultCount: config.adultCount,
+      childCount: config.childCount,
+      elderlyCount: config.elderlyCount,
+      buffetTierId: parsedTierId,
+      buffetTierName: config.buffetTier?.name,
+      buffetAdultPrice: config.buffetTier?.adultPrice ?? 0,
+      buffetChildPrice: config.buffetTier?.childPrice ?? 0,
+      timeLimitMinutes: config.buffetTier?.timeLimitMinutes,
     );
     
     // Update table status

@@ -42,7 +42,7 @@ final activeDiningSessionIdProvider =
 
 typedef _$ActiveDiningSessionId = AutoDisposeNotifier<int?>;
 String _$diningSessionsNotifierHash() =>
-    r'6b6ed35bbf5bc587125740aecbd307a93f90c5d6';
+    r'e9bb0dae18b7371e94d9e419738ca1b3ba51e277';
 
 /// See also [DiningSessionsNotifier].
 @ProviderFor(DiningSessionsNotifier)

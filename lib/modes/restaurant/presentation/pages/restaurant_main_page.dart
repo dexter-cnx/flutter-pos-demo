@@ -5,6 +5,9 @@ import '../../../../app/widgets/async_state_view.dart';
 import '../../../../features/tables/presentation/providers/table_providers.dart';
 import '../../../../features/dining/presentation/providers/dining_providers.dart';
 import '../../../../features/tables/data/models/table_model.dart';
+import '../../../../features/dining/presentation/widgets/open_table_dialog.dart';
+import '../../../../features/tables/presentation/widgets/floor_plan_canvas.dart';
+import '../../../../features/tables/presentation/providers/floor_plan_providers.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class RestaurantMainPage extends ConsumerStatefulWidget {
@@ -27,35 +30,44 @@ class _RestaurantMainPageState extends ConsumerState<RestaurantMainPage> {
   @override
   Widget build(BuildContext context) {
     final tablesAsync = ref.watch(tablesNotifierProvider);
+    final isFloorPlanView = ref.watch(floorPlanViewToggleProvider);
+    final activeFloorId = ref.watch(activeFloorPlanIdProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('pos.nav.restaurant_tables'.tr()),
         actions: [
           IconButton(
+            icon: Icon(isFloorPlanView ? Icons.grid_view : Icons.map),
+            onPressed: () => ref.read(floorPlanViewToggleProvider.notifier).toggle(),
+            tooltip: isFloorPlanView ? 'Switch to Grid View' : 'Switch to Floor Plan View',
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(tablesNotifierProvider),
           ),
         ],
       ),
-      body: tablesAsync.when(
-        data: (tables) => GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 220,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 1.1,
-          ),
-          itemCount: tables.length,
-          itemBuilder: (context, index) => _TableCard(table: tables[index]),
-        ),
-        loading: () => const AppLoadingState(),
-        error: (error, _) => AppErrorState(
-          message: error.toString(),
-          onRetry: () => ref.invalidate(tablesNotifierProvider),
-        ),
-      ),
+      body: isFloorPlanView && activeFloorId != null
+          ? FloorPlanCanvas(floorPlanId: activeFloorId)
+          : tablesAsync.when(
+              data: (tables) => GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 220,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.1,
+                ),
+                itemCount: tables.length,
+                itemBuilder: (context, index) => _TableCard(table: tables[index]),
+              ),
+              loading: () => const AppLoadingState(),
+              error: (error, _) => AppErrorState(
+                message: error.toString(),
+                onRetry: () => ref.invalidate(tablesNotifierProvider),
+              ),
+            ),
     );
   }
 }
@@ -157,61 +169,19 @@ class _TableCard extends ConsumerWidget {
   }
 
   Future<void> _showOpenSessionDialog(BuildContext context, WidgetRef ref) async {
-    int headcount = 1;
-    
-    final confirmed = await showDialog<bool>(
+    final config = await showDialog<SessionConfig>(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text('pos.restaurant.open_table'.tr(args: [table.name])),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('pos.restaurant.enter_headcount'.tr()),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle_outline),
-                    onPressed: headcount > 1 ? () => setState(() => headcount--) : null,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(
-                      '$headcount',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_circle_outline),
-                    onPressed: headcount < table.capacity * 2 
-                        ? () => setState(() => headcount++) 
-                        : null,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('common.cancel'.tr()),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('common.confirm'.tr()),
-            ),
-          ],
-        ),
+      builder: (context) => OpenTableDialog(
+        tableName: table.name,
+        capacity: table.capacity,
       ),
     );
 
-    if (confirmed == true) {
+    if (config != null) {
       final sessionId = await ref.read(diningSessionsNotifierProvider.notifier).openSession(
         table.id,
         table.name,
-        headcount,
+        config,
       );
       if (context.mounted) {
         _goToSession(context, sessionId);

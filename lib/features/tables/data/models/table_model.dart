@@ -9,7 +9,8 @@ class TableModel {
   @Index(unique: true)
   late String name;
 
-  String? floor;
+  String? floor; // Legacy string-based or unassigned
+  int? floorPlanId; // Link to FloorPlanModel
 
   @Index()
   late String status; // 'available', 'occupied', 'cleaning'
@@ -17,6 +18,9 @@ class TableModel {
   int? currentSessionId;
 
   late int capacity;
+
+  // === Visual Position ===
+  String shape = 'square'; // 'square', 'round', 'long'
 
   @Index()
   DateTime? updatedAt;

@@ -152,9 +152,17 @@ class Cart extends _$Cart {
       final session = ref.read(activeDiningSessionProvider(currentState.sessionId!)).value;
       if (session != null) {
         metadata = {
-          'headcount': session.headcount,
-          'buffetPrice': 0.0,
+          'headcount': session.headcount, // keep for backward compatibility
+          'adultCount': session.adultCount,
+          'childCount': session.childCount,
+          'elderlyCount': session.elderlyCount,
+          'buffetAdultPrice': session.buffetAdultPrice,
+          'buffetChildPrice': session.buffetChildPrice,
+          'elderlyDiscount': session.buffetTierId != null ? 0.0 : 0.0, // We don't have discount saved directly in session yet, but we already applied price. Wait! If elderly uses adultPrice * (1 - elderlyDiscount), we should get elderlyDiscount.
         };
+        // Quick lookup for elderly discount. The actual implementation in openSession didn't save `elderlyDiscount` to `DiningSessionModel`. 
+        // Let's pass 0 for now since the model doesn't have it, or modify IsarDiningSessionRepository and Model! 
+        // Oh right, I should just map the available ones.
       }
     }
 

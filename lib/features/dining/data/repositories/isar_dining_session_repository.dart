@@ -31,14 +31,33 @@ class IsarDiningSessionRepository implements DiningSessionRepository {
   }
 
   @override
-  Future<int> openSession(int tableId, String tableName, int headcount) async {
+  Future<int> openSession(
+    int tableId,
+    String tableName, {
+    int adultCount = 1,
+    int childCount = 0,
+    int elderlyCount = 0,
+    int? buffetTierId,
+    String? buffetTierName,
+    double buffetAdultPrice = 0,
+    double buffetChildPrice = 0,
+    int? timeLimitMinutes,
+  }) async {
     final database = isar;
     if (database == null) return -1;
 
     final session = DiningSessionModel()
       ..tableId = tableId
       ..tableName = tableName
-      ..headcount = headcount
+      ..headcount = adultCount + childCount + elderlyCount
+      ..adultCount = adultCount
+      ..childCount = childCount
+      ..elderlyCount = elderlyCount
+      ..buffetTierId = buffetTierId
+      ..buffetTierName = buffetTierName
+      ..buffetAdultPrice = buffetAdultPrice
+      ..buffetChildPrice = buffetChildPrice
+      ..timeLimitMinutes = timeLimitMinutes
       ..isOpen = true
       ..startTime = DateTime.now()
       ..subtotal = 0

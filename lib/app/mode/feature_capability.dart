@@ -21,4 +21,15 @@ enum FeatureCapability {
   extraChargeItems,
   kitchenTicket,
   splitBill,
+
+  // --- Visual Floor Plan ---
+  visualFloorPlan,
+  floorPlanEditor,
+  customerLoyalty,
+  promotionSystem,
+  pointsRedemption,
+
+  receiptDesigner,
+  kitchenPrinter,
+  edcPayment,
 }

@@ -21,6 +21,11 @@ import '../../../printer/domain/entities/printer_status.dart';
 import '../../../payment/domain/entities/payment_method.dart';
 import '../../../payment/domain/entities/payment_status.dart';
 import '../../../dining/presentation/providers/dining_providers.dart';
+import '../../../customer/domain/entities/customer.dart';
+import '../../../customer/domain/entities/promotion.dart';
+import '../../../customer/domain/services/points_calculator.dart';
+import '../../../customer/presentation/widgets/customer_search_widget.dart';
+import '../../../customer/presentation/providers/customer_providers.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -31,6 +36,8 @@ class CheckoutPage extends ConsumerStatefulWidget {
 
 class _CheckoutPageState extends ConsumerState<CheckoutPage> {
   late final TextEditingController _receivedController;
+  Customer? _selectedCustomer;
+  Promotion? _selectedPromotion;
 
   @override
   void initState() {
@@ -76,13 +83,17 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         PaymentStatus.pending;
   }
 
-  Future<void> _simulateCardApproval() async {
+  Future<void> _simulateCardApproval(double amount) async {
+    final edcService = ref.read(edcServiceProvider);
+    
     ref.read(paymentSimulationStateProvider.notifier).state =
         PaymentStatus.processing;
-    await Future<void>.delayed(const Duration(milliseconds: 1200));
-    if (!mounted) return;
-    ref.read(paymentSimulationStateProvider.notifier).state =
-        PaymentStatus.approved;
+    
+    // Listen to the stream for updates
+    edcService.processPayment(amount).listen((status) {
+      if (!mounted) return;
+      ref.read(paymentSimulationStateProvider.notifier).state = status;
+    });
   }
 
   void _markQrAsPaid() {
@@ -138,6 +149,19 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
     if (!context.mounted) return;
 
+    // Give Points to customer
+    if (_selectedCustomer != null) {
+      final pointsEarned = PointsCalculator.calculatePointsEarned(cartState.total);
+      final repo = ref.read(customerRepositoryProvider);
+      final updatedCust = _selectedCustomer!.copyWith(
+        points: _selectedCustomer!.points + pointsEarned,
+        totalSpent: _selectedCustomer!.totalSpent + cartState.total,
+        visitCount: _selectedCustomer!.visitCount + 1,
+      );
+      final newTier = PointsCalculator.calculateTier(updatedCust.totalSpent);
+      await repo.saveCustomer(updatedCust.copyWith(memberTier: newTier));
+    }
+
     ref.read(cartProvider.notifier).clearCart();
     ref.read(cashReceivedProvider.notifier).state = 0;
     _resetSimulationState();
@@ -150,7 +174,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       return;
     }
 
-    context.go('/');
+    if (context.mounted) context.go('/');
   }
 
   Future<void> _askPrintReceipt(
@@ -246,7 +270,19 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final receivedAmount = ref.watch(cashReceivedProvider);
     final storeProfileAsync = ref.watch(storeProfileProvider);
     final simulationState = ref.watch(paymentSimulationStateProvider);
-    final amountDue = cartState.total;
+    final subtotalAndTax = cartState.subtotal + cartState.taxAmount;
+    
+    // Apply discount
+    double discountAmount = 0;
+    if (_selectedPromotion != null) {
+       if (_selectedPromotion!.type == 'percentage') {
+         discountAmount = subtotalAndTax * (_selectedPromotion!.discountPercent ?? 0);
+       } else if (_selectedPromotion!.type == 'fixed') {
+         discountAmount = _selectedPromotion!.discountAmount ?? 0;
+       }
+    }
+    final amountDue = max(0.0, subtotalAndTax - discountAmount);
+    
     final effectiveReceivedAmount = method == PaymentMethod.cash
         ? receivedAmount
         : amountDue;
@@ -285,7 +321,8 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final responsive = ResponsiveLayout.fromConstraints(constraints);
-            final summary = _buildOrderSummary(context, cartState);
+            final summary = _buildOrderSummary(context, cartState, discountAmount);
+            final customerPanel = _buildCustomerPanel(context);
             final paymentPanel = _buildPaymentPanel(
               context,
               canConfirmPayment,
@@ -310,7 +347,15 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 children: [
                   Expanded(
                     flex: 3,
-                    child: SingleChildScrollView(child: summary),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          customerPanel,
+                          const SizedBox(height: 16),
+                          summary,
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -323,7 +368,13 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
             return SingleChildScrollView(
               child: Column(
-                children: [summary, const SizedBox(height: 16), paymentPanel],
+                children: [
+                  customerPanel,
+                  const SizedBox(height: 16),
+                  summary, 
+                  const SizedBox(height: 16), 
+                  paymentPanel
+                ],
               ),
             );
           },
@@ -332,7 +383,67 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     );
   }
 
-  Widget _buildOrderSummary(BuildContext context, CartState cartState) {
+  Widget _buildCustomerPanel(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('สมาชิก (Member)', style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 12),
+            if (_selectedCustomer == null)
+              CustomerSearchWidget(
+                onCustomerSelected: (c) => setState(() => _selectedCustomer = c),
+              )
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.person, size: 40),
+                    title: Text(_selectedCustomer!.name),
+                    subtitle: Text('${_selectedCustomer!.phone} - ${_selectedCustomer!.memberTier.toUpperCase()}'),
+                    trailing: Text('${_selectedCustomer!.points} แต้ม', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => setState(() => _selectedCustomer = null),
+                    icon: const Icon(Icons.close),
+                    label: const Text('ยกเลิกการเลือกลูกค้า'),
+                  ),
+                  const Divider(),
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final promosAsync = ref.watch(activePromotionsProvider);
+                      return promosAsync.when(
+                        data: (promos) {
+                           if (promos.isEmpty) return const Text('ไม่มีโปรโมชั่นใช้ได้');
+                           return DropdownButtonFormField<Promotion>(
+                             decoration: const InputDecoration(labelText: 'เลือกส่วนลด'),
+                             initialValue: _selectedPromotion,
+                             items: [
+                               const DropdownMenuItem(value: null, child: Text('ไม่ใช้ส่วนลด')),
+                               ...promos.map((p) => DropdownMenuItem(value: p, child: Text(p.name))),
+                             ],
+                             onChanged: (p) => setState(() => _selectedPromotion = p),
+                           );
+                        },
+                        loading: () => const CircularProgressIndicator(),
+                        error: (e, st) => Text('Error: $e'),
+                      );
+                    }
+                  )
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrderSummary(BuildContext context, CartState cartState, double discountAmount) {
     final hasItems = cartState.items.isNotEmpty;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -372,8 +483,19 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                     const Divider(height: 32),
                     _buildSummaryRow(
                       context,
-                      'checkout.amount_due'.tr(),
+                      'ยอดรวม',
                       _currency(cartState.subtotal + cartState.taxAmount),
+                    ),
+                    if (discountAmount > 0)
+                      _buildSummaryRow(
+                        context,
+                        'ส่วนลด: ${_selectedPromotion?.name ?? ''}',
+                        '-${_currency(discountAmount)}',
+                      ),
+                    _buildSummaryRow(
+                      context,
+                      'checkout.amount_due'.tr(),
+                      _currency(max(0, cartState.subtotal + cartState.taxAmount - discountAmount)),
                       bold: true,
                     ),
                     _buildSummaryRow(
@@ -685,7 +807,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   ),
                 ),
               ] else if (isCard) ...[
-                _buildCardSection(context, simulationState),
+                _buildCardSection(context, simulationState, amountDue),
               ],
               const SizedBox(height: 16),
               _buildSummaryRow(
@@ -835,6 +957,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
   Widget _buildCardSection(
     BuildContext context,
     PaymentStatus simulationState,
+    double amountDue,
   ) {
     final theme = Theme.of(context);
 
@@ -876,7 +999,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 simulationState == PaymentStatus.processing ||
                     simulationState == PaymentStatus.approved
                 ? null
-                : _simulateCardApproval,
+                : () => _simulateCardApproval(amountDue),
             icon: Icon(
               simulationState == PaymentStatus.approved
                   ? Icons.check_circle_outline

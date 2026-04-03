@@ -21,6 +21,8 @@ menu.browse_image,Pick Image,เลือกรูปภาพ
 menu.image_url_hint,Or enter Image URL,หรือใส่ URL รูปภาพ
 menu.web_image_warning,On Web, images are read only. Use URL for persistence in this demo.,บนเว็บรูปภาพเป็นแบบอ่านอย่างเดียว โปรดใช้ URL เพื่อบันทึกลงฐานข้อมูลในตัวอย่างนี้
 dashboard.title,Dashboard,แดชบอร์ด
+dashboard.export_pdf,Export PDF,ส่งออก PDF
+dashboard.today,Today: {},วันนี้: {}
 pos.title,Point of Sale,ขายหน้าร้าน
 inventory.title,Inventory,คลังสินค้า
 inventory.low_stock_count,{} low stock items,{} รายการใกล้หมด
@@ -154,6 +156,19 @@ receipt.share_failed,Unable to share receipt PDF.,ไม่สามารถแ
 receipt.footer,This is a demo receipt for preview and printing flow.,ใบเสร็จนี้เป็นเดโมสำหรับตัวอย่างการแสดงผลและการพิมพ์
 receipt.not_found,Receipt not found,ไม่พบใบเสร็จ
 receipt.not_found_hint,We could not find receipt {}.,ไม่พบข้อมูลใบเสร็จ {}
+receipt.designer_title,Receipt Designer,ออกแบบใบเสร็จ
+receipt.header_section,Header Section,ข้อมูลส่วนหัว
+receipt.content_section,Content Options,ข้อมูลส่วนเนื้อหา
+receipt.footer_section,Footer Section,ข้อมูลส่วนท้าย
+receipt.page_settings,Page Settings,การตั้งค่ากระดาษ
+receipt.show_sku,Show SKU/Barcode,แสดงรหัสสินค้า/บาร์โค้ด
+receipt.show_tax,Show Tax Breakdown,แสดงภาษีแยกรายการ
+receipt.show_payment,Show Payment Details,แสดงรายละเอียดการชำระเงิน
+receipt.show_customer,Show Customer Info,แสดงข้อมูลลูกค้า
+receipt.show_table,Show Table Info,แสดงข้อมูลโต๊ะ
+receipt.footer_main,Footer Text 1,ข้อความส่วนท้าย 1
+receipt.footer_sub,Footer Text 2,ข้อความส่วนท้าย 2
+receipt.paper_width,Paper Width,ความกว้างกระดาษ
 menu.title,Menu Management,จัดการเมนูอาหาร
 menu.category_title,Category Management,จัดการหมวดหมู่สินค้า
 menu.product_title,Product Management,จัดการสินค้า

@@ -10,6 +10,12 @@ import '../../domain/repositories/printer_repository.dart';
 import '../../domain/services/receipt_print_service.dart';
 import '../../../../features/receipt/domain/services/thermal_receipt_renderer.dart';
 import '../../../../app/mode/current_mode_provider.dart';
+import '../../../../app/bootstrap.dart';
+import '../../data/models/receipt_template_model.dart';
+import '../../domain/services/thai_thermal_printer.dart';
+import '../../domain/services/kitchen_ticket_service.dart';
+import '../../domain/services/edc_service.dart';
+import 'package:isar/isar.dart';
 
 part 'printer_providers.g.dart';
 
@@ -31,6 +37,21 @@ PrinterRepository printerRepository(Ref ref) {
     bluetoothDatasource: ref.watch(bluetoothPrinterDatasourceProvider),
     prefsDatasource: ref.watch(printerPrefsDatasourceProvider),
   );
+}
+
+@riverpod
+ThaiThermalPrinter thaiThermalPrinter(Ref ref) {
+  return ThaiThermalPrinter(ref.watch(bluetoothPrinterDatasourceProvider));
+}
+
+@riverpod
+KitchenTicketService kitchenTicketService(Ref ref) {
+  return KitchenTicketService(ref.watch(thaiThermalPrinterProvider));
+}
+
+@riverpod
+EdcService edcService(Ref ref) {
+  return MockEdcService();
 }
 
 @riverpod
@@ -133,4 +154,53 @@ Future<void> saveAsDefault(WidgetRef ref, PrinterDevice device) async {
       );
   ref.invalidate(defaultPrinterProvider);
   ref.invalidate(pairedPrintersProvider);
+}
+
+// ─── Receipt Templates (Isar) ────────────────────────────────────────────────
+
+@riverpod
+Future<List<ReceiptTemplateModel>> allTemplates(Ref ref) {
+  return isar!.receiptTemplateModels.where().findAll();
+}
+
+@riverpod
+Future<ReceiptTemplateModel?> defaultReceiptTemplate(Ref ref) {
+  return isar!.receiptTemplateModels
+      .where()
+      .filter()
+      .typeEqualTo('receipt')
+      .and()
+      .isDefaultEqualTo(true)
+      .findFirst();
+}
+
+@riverpod
+Future<ReceiptTemplateModel?> defaultKitchenTemplate(Ref ref) {
+  return isar!.receiptTemplateModels
+      .where()
+      .filter()
+      .typeEqualTo('kitchen_ticket')
+      .and()
+      .isDefaultEqualTo(true)
+      .findFirst();
+}
+
+@riverpod
+class ReceiptTemplateNotifier extends _$ReceiptTemplateNotifier {
+  @override
+  FutureOr<ReceiptTemplateModel?> build(int templateId) {
+    return isar!.receiptTemplateModels.get(templateId);
+  }
+
+  Future<void> updateTemplate(ReceiptTemplateModel template) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await isar!.writeTxn(() => isar!.receiptTemplateModels.put(template));
+      ref.invalidateSelf();
+      ref.invalidate(allTemplatesProvider);
+      ref.invalidate(defaultReceiptTemplateProvider);
+      ref.invalidate(defaultKitchenTemplateProvider);
+      return template;
+    });
+  }
 }

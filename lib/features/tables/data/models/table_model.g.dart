@@ -32,18 +32,28 @@ const TableModelSchema = CollectionSchema(
       name: r'floor',
       type: IsarType.string,
     ),
-    r'name': PropertySchema(
+    r'floorPlanId': PropertySchema(
       id: 3,
+      name: r'floorPlanId',
+      type: IsarType.long,
+    ),
+    r'name': PropertySchema(
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
+    r'shape': PropertySchema(
+      id: 5,
+      name: r'shape',
+      type: IsarType.string,
+    ),
     r'status': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'status',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -115,6 +125,7 @@ int _tableModelEstimateSize(
     }
   }
   bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.shape.length * 3;
   bytesCount += 3 + object.status.length * 3;
   return bytesCount;
 }
@@ -128,9 +139,11 @@ void _tableModelSerialize(
   writer.writeLong(offsets[0], object.capacity);
   writer.writeLong(offsets[1], object.currentSessionId);
   writer.writeString(offsets[2], object.floor);
-  writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.status);
-  writer.writeDateTime(offsets[5], object.updatedAt);
+  writer.writeLong(offsets[3], object.floorPlanId);
+  writer.writeString(offsets[4], object.name);
+  writer.writeString(offsets[5], object.shape);
+  writer.writeString(offsets[6], object.status);
+  writer.writeDateTime(offsets[7], object.updatedAt);
 }
 
 TableModel _tableModelDeserialize(
@@ -143,10 +156,12 @@ TableModel _tableModelDeserialize(
   object.capacity = reader.readLong(offsets[0]);
   object.currentSessionId = reader.readLongOrNull(offsets[1]);
   object.floor = reader.readStringOrNull(offsets[2]);
+  object.floorPlanId = reader.readLongOrNull(offsets[3]);
   object.id = id;
-  object.name = reader.readString(offsets[3]);
-  object.status = reader.readString(offsets[4]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[5]);
+  object.name = reader.readString(offsets[4]);
+  object.shape = reader.readString(offsets[5]);
+  object.status = reader.readString(offsets[6]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[7]);
   return object;
 }
 
@@ -164,10 +179,14 @@ P _tableModelDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -802,6 +821,80 @@ extension TableModelQueryFilter
     });
   }
 
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      floorPlanIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'floorPlanId',
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      floorPlanIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'floorPlanId',
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      floorPlanIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'floorPlanId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      floorPlanIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'floorPlanId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      floorPlanIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'floorPlanId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      floorPlanIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'floorPlanId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<TableModel, TableModel, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -980,6 +1073,137 @@ extension TableModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'shape',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'shape',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'shape',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'shape',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'shape',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'shape',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'shape',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'shape',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition> shapeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'shape',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      shapeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'shape',
         value: '',
       ));
     });
@@ -1234,6 +1458,18 @@ extension TableModelQuerySortBy
     });
   }
 
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> sortByFloorPlanId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'floorPlanId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> sortByFloorPlanIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'floorPlanId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TableModel, TableModel, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1243,6 +1479,18 @@ extension TableModelQuerySortBy
   QueryBuilder<TableModel, TableModel, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> sortByShape() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shape', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> sortByShapeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shape', Sort.desc);
     });
   }
 
@@ -1310,6 +1558,18 @@ extension TableModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> thenByFloorPlanId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'floorPlanId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> thenByFloorPlanIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'floorPlanId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TableModel, TableModel, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1331,6 +1591,18 @@ extension TableModelQuerySortThenBy
   QueryBuilder<TableModel, TableModel, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> thenByShape() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shape', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy> thenByShapeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shape', Sort.desc);
     });
   }
 
@@ -1380,10 +1652,23 @@ extension TableModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<TableModel, TableModel, QDistinct> distinctByFloorPlanId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'floorPlanId');
+    });
+  }
+
   QueryBuilder<TableModel, TableModel, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QDistinct> distinctByShape(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'shape', caseSensitive: caseSensitive);
     });
   }
 
@@ -1427,9 +1712,21 @@ extension TableModelQueryProperty
     });
   }
 
+  QueryBuilder<TableModel, int?, QQueryOperations> floorPlanIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'floorPlanId');
+    });
+  }
+
   QueryBuilder<TableModel, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<TableModel, String, QQueryOperations> shapeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'shape');
     });
   }
 

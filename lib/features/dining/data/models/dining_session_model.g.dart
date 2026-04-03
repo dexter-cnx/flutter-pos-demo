@@ -18,54 +18,94 @@ const DiningSessionModelSchema = CollectionSchema(
   name: r'DiningSessionModel',
   id: -6075295640434881393,
   properties: {
-    r'endTime': PropertySchema(
+    r'adultCount': PropertySchema(
       id: 0,
+      name: r'adultCount',
+      type: IsarType.long,
+    ),
+    r'buffetAdultPrice': PropertySchema(
+      id: 1,
+      name: r'buffetAdultPrice',
+      type: IsarType.double,
+    ),
+    r'buffetChildPrice': PropertySchema(
+      id: 2,
+      name: r'buffetChildPrice',
+      type: IsarType.double,
+    ),
+    r'buffetTierId': PropertySchema(
+      id: 3,
+      name: r'buffetTierId',
+      type: IsarType.long,
+    ),
+    r'buffetTierName': PropertySchema(
+      id: 4,
+      name: r'buffetTierName',
+      type: IsarType.string,
+    ),
+    r'childCount': PropertySchema(
+      id: 5,
+      name: r'childCount',
+      type: IsarType.long,
+    ),
+    r'elderlyCount': PropertySchema(
+      id: 6,
+      name: r'elderlyCount',
+      type: IsarType.long,
+    ),
+    r'endTime': PropertySchema(
+      id: 7,
       name: r'endTime',
       type: IsarType.dateTime,
     ),
     r'headcount': PropertySchema(
-      id: 1,
+      id: 8,
       name: r'headcount',
       type: IsarType.long,
     ),
     r'isOpen': PropertySchema(
-      id: 2,
+      id: 9,
       name: r'isOpen',
       type: IsarType.bool,
     ),
     r'items': PropertySchema(
-      id: 3,
+      id: 10,
       name: r'items',
       type: IsarType.objectList,
       target: r'OrderItemModel',
     ),
     r'startTime': PropertySchema(
-      id: 4,
+      id: 11,
       name: r'startTime',
       type: IsarType.dateTime,
     ),
     r'subtotal': PropertySchema(
-      id: 5,
+      id: 12,
       name: r'subtotal',
       type: IsarType.double,
     ),
     r'tableId': PropertySchema(
-      id: 6,
+      id: 13,
       name: r'tableId',
       type: IsarType.long,
     ),
     r'tableName': PropertySchema(
-      id: 7,
+      id: 14,
       name: r'tableName',
       type: IsarType.string,
     ),
     r'taxAmount': PropertySchema(
-      id: 8,
+      id: 15,
       name: r'taxAmount',
       type: IsarType.double,
     ),
+    r'timeLimitMinutes': PropertySchema(
+      id: 16,
+      name: r'timeLimitMinutes',
+      type: IsarType.long,
+    ),
     r'total': PropertySchema(
-      id: 9,
+      id: 17,
       name: r'total',
       type: IsarType.double,
     )
@@ -130,6 +170,12 @@ int _diningSessionModelEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.buffetTierName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.items.length * 3;
   {
     final offsets = allOffsets[OrderItemModel]!;
@@ -149,21 +195,29 @@ void _diningSessionModelSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.endTime);
-  writer.writeLong(offsets[1], object.headcount);
-  writer.writeBool(offsets[2], object.isOpen);
+  writer.writeLong(offsets[0], object.adultCount);
+  writer.writeDouble(offsets[1], object.buffetAdultPrice);
+  writer.writeDouble(offsets[2], object.buffetChildPrice);
+  writer.writeLong(offsets[3], object.buffetTierId);
+  writer.writeString(offsets[4], object.buffetTierName);
+  writer.writeLong(offsets[5], object.childCount);
+  writer.writeLong(offsets[6], object.elderlyCount);
+  writer.writeDateTime(offsets[7], object.endTime);
+  writer.writeLong(offsets[8], object.headcount);
+  writer.writeBool(offsets[9], object.isOpen);
   writer.writeObjectList<OrderItemModel>(
-    offsets[3],
+    offsets[10],
     allOffsets,
     OrderItemModelSchema.serialize,
     object.items,
   );
-  writer.writeDateTime(offsets[4], object.startTime);
-  writer.writeDouble(offsets[5], object.subtotal);
-  writer.writeLong(offsets[6], object.tableId);
-  writer.writeString(offsets[7], object.tableName);
-  writer.writeDouble(offsets[8], object.taxAmount);
-  writer.writeDouble(offsets[9], object.total);
+  writer.writeDateTime(offsets[11], object.startTime);
+  writer.writeDouble(offsets[12], object.subtotal);
+  writer.writeLong(offsets[13], object.tableId);
+  writer.writeString(offsets[14], object.tableName);
+  writer.writeDouble(offsets[15], object.taxAmount);
+  writer.writeLong(offsets[16], object.timeLimitMinutes);
+  writer.writeDouble(offsets[17], object.total);
 }
 
 DiningSessionModel _diningSessionModelDeserialize(
@@ -173,23 +227,31 @@ DiningSessionModel _diningSessionModelDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DiningSessionModel();
-  object.endTime = reader.readDateTimeOrNull(offsets[0]);
-  object.headcount = reader.readLong(offsets[1]);
+  object.adultCount = reader.readLong(offsets[0]);
+  object.buffetAdultPrice = reader.readDouble(offsets[1]);
+  object.buffetChildPrice = reader.readDouble(offsets[2]);
+  object.buffetTierId = reader.readLongOrNull(offsets[3]);
+  object.buffetTierName = reader.readStringOrNull(offsets[4]);
+  object.childCount = reader.readLong(offsets[5]);
+  object.elderlyCount = reader.readLong(offsets[6]);
+  object.endTime = reader.readDateTimeOrNull(offsets[7]);
+  object.headcount = reader.readLong(offsets[8]);
   object.id = id;
-  object.isOpen = reader.readBool(offsets[2]);
+  object.isOpen = reader.readBool(offsets[9]);
   object.items = reader.readObjectList<OrderItemModel>(
-        offsets[3],
+        offsets[10],
         OrderItemModelSchema.deserialize,
         allOffsets,
         OrderItemModel(),
       ) ??
       [];
-  object.startTime = reader.readDateTime(offsets[4]);
-  object.subtotal = reader.readDouble(offsets[5]);
-  object.tableId = reader.readLong(offsets[6]);
-  object.tableName = reader.readString(offsets[7]);
-  object.taxAmount = reader.readDouble(offsets[8]);
-  object.total = reader.readDouble(offsets[9]);
+  object.startTime = reader.readDateTime(offsets[11]);
+  object.subtotal = reader.readDouble(offsets[12]);
+  object.tableId = reader.readLong(offsets[13]);
+  object.tableName = reader.readString(offsets[14]);
+  object.taxAmount = reader.readDouble(offsets[15]);
+  object.timeLimitMinutes = reader.readLongOrNull(offsets[16]);
+  object.total = reader.readDouble(offsets[17]);
   return object;
 }
 
@@ -201,12 +263,26 @@ P _diningSessionModelDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 1:
       return (reader.readLong(offset)) as P;
+    case 1:
+      return (reader.readDouble(offset)) as P;
     case 2:
-      return (reader.readBool(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 3:
+      return (reader.readLongOrNull(offset)) as P;
+    case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readLong(offset)) as P;
+    case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 8:
+      return (reader.readLong(offset)) as P;
+    case 9:
+      return (reader.readBool(offset)) as P;
+    case 10:
       return (reader.readObjectList<OrderItemModel>(
             offset,
             OrderItemModelSchema.deserialize,
@@ -214,17 +290,19 @@ P _diningSessionModelDeserializeProp<P>(
             OrderItemModel(),
           ) ??
           []) as P;
-    case 4:
+    case 11:
       return (reader.readDateTime(offset)) as P;
-    case 5:
+    case 12:
       return (reader.readDouble(offset)) as P;
-    case 6:
+    case 13:
       return (reader.readLong(offset)) as P;
-    case 7:
+    case 14:
       return (reader.readString(offset)) as P;
-    case 8:
+    case 15:
       return (reader.readDouble(offset)) as P;
-    case 9:
+    case 16:
+      return (reader.readLongOrNull(offset)) as P;
+    case 17:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -585,6 +663,534 @@ extension DiningSessionModelQueryWhere
 
 extension DiningSessionModelQueryFilter
     on QueryBuilder<DiningSessionModel, DiningSessionModel, QFilterCondition> {
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      adultCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'adultCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      adultCountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'adultCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      adultCountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'adultCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      adultCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'adultCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetAdultPriceEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'buffetAdultPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetAdultPriceGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'buffetAdultPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetAdultPriceLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'buffetAdultPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetAdultPriceBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'buffetAdultPrice',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetChildPriceEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'buffetChildPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetChildPriceGreaterThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'buffetChildPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetChildPriceLessThan(
+    double value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'buffetChildPrice',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetChildPriceBetween(
+    double lower,
+    double upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'buffetChildPrice',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'buffetTierId',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'buffetTierId',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'buffetTierId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'buffetTierId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'buffetTierId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'buffetTierId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'buffetTierName',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'buffetTierName',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'buffetTierName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'buffetTierName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'buffetTierName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'buffetTierName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'buffetTierName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'buffetTierName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'buffetTierName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'buffetTierName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'buffetTierName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      buffetTierNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'buffetTierName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      childCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'childCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      childCountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'childCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      childCountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'childCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      childCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'childCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      elderlyCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'elderlyCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      elderlyCountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'elderlyCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      elderlyCountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'elderlyCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      elderlyCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'elderlyCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
       endTimeIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -1251,6 +1857,80 @@ extension DiningSessionModelQueryFilter
   }
 
   QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      timeLimitMinutesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'timeLimitMinutes',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      timeLimitMinutesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'timeLimitMinutes',
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      timeLimitMinutesEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'timeLimitMinutes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      timeLimitMinutesGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'timeLimitMinutes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      timeLimitMinutesLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'timeLimitMinutes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
+      timeLimitMinutesBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'timeLimitMinutes',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterFilterCondition>
       totalEqualTo(
     double value, {
     double epsilon = Query.epsilon,
@@ -1332,6 +2012,104 @@ extension DiningSessionModelQueryLinks
 
 extension DiningSessionModelQuerySortBy
     on QueryBuilder<DiningSessionModel, DiningSessionModel, QSortBy> {
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByAdultCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'adultCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByAdultCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'adultCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetAdultPrice() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetAdultPrice', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetAdultPriceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetAdultPrice', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetChildPrice() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetChildPrice', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetChildPriceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetChildPrice', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetTierId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetTierIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetTierName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByBuffetTierNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByChildCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'childCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByChildCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'childCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByElderlyCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'elderlyCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByElderlyCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'elderlyCount', Sort.desc);
+    });
+  }
+
   QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
       sortByEndTime() {
     return QueryBuilder.apply(this, (query) {
@@ -1445,6 +2223,20 @@ extension DiningSessionModelQuerySortBy
   }
 
   QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByTimeLimitMinutes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeLimitMinutes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      sortByTimeLimitMinutesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeLimitMinutes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
       sortByTotal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'total', Sort.asc);
@@ -1461,6 +2253,104 @@ extension DiningSessionModelQuerySortBy
 
 extension DiningSessionModelQuerySortThenBy
     on QueryBuilder<DiningSessionModel, DiningSessionModel, QSortThenBy> {
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByAdultCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'adultCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByAdultCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'adultCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetAdultPrice() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetAdultPrice', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetAdultPriceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetAdultPrice', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetChildPrice() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetChildPrice', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetChildPriceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetChildPrice', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetTierId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetTierIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetTierName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByBuffetTierNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'buffetTierName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByChildCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'childCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByChildCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'childCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByElderlyCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'elderlyCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByElderlyCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'elderlyCount', Sort.desc);
+    });
+  }
+
   QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
       thenByEndTime() {
     return QueryBuilder.apply(this, (query) {
@@ -1588,6 +2478,20 @@ extension DiningSessionModelQuerySortThenBy
   }
 
   QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByTimeLimitMinutes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeLimitMinutes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
+      thenByTimeLimitMinutesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeLimitMinutes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QAfterSortBy>
       thenByTotal() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'total', Sort.asc);
@@ -1604,6 +2508,56 @@ extension DiningSessionModelQuerySortThenBy
 
 extension DiningSessionModelQueryWhereDistinct
     on QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct> {
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByAdultCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'adultCount');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByBuffetAdultPrice() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'buffetAdultPrice');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByBuffetChildPrice() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'buffetChildPrice');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByBuffetTierId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'buffetTierId');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByBuffetTierName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'buffetTierName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByChildCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'childCount');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByElderlyCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'elderlyCount');
+    });
+  }
+
   QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
       distinctByEndTime() {
     return QueryBuilder.apply(this, (query) {
@@ -1661,6 +2615,13 @@ extension DiningSessionModelQueryWhereDistinct
   }
 
   QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
+      distinctByTimeLimitMinutes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'timeLimitMinutes');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, DiningSessionModel, QDistinct>
       distinctByTotal() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'total');
@@ -1673,6 +2634,53 @@ extension DiningSessionModelQueryProperty
   QueryBuilder<DiningSessionModel, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, int, QQueryOperations> adultCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'adultCount');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, double, QQueryOperations>
+      buffetAdultPriceProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'buffetAdultPrice');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, double, QQueryOperations>
+      buffetChildPriceProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'buffetChildPrice');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, int?, QQueryOperations>
+      buffetTierIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'buffetTierId');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, String?, QQueryOperations>
+      buffetTierNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'buffetTierName');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, int, QQueryOperations> childCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'childCount');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, int, QQueryOperations>
+      elderlyCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'elderlyCount');
     });
   }
 
@@ -1733,6 +2741,13 @@ extension DiningSessionModelQueryProperty
       taxAmountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'taxAmount');
+    });
+  }
+
+  QueryBuilder<DiningSessionModel, int?, QQueryOperations>
+      timeLimitMinutesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'timeLimitMinutes');
     });
   }
 

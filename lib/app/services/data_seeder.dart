@@ -7,6 +7,12 @@ import '../../features/pos/data/models/category_model.dart';
 import '../../features/pos/data/models/product_model.dart';
 import '../../features/settings/data/models/app_settings_model.dart';
 import '../../features/tables/data/models/table_model.dart';
+import '../../features/tables/data/models/floor_plan_model.dart';
+import '../../features/tables/data/models/layout_object_model.dart';
+import '../../features/customer/data/models/customer_model.dart';
+import '../../features/customer/data/models/promotion_model.dart';
+import '../../features/dining/data/models/buffet_tier_model.dart';
+import '../../features/printer/data/models/receipt_template_model.dart';
 
 class DataSeeder {
   static Future<void> seed(Isar isar) async {
@@ -20,6 +26,39 @@ class DataSeeder {
             ..displayName = 'ผู้ดูแลระบบเดโม'
             ..role = 'admin',
         );
+
+        final customerCount = await isar.customerModels.count();
+        if (customerCount == 0) {
+          await isar.customerModels.putAll([
+            CustomerModel()
+              ..name = 'สมชาย ใจดี'
+              ..phone = '0812345678'
+              ..points = 1250
+              ..totalSpent = 25000
+              ..memberTier = 'gold'
+              ..visitCount = 15,
+            CustomerModel()
+              ..name = 'สมหญิง รักษ์'
+              ..phone = '0898765432'
+              ..points = 340
+              ..totalSpent = 8500
+              ..memberTier = 'silver'
+              ..visitCount = 5,
+          ]);
+
+          await isar.promotionModels.putAll([
+            PromotionModel()
+              ..name = 'ส่วนลดสมาชิก Gold 10%'
+              ..type = 'percentage'
+              ..discountPercent = 0.10
+              ..applicableTier = 'gold',
+            PromotionModel()
+              ..name = 'ลด 50 บาท (ขั้นต่ำ 500)'
+              ..type = 'fixed'
+              ..discountAmount = 50
+              ..minSpend = 500,
+          ]);
+        }
       });
     } else {
       await _upgradeUsers(isar);
@@ -28,42 +67,109 @@ class DataSeeder {
     await _seedOrUpgradeCatalog(isar);
     await _seedSettings(isar);
     await _seedTables(isar);
+    await _seedBuffetTiers(isar);
+    await _seedReceiptTemplates(isar);
   }
 
-  static Future<void> _seedTables(Isar isar) async {
-    final count = await isar.tableModels.count();
+  static Future<void> _seedReceiptTemplates(Isar isar) async {
+    final count = await isar.receiptTemplateModels.count();
     if (count > 0) return;
 
     await isar.writeTxn(() async {
-      final tables = [
-        TableModel()
-          ..name = 'Table 1'
-          ..capacity = 2
-          ..status = 'available',
-        TableModel()
-          ..name = 'Table 2'
-          ..capacity = 2
-          ..status = 'available',
-        TableModel()
-          ..name = 'Table 3'
-          ..capacity = 4
-          ..status = 'available',
-        TableModel()
-          ..name = 'Table 4'
-          ..capacity = 4
-          ..status = 'available',
-        TableModel()
-          ..name = 'Table 5'
-          ..capacity = 6
-          ..status = 'available',
-        TableModel()
-          ..name = 'VIP 1'
-          ..capacity = 8
-          ..status = 'available'
-          ..floor = '2nd Floor',
+      final templates = [
+        ReceiptTemplateModel()
+          ..name = 'Default Receipt'
+          ..type = 'receipt'
+          ..storeName = 'Flutter POS Demo'
+          ..storeAddress = '99 ถนนโชตนา อำเภอเมือง จังหวัดเชียงใหม่ 50000'
+          ..storePhone = '02-333-4444'
+          ..taxId = '0105559999999'
+          ..showItemSku = true
+          ..showTaxBreakdown = true
+          ..showPaymentMethod = true
+          ..footerText = 'ขอบคุณที่อุดหนุน'
+          ..footerText2 = 'www.example.com'
+          ..paperWidth = 80
+          ..isDefault = true,
+        ReceiptTemplateModel()
+          ..name = 'Kitchen Order'
+          ..type = 'kitchen_ticket'
+          ..showTableInfo = true
+          ..showItemSku = false
+          ..paperWidth = 58
+          ..isDefault = false,
       ];
-      await isar.tableModels.putAll(tables);
+      await isar.receiptTemplateModels.putAll(templates);
     });
+  }
+
+  static Future<void> _seedBuffetTiers(Isar isar) async {
+    final count = await isar.buffetTierModels.count();
+    if (count > 0) return;
+
+    await isar.writeTxn(() async {
+      final tiers = [
+        BuffetTierModel()
+          ..name = 'Silver Tier'
+          ..adultPrice = 399.0
+          ..childPrice = 199.0
+          ..elderlyDiscount = 0.1
+          ..timeLimitMinutes = 90
+          ..colorHex = '#C0C0C0'
+          ..sortOrder = 1,
+        BuffetTierModel()
+          ..name = 'Gold Tier'
+          ..adultPrice = 599.0
+          ..childPrice = 299.0
+          ..elderlyDiscount = 0.2
+          ..timeLimitMinutes = 120
+          ..colorHex = '#FFD700'
+          ..sortOrder = 2,
+        BuffetTierModel()
+          ..name = 'Platinum Tier'
+          ..adultPrice = 899.0
+          ..childPrice = 449.0
+          ..elderlyDiscount = 0.3
+          ..timeLimitMinutes = 120
+          ..colorHex = '#E5E4E2'
+          ..sortOrder = 3,
+      ];
+      await isar.buffetTierModels.putAll(tiers);
+    });
+  }
+
+  static Future<void> _seedTables(Isar isar) async {
+    final floorPlanCount = await isar.floorPlanModels.count();
+    if (floorPlanCount == 0) {
+      await isar.writeTxn(() async {
+        final defaultFloor = FloorPlanModel()
+          ..name = 'ชั้น 1 (Main)'
+          ..isDefault = true
+          ..canvasWidth = 1200
+          ..canvasHeight = 800;
+        final fpId = await isar.floorPlanModels.put(defaultFloor);
+
+        final tables = [
+          TableModel()..name = 'T01'..capacity = 2..status = 'available'..floorPlanId = fpId..shape = 'square',
+          TableModel()..name = 'T02'..capacity = 4..status = 'available'..floorPlanId = fpId..shape = 'square',
+          TableModel()..name = 'T03'..capacity = 4..status = 'available'..floorPlanId = fpId..shape = 'round',
+          TableModel()..name = 'T04'..capacity = 6..status = 'available'..floorPlanId = fpId..shape = 'long',
+          TableModel()..name = 'V01'..capacity = 8..status = 'available'..floorPlanId = fpId..shape = 'square',
+        ];
+        await isar.tableModels.putAll(tables);
+
+        final objects = [
+          LayoutObjectModel()..floorPlanId = fpId..objectType = 'table'..tableId = 1..x = 100..y = 100..width = 100..height = 100,
+          LayoutObjectModel()..floorPlanId = fpId..objectType = 'table'..tableId = 2..x = 300..y = 100..width = 120..height = 120,
+          LayoutObjectModel()..floorPlanId = fpId..objectType = 'table'..tableId = 3..x = 100..y = 300..width = 120..height = 120,
+          LayoutObjectModel()..floorPlanId = fpId..objectType = 'table'..tableId = 4..x = 500..y = 300..width = 160..height = 100,
+          LayoutObjectModel()..floorPlanId = fpId..objectType = 'table'..tableId = 5..x = 100..y = 500..width = 160..height = 160,
+          LayoutObjectModel()..floorPlanId = fpId..objectType = 'wall'..x = 50..y = 50..width = 800..height = 20..colorHex = '#555555',
+          LayoutObjectModel()..floorPlanId = fpId..objectType = 'door'..x = 400..y = 40..width = 100..height = 40..rotation = 0,
+        ];
+        await isar.layoutObjectModels.putAll(objects);
+      });
+    }
   }
 
   static Future<void> _upgradeUsers(Isar isar) async {
