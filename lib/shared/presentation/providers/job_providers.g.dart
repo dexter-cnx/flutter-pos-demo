@@ -21,7 +21,7 @@ final jobRepositoryProvider = Provider<JobRepository>.internal(
 );
 
 typedef JobRepositoryRef = ProviderRef<JobRepository>;
-String _$jobDispatcherHash() => r'55ecae2ff2613a8172a46bf1345c1eb07378059e';
+String _$jobDispatcherHash() => r'90717d1e48fa9e874976786c52777df9cf6bf0e5';
 
 /// See also [jobDispatcher].
 @ProviderFor(jobDispatcher)

@@ -3,6 +3,7 @@ import 'package:isar/isar.dart';
 import '../../domain/entities/app_job.dart';
 import '../../domain/enums/job_status.dart';
 import '../../domain/enums/job_type.dart';
+import '../../domain/enums/job_priority.dart';
 
 part 'app_job_model.g.dart';
 
@@ -19,6 +20,9 @@ class AppJobModel {
   @Index()
   late String status;
 
+  @Index()
+  late String priority;
+
   late DateTime createdAt;
   late DateTime updatedAt;
   late int retryCount;
@@ -34,6 +38,7 @@ class AppJobModel {
       ..jobId = job.id
       ..type = job.type.name
       ..status = job.status.name
+      ..priority = job.priority.name
       ..createdAt = job.createdAt
       ..updatedAt = job.updatedAt
       ..retryCount = job.retryCount
@@ -48,6 +53,7 @@ class AppJobModel {
       id: jobId,
       type: JobType.values.firstWhere((e) => e.name == type, orElse: () => JobType.other),
       status: JobStatus.values.firstWhere((e) => e.name == status, orElse: () => JobStatus.pending),
+      priority: JobPriority.values.firstWhere((e) => e.name == priority, orElse: () => JobPriority.medium),
       createdAt: createdAt,
       updatedAt: updatedAt,
       retryCount: retryCount,

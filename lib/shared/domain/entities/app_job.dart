@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../enums/job_status.dart';
 import '../enums/job_type.dart';
+import '../enums/job_priority.dart';
 
 part 'app_job.freezed.dart';
 part 'app_job.g.dart';
@@ -13,6 +14,7 @@ class AppJob with _$AppJob {
     required String id,
     required JobType type,
     required JobStatus status,
+    @Default(JobPriority.medium) JobPriority priority,
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default(0) int retryCount,

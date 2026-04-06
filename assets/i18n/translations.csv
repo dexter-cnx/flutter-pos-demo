@@ -241,3 +241,19 @@ pos.restaurant.table_occupied,Occupied,มีลูกค้า
 pos.restaurant.table_cleaning,Cleaning,รอทำความสะอาด
 pos.restaurant.open_table,Open Table {},เปิดโต๊ะ {}
 pos.restaurant.enter_headcount,Enter headcount,ระบุจำนวนลูกค้า
+settings.audit_log,Audit Log,ประวัติการใช้งาน
+settings.job_queue,Job Queue,คิวงานเบื้องหลัง
+demo.title,Feature Showcase,รวมฟีเจอร์เดโม
+demo.rbac_title,Role-Based Access Control (RBAC),การควบคุมการเข้าถึงตามบทบาท
+demo.rbac_desc,Current user session and dynamic permission checking.,เซสชันผู้ใช้ปัจจุบันและการตรวจสอบสิทธิ์แบบไดนามิก
+demo.thai_utils_title,Thai Business Utilities,เครื่องมือสำหรับธุรกิจไทย
+demo.thai_utils_desc,Formatting currencies, dates, and VAT for Thai accounting standards.,การจัดรูปแบบเงิน วันที่ และภาษีตามมาตรฐานบัญชีไทย
+demo.audit_title,Audit Trail & Tracing,ประวัติการตรวจสอบและการติดตาม
+demo.audit_desc,Every critical action is logged for accountability and security.,ทุกการกระทำที่สำคัญจะถูกบันทึกเพื่อความโปร่งใสและความปลอดภัย
+demo.queue_title,Background Job Queue,คิวงานเบื้องหลัง
+demo.queue_desc,Deferred tasks like printing and syncing handled asynchronously.,จัดการงานที่รอโปรเซส เช่น การพิมพ์และการซิงค์แบบอซิงโครนัส
+demo.test_rbac_button,Admin-only Action,การกระทำเฉพาะแอดมิน
+demo.test_job_button,Enqueue Test Job,จำลองการเพิ่มคิวงาน
+demo.utils_price_label,Price (with VAT),ราคา (รวม VAT)
+demo.utils_date_label,Thai Date Style,วันที่แบบไทย
+demo.utils_money_label,Thai Baht Format,รูปแบบเงินบาท

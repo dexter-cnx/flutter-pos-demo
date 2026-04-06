@@ -23,6 +23,7 @@ mixin _$AppJob {
   String get id => throw _privateConstructorUsedError;
   JobType get type => throw _privateConstructorUsedError;
   JobStatus get status => throw _privateConstructorUsedError;
+  JobPriority get priority => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
   int get retryCount => throw _privateConstructorUsedError;
@@ -45,6 +46,7 @@ abstract class $AppJobCopyWith<$Res> {
       {String id,
       JobType type,
       JobStatus status,
+      JobPriority priority,
       DateTime createdAt,
       DateTime updatedAt,
       int retryCount,
@@ -70,6 +72,7 @@ class _$AppJobCopyWithImpl<$Res, $Val extends AppJob>
     Object? id = null,
     Object? type = null,
     Object? status = null,
+    Object? priority = null,
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? retryCount = null,
@@ -91,6 +94,10 @@ class _$AppJobCopyWithImpl<$Res, $Val extends AppJob>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as JobStatus,
+      priority: null == priority
+          ? _value.priority
+          : priority // ignore: cast_nullable_to_non_nullable
+              as JobPriority,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -134,6 +141,7 @@ abstract class _$$AppJobImplCopyWith<$Res> implements $AppJobCopyWith<$Res> {
       {String id,
       JobType type,
       JobStatus status,
+      JobPriority priority,
       DateTime createdAt,
       DateTime updatedAt,
       int retryCount,
@@ -157,6 +165,7 @@ class __$$AppJobImplCopyWithImpl<$Res>
     Object? id = null,
     Object? type = null,
     Object? status = null,
+    Object? priority = null,
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? retryCount = null,
@@ -178,6 +187,10 @@ class __$$AppJobImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as JobStatus,
+      priority: null == priority
+          ? _value.priority
+          : priority // ignore: cast_nullable_to_non_nullable
+              as JobPriority,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -217,6 +230,7 @@ class _$AppJobImpl extends _AppJob {
       {required this.id,
       required this.type,
       required this.status,
+      this.priority = JobPriority.medium,
       required this.createdAt,
       required this.updatedAt,
       this.retryCount = 0,
@@ -236,6 +250,9 @@ class _$AppJobImpl extends _AppJob {
   final JobType type;
   @override
   final JobStatus status;
+  @override
+  @JsonKey()
+  final JobPriority priority;
   @override
   final DateTime createdAt;
   @override
@@ -262,7 +279,7 @@ class _$AppJobImpl extends _AppJob {
 
   @override
   String toString() {
-    return 'AppJob(id: $id, type: $type, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, retryCount: $retryCount, errorMessage: $errorMessage, payload: $payload, sourceEntityId: $sourceEntityId, actorId: $actorId)';
+    return 'AppJob(id: $id, type: $type, status: $status, priority: $priority, createdAt: $createdAt, updatedAt: $updatedAt, retryCount: $retryCount, errorMessage: $errorMessage, payload: $payload, sourceEntityId: $sourceEntityId, actorId: $actorId)';
   }
 
   @override
@@ -273,6 +290,8 @@ class _$AppJobImpl extends _AppJob {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.priority, priority) ||
+                other.priority == priority) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -294,6 +313,7 @@ class _$AppJobImpl extends _AppJob {
       id,
       type,
       status,
+      priority,
       createdAt,
       updatedAt,
       retryCount,
@@ -321,6 +341,7 @@ abstract class _AppJob extends AppJob {
       {required final String id,
       required final JobType type,
       required final JobStatus status,
+      final JobPriority priority,
       required final DateTime createdAt,
       required final DateTime updatedAt,
       final int retryCount,
@@ -338,6 +359,8 @@ abstract class _AppJob extends AppJob {
   JobType get type;
   @override
   JobStatus get status;
+  @override
+  JobPriority get priority;
   @override
   DateTime get createdAt;
   @override

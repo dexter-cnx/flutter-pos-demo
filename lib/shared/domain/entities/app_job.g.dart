@@ -10,6 +10,8 @@ _$AppJobImpl _$$AppJobImplFromJson(Map<String, dynamic> json) => _$AppJobImpl(
       id: json['id'] as String,
       type: $enumDecode(_$JobTypeEnumMap, json['type']),
       status: $enumDecode(_$JobStatusEnumMap, json['status']),
+      priority: $enumDecodeNullable(_$JobPriorityEnumMap, json['priority']) ??
+          JobPriority.medium,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       retryCount: (json['retryCount'] as num?)?.toInt() ?? 0,
@@ -24,6 +26,7 @@ Map<String, dynamic> _$$AppJobImplToJson(_$AppJobImpl instance) =>
       'id': instance.id,
       'type': _$JobTypeEnumMap[instance.type]!,
       'status': _$JobStatusEnumMap[instance.status]!,
+      'priority': _$JobPriorityEnumMap[instance.priority]!,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
       'retryCount': instance.retryCount,
@@ -48,4 +51,11 @@ const _$JobStatusEnumMap = {
   JobStatus.completed: 'completed',
   JobStatus.failed: 'failed',
   JobStatus.cancelled: 'cancelled',
+};
+
+const _$JobPriorityEnumMap = {
+  JobPriority.low: 'low',
+  JobPriority.medium: 'medium',
+  JobPriority.high: 'high',
+  JobPriority.urgent: 'urgent',
 };

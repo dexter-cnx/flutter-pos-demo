@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import '../entities/app_job.dart';
 import '../enums/job_status.dart';
 import '../enums/job_type.dart';
+import '../enums/job_priority.dart';
 import '../repositories/job_repository.dart';
 import 'job_handler.dart';
 import 'dart:developer' as developer;
@@ -22,14 +23,19 @@ class JobDispatcher {
   /// Dispatch a new job manually
   Future<String> dispatch({
     required JobType type,
+    JobPriority? priority,
     Map<String, dynamic>? payload,
     String? sourceEntityId,
     String? actorId,
   }) async {
+    // Default priority based on job type if not provided
+    final effectivePriority = priority ?? _getDefaultPriority(type);
+
     final job = AppJob(
       id: _uuid.v4(),
       type: type,
       status: JobStatus.pending,
+      priority: effectivePriority,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       payload: payload,
@@ -45,6 +51,17 @@ class JobDispatcher {
     return job.id;
   }
 
+  JobPriority _getDefaultPriority(JobType type) {
+    return switch (type) {
+      JobType.receiptReprint => JobPriority.high,
+      JobType.queueDisplayRefresh => JobPriority.high,
+      JobType.notifyQueueCalled => JobPriority.urgent,
+      JobType.syncPendingTransactions => JobPriority.low,
+      JobType.reportGenerate => JobPriority.medium,
+      _ => JobPriority.medium,
+    };
+  }
+
   /// Processes pending jobs in the queue
   Future<void> _processPendingJobs() async {
     if (_isProcessing) return;
@@ -53,6 +70,9 @@ class JobDispatcher {
     try {
       final pendingJobs = await _repository.getPendingJobs();
       
+      // Sort: Urgent (3) > High (2) > Medium (1) > Low (0)
+      pendingJobs.sort((a, b) => b.priority.index.compareTo(a.priority.index));
+
       for (final job in pendingJobs) {
         await _processJob(job);
       }

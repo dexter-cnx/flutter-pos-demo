@@ -42,28 +42,33 @@ const AppJobModelSchema = CollectionSchema(
       name: r'payloadJson',
       type: IsarType.string,
     ),
-    r'retryCount': PropertySchema(
+    r'priority': PropertySchema(
       id: 5,
+      name: r'priority',
+      type: IsarType.string,
+    ),
+    r'retryCount': PropertySchema(
+      id: 6,
       name: r'retryCount',
       type: IsarType.long,
     ),
     r'sourceEntityId': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'sourceEntityId',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'status',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'type',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -112,6 +117,19 @@ const AppJobModelSchema = CollectionSchema(
           caseSensitive: true,
         )
       ],
+    ),
+    r'priority': IndexSchema(
+      id: -6477851841645083544,
+      name: r'priority',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'priority',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
     )
   },
   links: {},
@@ -147,6 +165,7 @@ int _appJobModelEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  bytesCount += 3 + object.priority.length * 3;
   {
     final value = object.sourceEntityId;
     if (value != null) {
@@ -169,11 +188,12 @@ void _appJobModelSerialize(
   writer.writeString(offsets[2], object.errorMessage);
   writer.writeString(offsets[3], object.jobId);
   writer.writeString(offsets[4], object.payloadJson);
-  writer.writeLong(offsets[5], object.retryCount);
-  writer.writeString(offsets[6], object.sourceEntityId);
-  writer.writeString(offsets[7], object.status);
-  writer.writeString(offsets[8], object.type);
-  writer.writeDateTime(offsets[9], object.updatedAt);
+  writer.writeString(offsets[5], object.priority);
+  writer.writeLong(offsets[6], object.retryCount);
+  writer.writeString(offsets[7], object.sourceEntityId);
+  writer.writeString(offsets[8], object.status);
+  writer.writeString(offsets[9], object.type);
+  writer.writeDateTime(offsets[10], object.updatedAt);
 }
 
 AppJobModel _appJobModelDeserialize(
@@ -189,11 +209,12 @@ AppJobModel _appJobModelDeserialize(
   object.id = id;
   object.jobId = reader.readString(offsets[3]);
   object.payloadJson = reader.readStringOrNull(offsets[4]);
-  object.retryCount = reader.readLong(offsets[5]);
-  object.sourceEntityId = reader.readStringOrNull(offsets[6]);
-  object.status = reader.readString(offsets[7]);
-  object.type = reader.readString(offsets[8]);
-  object.updatedAt = reader.readDateTime(offsets[9]);
+  object.priority = reader.readString(offsets[5]);
+  object.retryCount = reader.readLong(offsets[6]);
+  object.sourceEntityId = reader.readStringOrNull(offsets[7]);
+  object.status = reader.readString(offsets[8]);
+  object.type = reader.readString(offsets[9]);
+  object.updatedAt = reader.readDateTime(offsets[10]);
   return object;
 }
 
@@ -215,14 +236,16 @@ P _appJobModelDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
-    case 6:
-      return (reader.readStringOrNull(offset)) as P;
-    case 7:
       return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
+      return (reader.readString(offset)) as P;
+    case 10:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -503,6 +526,51 @@ extension AppJobModelQueryWhere
               indexName: r'status',
               lower: [],
               upper: [status],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterWhereClause> priorityEqualTo(
+      String priority) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'priority',
+        value: [priority],
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterWhereClause> priorityNotEqualTo(
+      String priority) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'priority',
+              lower: [],
+              upper: [priority],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'priority',
+              lower: [priority],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'priority',
+              lower: [priority],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'priority',
+              lower: [],
+              upper: [priority],
               includeUpper: false,
             ));
       }
@@ -1213,6 +1281,141 @@ extension AppJobModelQueryFilter
     });
   }
 
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition> priorityEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priority',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
+      priorityGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'priority',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
+      priorityLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'priority',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition> priorityBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'priority',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
+      priorityStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'priority',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
+      priorityEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'priority',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
+      priorityContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'priority',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition> priorityMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'priority',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
+      priorityIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'priority',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
+      priorityIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'priority',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<AppJobModel, AppJobModel, QAfterFilterCondition>
       retryCountEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
@@ -1814,6 +2017,18 @@ extension AppJobModelQuerySortBy
     });
   }
 
+  QueryBuilder<AppJobModel, AppJobModel, QAfterSortBy> sortByPriority() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'priority', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterSortBy> sortByPriorityDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'priority', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppJobModel, AppJobModel, QAfterSortBy> sortByRetryCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'retryCount', Sort.asc);
@@ -1951,6 +2166,18 @@ extension AppJobModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<AppJobModel, AppJobModel, QAfterSortBy> thenByPriority() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'priority', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppJobModel, AppJobModel, QAfterSortBy> thenByPriorityDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'priority', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppJobModel, AppJobModel, QAfterSortBy> thenByRetryCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'retryCount', Sort.asc);
@@ -2049,6 +2276,13 @@ extension AppJobModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<AppJobModel, AppJobModel, QDistinct> distinctByPriority(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'priority', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<AppJobModel, AppJobModel, QDistinct> distinctByRetryCount() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'retryCount');
@@ -2119,6 +2353,12 @@ extension AppJobModelQueryProperty
   QueryBuilder<AppJobModel, String?, QQueryOperations> payloadJsonProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'payloadJson');
+    });
+  }
+
+  QueryBuilder<AppJobModel, String, QQueryOperations> priorityProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'priority');
     });
   }
 
