@@ -1,0 +1,92 @@
+{
+  "repoName": "flutter-pos-demo",
+  "repoRoot": "/Users/dxtr_m4/develop/mobile_projects/pos/flutter-pos-demo",
+  "repoType": "fullstack",
+  "rootFiles": [
+    ".DS_Store",
+    ".flutter-plugins-dependencies",
+    ".gitignore",
+    ".gitmodules",
+    ".metadata",
+    "AGENTS.md",
+    "LICENSE",
+    "Makefile",
+    "README.md",
+    "analysis.txt",
+    "analysis_options.yaml",
+    "analyze_output.txt",
+    "build_log.txt",
+    "devtools_options.yaml",
+    "features_en.md",
+    "features_th.md",
+    "make.ps1",
+    "pubspec.lock",
+    "pubspec.yaml",
+    "thai_pos_demo.iml"
+  ],
+  "topLevelDirs": [
+    ".analythis",
+    ".claude",
+    ".dart_tool",
+    ".git",
+    ".github",
+    ".idea",
+    ".vscode",
+    "android",
+    "antigravity",
+    "architectures",
+    "assets",
+    "blueprints",
+    "build",
+    "design",
+    "ios",
+    "lib",
+    "manuals",
+    "prompts",
+    "scripts",
+    "test",
+    "toolkit",
+    "web"
+  ],
+  "languages": [
+    "C/C++ Header",
+    "Dart",
+    "HTML",
+    "JSON",
+    "Java",
+    "Kotlin",
+    "Markdown",
+    "Python",
+    "Shell",
+    "Swift",
+    "YAML"
+  ],
+  "manifests": [
+    "pubspec.yaml"
+  ],
+  "entryPoints": [
+    "lib/main.dart"
+  ],
+  "testLocations": [
+    "test"
+  ],
+  "ciFiles": [
+    ".github/workflows/deploy-web.yml"
+  ],
+  "infraFiles": [],
+  "notableFiles": [
+    "AGENTS.md",
+    "LICENSE",
+    "README.md",
+    "analysis_options.yaml",
+    "antigravity/workflows/README.md",
+    "antigravity/workflows/examples/new-product-screen/README.md",
+    "ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md"
+  ],
+  "packageManagers": [
+    "pub"
+  ],
+  "frameworkHints": [
+    "Flutter/Dart"
+  ]
+}

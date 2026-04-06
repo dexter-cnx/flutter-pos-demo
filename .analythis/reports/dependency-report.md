@@ -1,0 +1,33 @@
+# Dependency Report
+
+- **archive** (supporting): General dependency
+- **easy_localization** (supporting): Localization
+- **esc_pos_utils_plus** (supporting): General dependency
+- **file_picker** (supporting): General dependency
+- **file_selector** (supporting): General dependency
+- **fl_chart** (supporting): General dependency
+- **flutter** (critical): UI framework
+- **flutter_localizations** (critical): UI framework
+- **flutter_riverpod** (critical): UI framework
+- **flutter_screenutil** (critical): UI framework
+- **freezed_annotation** (supporting): General dependency
+- **go_router** (supporting): General dependency
+- **google_fonts** (supporting): General dependency
+- **image_cropper** (supporting): General dependency
+- **image_picker** (supporting): General dependency
+- **intl** (supporting): Localization
+- **isar** (supporting): Persistence/ORM
+- **isar_flutter_libs** (critical): UI framework
+- **json_annotation** (supporting): General dependency
+- **mobile_scanner** (supporting): General dependency
+- **path** (supporting): General dependency
+- **path_provider** (supporting): General dependency
+- **pdf** (supporting): General dependency
+- **print_bluetooth_thermal** (supporting): General dependency
+- **printing** (supporting): General dependency
+- **qr_flutter** (critical): UI framework
+- **riverpod_annotation** (critical): State management
+- **sdk** (supporting): General dependency
+- **share_plus** (supporting): General dependency
+- **shared_preferences** (supporting): General dependency
+- **uuid** (supporting): General dependency
