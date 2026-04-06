@@ -8,6 +8,7 @@ import '../../features/receipt/presentation/pages/receipt_preview_page.dart';
 import '../../features/settings/presentation/pages/menu_management_page.dart';
 import '../../features/printer/presentation/screens/printer_settings_screen.dart';
 import '../../features/settings/presentation/pages/audit_log_viewer_page.dart';
+import '../../features/settings/presentation/pages/job_queue_viewer_page.dart';
 import '../mode/current_mode_provider.dart';
 import '../shell/app_shell.dart';
 
@@ -68,6 +69,11 @@ GoRouter appRouter(AppRouterRef ref) {
             path: '/settings/audit-log',
             name: 'audit_log',
             builder: (context, state) => const AuditLogViewerPage(),
+          ),
+          GoRoute(
+            path: '/settings/job-queue',
+            name: 'job_queue',
+            builder: (context, state) => const JobQueueViewerPage(),
           ),
         ],
       ),

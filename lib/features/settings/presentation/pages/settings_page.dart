@@ -315,6 +315,14 @@ class SettingsPage extends ConsumerWidget {
                                 label: Text('settings.audit_log'.tr()),
                               ),
                             ),
+                            PermissionGuard(
+                              permission: AppPermission.settingsEdit,
+                              child: OutlinedButton.icon(
+                                onPressed: () => context.go('/settings/job-queue'),
+                                icon: const Icon(Icons.queue_play_next_outlined),
+                                label: Text('settings.job_queue'.tr()),
+                              ),
+                            ),
                           ],
                         ),
                         loading: () => const AppLoadingState(compact: true),

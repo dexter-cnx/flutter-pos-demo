@@ -102,4 +102,25 @@ class JobDispatcher {
       await _repository.saveJob(failedJob);
     }
   }
+
+  /// Retries a failed job manually, ignoring global retry limits.
+  Future<void> retryJob(String jobId) async {
+    final job = await _repository.getJob(jobId);
+    if (job == null || job.status != JobStatus.failed) return;
+    
+    final retryingJob = job.copyWith(
+      status: JobStatus.pending,
+      updatedAt: DateTime.now(),
+      errorMessage: null, // Clear error message since it's going back to pending
+    );
+    await _repository.saveJob(retryingJob);
+
+    // Fire and forget
+    _processPendingJobs();
+  }
+
+  /// Removes a job entirely from the queue
+  Future<void> purgeJob(String jobId) async {
+    await _repository.deleteJob(jobId);
+  }
 }
