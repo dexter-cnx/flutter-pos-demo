@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/layout/responsive_layout.dart';
 import '../providers/cart_provider.dart';
+import 'package:thai_pos_demo/core/money/thai_currency_formatter.dart';
 
 class CartSidebar extends ConsumerWidget {
   const CartSidebar({super.key, this.showRetryHint = false});
@@ -131,7 +132,7 @@ class CartSidebar extends ConsumerWidget {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            '\u0E3F${item.product.price.toStringAsFixed(2)} • '
+                            '${ThaiCurrencyFormatter.formatWithSymbol(item.product.price)} • '
                             '${'inventory.stock_remaining'.tr(args: ['${item.product.stockQuantity}'])}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -182,19 +183,19 @@ class CartSidebar extends ConsumerWidget {
                     _buildSummaryRow(
                       context,
                       'pos.subtotal'.tr(),
-                      '\u0E3F${cartState.subtotal.toStringAsFixed(2)}',
+                      ThaiCurrencyFormatter.formatWithSymbol(cartState.subtotal),
                     ),
                     const SizedBox(height: 8),
                     _buildSummaryRow(
                       context,
                       '${'pos.vat'.tr()} (7%)',
-                      '\u0E3F${cartState.taxAmount.toStringAsFixed(2)}',
+                      ThaiCurrencyFormatter.formatWithSymbol(cartState.taxAmount),
                     ),
                     Divider(height: compact ? 20 : 32),
                     _buildSummaryRow(
                       context,
                       'pos.total'.tr(),
-                      '\u0E3F${cartState.total.toStringAsFixed(2)}',
+                      ThaiCurrencyFormatter.formatWithSymbol(cartState.total),
                       isBold: true,
                     ),
                     SizedBox(height: checkoutSpacing),

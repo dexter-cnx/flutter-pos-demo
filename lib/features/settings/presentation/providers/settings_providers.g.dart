@@ -53,7 +53,7 @@ final lowStockThresholdProvider = AutoDisposeFutureProvider<int>.internal(
 
 typedef LowStockThresholdRef = AutoDisposeFutureProviderRef<int>;
 String _$settingsControllerHash() =>
-    r'30fbf570aa9f713049a3f8641ef49154f47d24cd';
+    r'f01c73f167daf224a22579986058c5b9f27d290f';
 
 /// See also [SettingsController].
 @ProviderFor(SettingsController)

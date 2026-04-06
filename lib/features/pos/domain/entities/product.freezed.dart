@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Product _$ProductFromJson(Map<String, dynamic> json) {
+  return _Product.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Product {
   String get id => throw _privateConstructorUsedError;
@@ -25,6 +29,7 @@ mixin _$Product {
   String? get imageUrl => throw _privateConstructorUsedError;
   Category? get category => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ProductCopyWith<Product> get copyWith => throw _privateConstructorUsedError;
 }
@@ -197,7 +202,7 @@ class __$$ProductImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$ProductImpl implements _Product {
   const _$ProductImpl(
       {required this.id,
@@ -208,6 +213,9 @@ class _$ProductImpl implements _Product {
       this.isAvailable = true,
       this.imageUrl,
       this.category});
+
+  factory _$ProductImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ProductImplFromJson(json);
 
   @override
   final String id;
@@ -252,6 +260,7 @@ class _$ProductImpl implements _Product {
                 other.category == category));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, price, sku,
       stockQuantity, isAvailable, imageUrl, category);
@@ -261,6 +270,13 @@ class _$ProductImpl implements _Product {
   @pragma('vm:prefer-inline')
   _$$ProductImplCopyWith<_$ProductImpl> get copyWith =>
       __$$ProductImplCopyWithImpl<_$ProductImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ProductImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Product implements Product {
@@ -273,6 +289,8 @@ abstract class _Product implements Product {
       final bool isAvailable,
       final String? imageUrl,
       final Category? category}) = _$ProductImpl;
+
+  factory _Product.fromJson(Map<String, dynamic> json) = _$ProductImpl.fromJson;
 
   @override
   String get id;

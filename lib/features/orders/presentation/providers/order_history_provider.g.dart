@@ -183,7 +183,7 @@ final orderCountProvider = AutoDisposeFutureProvider<int>.internal(
 );
 
 typedef OrderCountRef = AutoDisposeFutureProviderRef<int>;
-String _$orderHistoryHash() => r'9c0c8b27c53c92a34479c2cc55963a6cb93ded1c';
+String _$orderHistoryHash() => r'50760cf9410d431513f13faf04d8765fddbff9c4';
 
 /// See also [OrderHistory].
 @ProviderFor(OrderHistory)

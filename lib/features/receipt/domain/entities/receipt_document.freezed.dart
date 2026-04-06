@@ -254,6 +254,7 @@ mixin _$ReceiptDocument {
   double get subtotal => throw _privateConstructorUsedError;
   double get taxAmount => throw _privateConstructorUsedError;
   double get total => throw _privateConstructorUsedError;
+  TaxBreakdown? get taxBreakdown => throw _privateConstructorUsedError;
   String get paymentMethod => throw _privateConstructorUsedError;
   double get receivedAmount => throw _privateConstructorUsedError;
   double get changeAmount => throw _privateConstructorUsedError;
@@ -282,10 +283,13 @@ abstract class $ReceiptDocumentCopyWith<$Res> {
       double subtotal,
       double taxAmount,
       double total,
+      TaxBreakdown? taxBreakdown,
       String paymentMethod,
       double receivedAmount,
       double changeAmount,
       String? footerNote});
+
+  $TaxBreakdownCopyWith<$Res>? get taxBreakdown;
 }
 
 /// @nodoc
@@ -311,6 +315,7 @@ class _$ReceiptDocumentCopyWithImpl<$Res, $Val extends ReceiptDocument>
     Object? subtotal = null,
     Object? taxAmount = null,
     Object? total = null,
+    Object? taxBreakdown = freezed,
     Object? paymentMethod = null,
     Object? receivedAmount = null,
     Object? changeAmount = null,
@@ -357,6 +362,10 @@ class _$ReceiptDocumentCopyWithImpl<$Res, $Val extends ReceiptDocument>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as double,
+      taxBreakdown: freezed == taxBreakdown
+          ? _value.taxBreakdown
+          : taxBreakdown // ignore: cast_nullable_to_non_nullable
+              as TaxBreakdown?,
       paymentMethod: null == paymentMethod
           ? _value.paymentMethod
           : paymentMethod // ignore: cast_nullable_to_non_nullable
@@ -374,6 +383,18 @@ class _$ReceiptDocumentCopyWithImpl<$Res, $Val extends ReceiptDocument>
           : footerNote // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $TaxBreakdownCopyWith<$Res>? get taxBreakdown {
+    if (_value.taxBreakdown == null) {
+      return null;
+    }
+
+    return $TaxBreakdownCopyWith<$Res>(_value.taxBreakdown!, (value) {
+      return _then(_value.copyWith(taxBreakdown: value) as $Val);
+    });
   }
 }
 
@@ -396,10 +417,14 @@ abstract class _$$ReceiptDocumentImplCopyWith<$Res>
       double subtotal,
       double taxAmount,
       double total,
+      TaxBreakdown? taxBreakdown,
       String paymentMethod,
       double receivedAmount,
       double changeAmount,
       String? footerNote});
+
+  @override
+  $TaxBreakdownCopyWith<$Res>? get taxBreakdown;
 }
 
 /// @nodoc
@@ -423,6 +448,7 @@ class __$$ReceiptDocumentImplCopyWithImpl<$Res>
     Object? subtotal = null,
     Object? taxAmount = null,
     Object? total = null,
+    Object? taxBreakdown = freezed,
     Object? paymentMethod = null,
     Object? receivedAmount = null,
     Object? changeAmount = null,
@@ -469,6 +495,10 @@ class __$$ReceiptDocumentImplCopyWithImpl<$Res>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as double,
+      taxBreakdown: freezed == taxBreakdown
+          ? _value.taxBreakdown
+          : taxBreakdown // ignore: cast_nullable_to_non_nullable
+              as TaxBreakdown?,
       paymentMethod: null == paymentMethod
           ? _value.paymentMethod
           : paymentMethod // ignore: cast_nullable_to_non_nullable
@@ -503,6 +533,7 @@ class _$ReceiptDocumentImpl implements _ReceiptDocument {
       required this.subtotal,
       required this.taxAmount,
       required this.total,
+      this.taxBreakdown,
       required this.paymentMethod,
       required this.receivedAmount,
       required this.changeAmount,
@@ -539,6 +570,8 @@ class _$ReceiptDocumentImpl implements _ReceiptDocument {
   @override
   final double total;
   @override
+  final TaxBreakdown? taxBreakdown;
+  @override
   final String paymentMethod;
   @override
   final double receivedAmount;
@@ -549,7 +582,7 @@ class _$ReceiptDocumentImpl implements _ReceiptDocument {
 
   @override
   String toString() {
-    return 'ReceiptDocument(storeName: $storeName, storeAddress: $storeAddress, storePhone: $storePhone, storeTaxId: $storeTaxId, transactionId: $transactionId, timestamp: $timestamp, lines: $lines, subtotal: $subtotal, taxAmount: $taxAmount, total: $total, paymentMethod: $paymentMethod, receivedAmount: $receivedAmount, changeAmount: $changeAmount, footerNote: $footerNote)';
+    return 'ReceiptDocument(storeName: $storeName, storeAddress: $storeAddress, storePhone: $storePhone, storeTaxId: $storeTaxId, transactionId: $transactionId, timestamp: $timestamp, lines: $lines, subtotal: $subtotal, taxAmount: $taxAmount, total: $total, taxBreakdown: $taxBreakdown, paymentMethod: $paymentMethod, receivedAmount: $receivedAmount, changeAmount: $changeAmount, footerNote: $footerNote)';
   }
 
   @override
@@ -575,6 +608,8 @@ class _$ReceiptDocumentImpl implements _ReceiptDocument {
             (identical(other.taxAmount, taxAmount) ||
                 other.taxAmount == taxAmount) &&
             (identical(other.total, total) || other.total == total) &&
+            (identical(other.taxBreakdown, taxBreakdown) ||
+                other.taxBreakdown == taxBreakdown) &&
             (identical(other.paymentMethod, paymentMethod) ||
                 other.paymentMethod == paymentMethod) &&
             (identical(other.receivedAmount, receivedAmount) ||
@@ -599,6 +634,7 @@ class _$ReceiptDocumentImpl implements _ReceiptDocument {
       subtotal,
       taxAmount,
       total,
+      taxBreakdown,
       paymentMethod,
       receivedAmount,
       changeAmount,
@@ -631,6 +667,7 @@ abstract class _ReceiptDocument implements ReceiptDocument {
       required final double subtotal,
       required final double taxAmount,
       required final double total,
+      final TaxBreakdown? taxBreakdown,
       required final String paymentMethod,
       required final double receivedAmount,
       required final double changeAmount,
@@ -659,6 +696,8 @@ abstract class _ReceiptDocument implements ReceiptDocument {
   double get taxAmount;
   @override
   double get total;
+  @override
+  TaxBreakdown? get taxBreakdown;
   @override
   String get paymentMethod;
   @override

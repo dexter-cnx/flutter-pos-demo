@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:thai_pos_demo/shared/domain/value_objects/tax_breakdown.dart';
 
 part 'receipt_document.freezed.dart';
 part 'receipt_document.g.dart';
@@ -30,6 +31,7 @@ class ReceiptDocument with _$ReceiptDocument {
     required double subtotal,
     required double taxAmount,
     required double total,
+    TaxBreakdown? taxBreakdown,
     required String paymentMethod,
     required double receivedAmount,
     required double changeAmount,

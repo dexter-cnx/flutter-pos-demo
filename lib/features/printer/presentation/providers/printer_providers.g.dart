@@ -107,7 +107,7 @@ final edcServiceProvider = AutoDisposeProvider<EdcService>.internal(
 
 typedef EdcServiceRef = AutoDisposeProviderRef<EdcService>;
 String _$receiptPrintServiceHash() =>
-    r'65d9890c5e8aecfe9c0ee9ab1d666451d0422e44';
+    r'81feee0d5414bd14c791c1b9731ec2ab57e654f1';
 
 /// See also [receiptPrintService].
 @ProviderFor(receiptPrintService)

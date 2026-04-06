@@ -15,9 +15,16 @@ import '../../../orders/data/models/order_model.dart';
 import '../../../orders/presentation/providers/order_history_provider.dart';
 import '../../../settings/domain/entities/store_profile.dart';
 import '../../../settings/presentation/providers/settings_providers.dart';
+import '../../../../shared/presentation/providers/access_providers.dart';
+import '../../../../shared/presentation/providers/job_providers.dart';
+import '../../../../shared/domain/enums/job_type.dart';
 import '../../domain/entities/receipt_document.dart';
 import '../providers/receipt_actions_providers.dart';
 import '../services/desktop_file_actions.dart';
+import 'package:thai_pos_demo/shared/domain/entities/app_permission.dart';
+import 'package:thai_pos_demo/shared/presentation/widgets/permission_guard.dart';
+import 'package:thai_pos_demo/core/money/thai_currency_formatter.dart';
+import 'package:thai_pos_demo/core/utils/thai_date_formatter.dart';
 
 class ReceiptPreviewPage extends ConsumerWidget {
   const ReceiptPreviewPage({required this.orderId, super.key});
@@ -74,7 +81,7 @@ class _ReceiptContent extends ConsumerWidget {
   final OrderModel order;
   final StoreProfile storeProfile;
 
-  String _currency(double value) => '\u0E3F${value.toStringAsFixed(2)}';
+  String _currency(double value) => ThaiCurrencyFormatter.formatWithSymbol(value);
 
   bool get _supportsDownload {
     if (kIsWeb) return true;
@@ -105,7 +112,7 @@ class _ReceiptContent extends ConsumerWidget {
     final baseFont = await PdfGoogleFonts.notoSansThaiRegular();
     final boldFont = await PdfGoogleFonts.notoSansThaiBold();
     final document = pw.Document();
-    final dateText = DateFormat('dd/MM/yyyy HH:mm').format(doc.timestamp);
+    final dateText = ThaiDateFormatter.formatFullBE(doc.timestamp);
 
     document.addPage(
       pw.MultiPage(
@@ -153,17 +160,17 @@ class _ReceiptContent extends ConsumerWidget {
               pw.TableRow(
                 decoration: const pw.BoxDecoration(color: PdfColors.grey200),
                 children: [
-                  _pdfCell('checkout.items'.tr(), boldFont),
-                  _pdfCell('receipt.qty'.tr(), boldFont),
-                  _pdfCell('common.total'.tr(), boldFont),
+                   _pdfCell('checkout.items'.tr(), boldFont),
+                   _pdfCell('receipt.qty'.tr(), boldFont),
+                   _pdfCell('common.total'.tr(), boldFont),
                 ],
               ),
               ...doc.lines.map(
                 (line) => pw.TableRow(
                   children: [
-                    _pdfCell(line.name, baseFont),
-                    _pdfCell(line.quantity.toString(), baseFont),
-                    _pdfCell(_currency(line.totalPrice), baseFont),
+                     _pdfCell(line.name, baseFont),
+                     _pdfCell(line.quantity.toString(), baseFont),
+                     _pdfCell(_currency(line.totalPrice), baseFont),
                   ],
                 ),
               ),
@@ -229,7 +236,7 @@ class _ReceiptContent extends ConsumerWidget {
     final lastDownloadedPath = ref.watch(
       downloadedReceiptPathProvider(order.id),
     );
-    final dateText = DateFormat('dd/MM/yyyy HH:mm').format(doc.timestamp);
+    final dateText = ThaiDateFormatter.formatFullBE(doc.timestamp);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -394,15 +401,46 @@ class _ReceiptContent extends ConsumerWidget {
                           icon: const Icon(Icons.folder_open_outlined),
                           label: Text('receipt.open_folder'.tr()),
                         ),
-                      OutlinedButton.icon(
-                        onPressed: () async {
-                          await Printing.layoutPdf(
-                            name: 'receipt-${doc.transactionId}.pdf',
-                            onLayout: (format) => _buildPdf(format, doc),
-                          );
-                        },
-                        icon: const Icon(Icons.print),
-                        label: Text('receipt.print'.tr()),
+                      PermissionGuard(
+                        permission: AppPermission.receiptPrint,
+                        child: OutlinedButton.icon(
+                          onPressed: () async {
+                            await Printing.layoutPdf(
+                              name: 'receipt-${doc.transactionId}.pdf',
+                              onLayout: (format) => _buildPdf(format, doc),
+                            );
+                          },
+                          icon: const Icon(Icons.print),
+                          label: Text('receipt.print'.tr()),
+                        ),
+                      ),
+                      PermissionGuard(
+                        permission: AppPermission.receiptPrint,
+                        child: OutlinedButton.icon(
+                          onPressed: () async {
+                            final userProfile = ref.read(userAccessProfileProvider);
+                            final jobDispatcher = ref.read(jobDispatcherProvider);
+                            try {
+                              await jobDispatcher.dispatch(
+                                type: JobType.receiptReprint,
+                                actorId: userProfile.userId,
+                                payload: {'orderId': order.id.toString()},
+                                sourceEntityId: order.id.toString(),
+                              );
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Job enqueued: Reprint Receipt'.tr()),
+                              ));
+                            } catch (_) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('job.enqueue_failed'.tr()),
+                              ));
+                            }
+                          },
+                          icon: const Icon(Icons.print_outlined),
+                          label: Text('receipt.print_thermal'.tr()),
+                        ),
                       ),
                       OutlinedButton.icon(
                         onPressed: () async {
@@ -479,20 +517,20 @@ class _ReceiptContent extends ConsumerWidget {
         if (responsive.isSplitView) {
           return Row(
             children: [
-              Expanded(flex: 2, child: summary),
-              Expanded(flex: 3, child: pdfCard),
+               Expanded(flex: 2, child: summary),
+               Expanded(flex: 3, child: pdfCard),
             ],
           );
         }
 
         return Column(
           children: [
-            Expanded(child: summary),
-            SizedBox(
-              height:
-                  constraints.maxHeight * responsive.receiptPreviewHeightFactor,
-              child: pdfCard,
-            ),
+             Expanded(child: summary),
+             SizedBox(
+               height:
+                   constraints.maxHeight * responsive.receiptPreviewHeightFactor,
+               child: pdfCard,
+             ),
           ],
         );
       },
@@ -540,8 +578,8 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: Text(label, style: style)),
-          Text(value, style: style),
+           Expanded(child: Text(label, style: style)),
+           Text(value, style: style),
         ],
       ),
     );

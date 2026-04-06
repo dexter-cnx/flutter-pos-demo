@@ -2,6 +2,7 @@ import '../../../orders/data/models/order_model.dart';
 import '../../../settings/domain/entities/store_profile.dart';
 import '../entities/receipt_document.dart';
 import '../services/receipt_composer.dart';
+import 'package:thai_pos_demo/core/money/tax_calculator.dart';
 
 /// Composes a restaurant receipt document.
 /// Adds table number and service charge if needed.
@@ -34,6 +35,7 @@ class RestaurantReceiptComposer implements ReceiptComposer {
       subtotal: order.subtotal,
       taxAmount: order.taxAmount,
       total: order.total,
+      taxBreakdown: TaxCalculator.calculateFromInclusive(order.total),
       paymentMethod: _paymentLabel(order.paymentMethod),
       receivedAmount: order.receivedAmount,
       changeAmount: order.changeAmount,

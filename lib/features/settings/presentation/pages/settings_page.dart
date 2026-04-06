@@ -17,6 +17,8 @@ import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../../pos/presentation/providers/pos_providers.dart';
 import '../../../../app/services/backup_service.dart';
+import 'package:thai_pos_demo/shared/domain/entities/app_permission.dart';
+import 'package:thai_pos_demo/shared/presentation/widgets/permission_guard.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -196,10 +198,13 @@ class SettingsPage extends ConsumerWidget {
                     children: [
                       Text('printer.settings_hint'.tr()),
                       const SizedBox(height: 16),
-                      FilledButton.icon(
-                        onPressed: () => context.go('/settings/printer'),
-                        icon: const Icon(Icons.bluetooth_outlined),
-                        label: Text('printer.open_settings'.tr()),
+                      PermissionGuard(
+                        permission: AppPermission.printerChangeDefault,
+                        child: FilledButton.icon(
+                          onPressed: () => context.go('/settings/printer'),
+                          icon: const Icon(Icons.bluetooth_outlined),
+                          label: Text('printer.open_settings'.tr()),
+                        ),
                       ),
                     ],
                   ),
@@ -272,22 +277,26 @@ class SettingsPage extends ConsumerWidget {
                           spacing: 12,
                           runSpacing: 12,
                           children: [
-                            FilledButton.icon(
-                              onPressed: count == 0 || isar == null
-                                  ? null
-                                  : () => _confirmClearOrders(context, ref),
-                              icon: const Icon(Icons.delete_sweep_outlined),
-                              label: Text('settings.clear_orders'.tr()),
+                            PermissionGuard(
+                              permission: AppPermission.transactionVoid,
+                              child: FilledButton.icon(
+                                onPressed: count == 0 || isar == null
+                                    ? null
+                                    : () => _confirmClearOrders(context, ref),
+                                icon: const Icon(Icons.delete_sweep_outlined),
+                                label: Text('settings.clear_orders'.tr()),
+                              ),
                             ),
-                            if (ref.watch(authNotifierProvider).value ==
-                                'admin')
-                              OutlinedButton.icon(
+                            PermissionGuard(
+                              permission: AppPermission.settingsEdit,
+                              child: OutlinedButton.icon(
                                 onPressed: () => context.go('/menu-management'),
                                 icon: const Icon(
                                   Icons.restaurant_menu_outlined,
                                 ),
                                 label: Text('menu.title'.tr()),
                               ),
+                            ),
                             OutlinedButton.icon(
                               onPressed: () => context.go('/inventory'),
                               icon: const Icon(Icons.inventory_2_outlined),
@@ -297,6 +306,14 @@ class SettingsPage extends ConsumerWidget {
                               onPressed: () => context.go('/history'),
                               icon: const Icon(Icons.history),
                               label: Text('receipt.view_history'.tr()),
+                            ),
+                            PermissionGuard(
+                              permission: AppPermission.settingsEdit,
+                              child: OutlinedButton.icon(
+                                onPressed: () => context.go('/settings/audit-log'),
+                                icon: const Icon(Icons.security_outlined),
+                                label: Text('settings.audit_log'.tr()),
+                              ),
                             ),
                           ],
                         ),
@@ -526,10 +543,14 @@ class _StoreProfileCardState extends ConsumerState<_StoreProfileCard> {
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: isSaving ? null : _saveProfile,
-              icon: const Icon(Icons.save_outlined),
-              label: Text('settings.save_profile'.tr()),
+            child: PermissionGuard(
+              permission: AppPermission.settingsEdit,
+              fallback: Center(child: Text('common.no_permission'.tr(), style: const TextStyle(fontSize: 12))),
+              child: FilledButton.icon(
+                onPressed: isSaving ? null : _saveProfile,
+                icon: const Icon(Icons.save_outlined),
+                label: Text('settings.save_profile'.tr()),
+              ),
             ),
           ),
         ],
@@ -569,9 +590,18 @@ class _StoreProfileCardState extends ConsumerState<_StoreProfileCard> {
         .saveStoreProfile(profile);
     ref.invalidate(lowStockCountProvider);
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('settings.save_profile_success'.tr())),
-    );
+    
+    // The controller handles status (success/error state)
+    final state = ref.read(settingsControllerProvider);
+    if (state.hasError) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text(state.error.toString()), backgroundColor: Theme.of(context).colorScheme.error),
+       );
+    } else {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text('settings.save_profile_success'.tr())),
+       );
+    }
   }
 }
 

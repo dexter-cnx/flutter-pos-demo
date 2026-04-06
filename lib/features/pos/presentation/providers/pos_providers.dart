@@ -7,6 +7,10 @@ import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/pos_repository.dart';
 import '../../../settings/presentation/providers/settings_providers.dart';
+import 'package:thai_pos_demo/shared/presentation/providers/access_providers.dart';
+import 'package:thai_pos_demo/shared/presentation/providers/audit_providers.dart' hide isar;
+import 'package:thai_pos_demo/shared/domain/enums/audit_event_type.dart';
+import 'package:thai_pos_demo/shared/domain/enums/audit_event_source.dart';
 
 part 'pos_providers.g.dart';
 
@@ -77,12 +81,42 @@ class InventoryActions extends _$InventoryActions {
   FutureOr<void> build() {}
 
   Future<void> deductStock(Map<String, int> quantitiesByProductId) async {
+    final userProfile = ref.read(userAccessProfileProvider);
+    final auditService = ref.read(auditServiceProvider);
+
     await ref.read(posRepositoryProvider).deductStock(quantitiesByProductId);
+    
+    await auditService.logEvent(
+      eventType: AuditEventType.stockRemoved,
+      entityType: 'inventory',
+      entityId: 'multiple',
+      action: 'deduct_stock',
+      actorId: userProfile.userId,
+      actorLabel: userProfile.displayName,
+      source: AuditEventSource.system,
+      summary: 'Stock deducted for ${quantitiesByProductId.length} items during sale',
+      payload: quantitiesByProductId,
+    );
     _invalidateInventoryViews();
   }
 
   Future<void> restockProduct(String productId, int quantity) async {
+    final userProfile = ref.read(userAccessProfileProvider);
+    final auditService = ref.read(auditServiceProvider);
+
     await ref.read(posRepositoryProvider).restockProduct(productId, quantity);
+
+    await auditService.logEvent(
+      eventType: AuditEventType.stockAdded,
+      entityType: 'product',
+      entityId: productId,
+      action: 'restock',
+      actorId: userProfile.userId,
+      actorLabel: userProfile.displayName,
+      source: AuditEventSource.staff,
+      summary: 'Product $productId restocked by $quantity units',
+      payload: {'quantity': quantity},
+    );
     _invalidateInventoryViews();
   }
 
@@ -101,12 +135,41 @@ class InventoryActions extends _$InventoryActions {
   }
 
   Future<void> upsertProduct(Product product) async {
+    final userProfile = ref.read(userAccessProfileProvider);
+    final auditService = ref.read(auditServiceProvider);
+
     await ref.read(posRepositoryProvider).upsertProduct(product);
+
+    await auditService.logEvent(
+      eventType: AuditEventType.inventoryAdjusted,
+      entityType: 'product',
+      entityId: product.id,
+      action: 'upsert',
+      actorId: userProfile.userId,
+      actorLabel: userProfile.displayName,
+      source: AuditEventSource.staff,
+      summary: 'Product ${product.name} updated/created',
+      payload: product.toJson(),
+    );
     _invalidateInventoryViews();
   }
 
   Future<void> deleteProduct(String id) async {
+    final userProfile = ref.read(userAccessProfileProvider);
+    final auditService = ref.read(auditServiceProvider);
+
     await ref.read(posRepositoryProvider).deleteProduct(id);
+
+    await auditService.logEvent(
+      eventType: AuditEventType.inventoryAdjusted,
+      entityType: 'product',
+      entityId: id,
+      action: 'delete',
+      actorId: userProfile.userId,
+      actorLabel: userProfile.displayName,
+      source: AuditEventSource.staff,
+      summary: 'Product $id deleted',
+    );
     _invalidateInventoryViews();
   }
 

@@ -169,6 +169,7 @@ mixin _$CartState {
   double get subtotal => throw _privateConstructorUsedError;
   double get taxAmount => throw _privateConstructorUsedError;
   double get total => throw _privateConstructorUsedError;
+  TaxBreakdown get taxBreakdown => throw _privateConstructorUsedError;
   int? get sessionId => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -187,7 +188,10 @@ abstract class $CartStateCopyWith<$Res> {
       double subtotal,
       double taxAmount,
       double total,
+      TaxBreakdown taxBreakdown,
       int? sessionId});
+
+  $TaxBreakdownCopyWith<$Res> get taxBreakdown;
 }
 
 /// @nodoc
@@ -208,6 +212,7 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
     Object? subtotal = null,
     Object? taxAmount = null,
     Object? total = null,
+    Object? taxBreakdown = null,
     Object? sessionId = freezed,
   }) {
     return _then(_value.copyWith(
@@ -231,11 +236,23 @@ class _$CartStateCopyWithImpl<$Res, $Val extends CartState>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as double,
+      taxBreakdown: null == taxBreakdown
+          ? _value.taxBreakdown
+          : taxBreakdown // ignore: cast_nullable_to_non_nullable
+              as TaxBreakdown,
       sessionId: freezed == sessionId
           ? _value.sessionId
           : sessionId // ignore: cast_nullable_to_non_nullable
               as int?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $TaxBreakdownCopyWith<$Res> get taxBreakdown {
+    return $TaxBreakdownCopyWith<$Res>(_value.taxBreakdown, (value) {
+      return _then(_value.copyWith(taxBreakdown: value) as $Val);
+    });
   }
 }
 
@@ -253,7 +270,11 @@ abstract class _$$CartStateImplCopyWith<$Res>
       double subtotal,
       double taxAmount,
       double total,
+      TaxBreakdown taxBreakdown,
       int? sessionId});
+
+  @override
+  $TaxBreakdownCopyWith<$Res> get taxBreakdown;
 }
 
 /// @nodoc
@@ -272,6 +293,7 @@ class __$$CartStateImplCopyWithImpl<$Res>
     Object? subtotal = null,
     Object? taxAmount = null,
     Object? total = null,
+    Object? taxBreakdown = null,
     Object? sessionId = freezed,
   }) {
     return _then(_$CartStateImpl(
@@ -295,6 +317,10 @@ class __$$CartStateImplCopyWithImpl<$Res>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as double,
+      taxBreakdown: null == taxBreakdown
+          ? _value.taxBreakdown
+          : taxBreakdown // ignore: cast_nullable_to_non_nullable
+              as TaxBreakdown,
       sessionId: freezed == sessionId
           ? _value.sessionId
           : sessionId // ignore: cast_nullable_to_non_nullable
@@ -312,6 +338,8 @@ class _$CartStateImpl extends _CartState {
       this.subtotal = 0.0,
       this.taxAmount = 0.0,
       this.total = 0.0,
+      this.taxBreakdown =
+          const TaxBreakdown(total: 0, subtotal: 0, taxAmount: 0),
       this.sessionId})
       : _items = items,
         super._();
@@ -338,11 +366,14 @@ class _$CartStateImpl extends _CartState {
   @JsonKey()
   final double total;
   @override
+  @JsonKey()
+  final TaxBreakdown taxBreakdown;
+  @override
   final int? sessionId;
 
   @override
   String toString() {
-    return 'CartState(items: $items, taxRate: $taxRate, subtotal: $subtotal, taxAmount: $taxAmount, total: $total, sessionId: $sessionId)';
+    return 'CartState(items: $items, taxRate: $taxRate, subtotal: $subtotal, taxAmount: $taxAmount, total: $total, taxBreakdown: $taxBreakdown, sessionId: $sessionId)';
   }
 
   @override
@@ -357,6 +388,8 @@ class _$CartStateImpl extends _CartState {
             (identical(other.taxAmount, taxAmount) ||
                 other.taxAmount == taxAmount) &&
             (identical(other.total, total) || other.total == total) &&
+            (identical(other.taxBreakdown, taxBreakdown) ||
+                other.taxBreakdown == taxBreakdown) &&
             (identical(other.sessionId, sessionId) ||
                 other.sessionId == sessionId));
   }
@@ -369,6 +402,7 @@ class _$CartStateImpl extends _CartState {
       subtotal,
       taxAmount,
       total,
+      taxBreakdown,
       sessionId);
 
   @JsonKey(ignore: true)
@@ -385,6 +419,7 @@ abstract class _CartState extends CartState {
       final double subtotal,
       final double taxAmount,
       final double total,
+      final TaxBreakdown taxBreakdown,
       final int? sessionId}) = _$CartStateImpl;
   const _CartState._() : super._();
 
@@ -398,6 +433,8 @@ abstract class _CartState extends CartState {
   double get taxAmount;
   @override
   double get total;
+  @override
+  TaxBreakdown get taxBreakdown;
   @override
   int? get sessionId;
   @override

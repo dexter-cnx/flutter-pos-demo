@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Category _$CategoryFromJson(Map<String, dynamic> json) {
+  return _Category.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Category {
   String get id => throw _privateConstructorUsedError;
@@ -21,6 +25,7 @@ mixin _$Category {
   int get sortOrder => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $CategoryCopyWith<Category> get copyWith =>
       throw _privateConstructorUsedError;
@@ -122,13 +127,16 @@ class __$$CategoryImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$CategoryImpl implements _Category {
   const _$CategoryImpl(
       {required this.id,
       required this.name,
       this.sortOrder = 0,
       this.imageUrl});
+
+  factory _$CategoryImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CategoryImplFromJson(json);
 
   @override
   final String id;
@@ -158,6 +166,7 @@ class _$CategoryImpl implements _Category {
                 other.imageUrl == imageUrl));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, sortOrder, imageUrl);
 
@@ -166,6 +175,13 @@ class _$CategoryImpl implements _Category {
   @pragma('vm:prefer-inline')
   _$$CategoryImplCopyWith<_$CategoryImpl> get copyWith =>
       __$$CategoryImplCopyWithImpl<_$CategoryImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CategoryImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Category implements Category {
@@ -174,6 +190,9 @@ abstract class _Category implements Category {
       required final String name,
       final int sortOrder,
       final String? imageUrl}) = _$CategoryImpl;
+
+  factory _Category.fromJson(Map<String, dynamic> json) =
+      _$CategoryImpl.fromJson;
 
   @override
   String get id;

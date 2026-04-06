@@ -11,6 +11,8 @@ import '../../features/settings/presentation/pages/settings_page.dart';
 import 'presentation/pages/restaurant_main_page.dart';
 import 'presentation/pages/dining_session_page.dart';
 import '../../features/analytics/presentation/pages/dashboard_page.dart';
+import 'package:thai_pos_demo/core/money/tax_calculator.dart';
+import 'package:thai_pos_demo/shared/domain/value_objects/tax_breakdown.dart';
 
 class RestaurantModeDefinition implements BusinessModeDefinition {
   const RestaurantModeDefinition();
@@ -150,11 +152,17 @@ class RestaurantPricingEngine implements OrderPricingEngine {
 
   @override
   double calculateTax(double subtotal, double taxRate) {
-    return subtotal * taxRate;
+    return calculateTaxBreakdown(subtotal, taxRate).taxAmount;
   }
 
   @override
   double calculateTotal(double subtotal, double taxAmount) {
-    return subtotal + taxAmount;
+    // Standard Thailand restaurant (Inclusive for simple demo)
+    return subtotal;
+  }
+
+  @override
+  TaxBreakdown calculateTaxBreakdown(double amount, double taxRate) {
+    return TaxCalculator.calculateFromInclusive(amount, rate: taxRate);
   }
 }

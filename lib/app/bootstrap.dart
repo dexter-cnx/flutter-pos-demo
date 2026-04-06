@@ -25,6 +25,7 @@ import '../features/dining/data/models/buffet_tier_model.dart';
 import '../features/customer/data/models/customer_model.dart';
 import '../features/customer/data/models/promotion_model.dart';
 import '../features/printer/data/models/receipt_template_model.dart';
+import '../shared/data/models/audit_event_model.dart';
 
 // Global Isar instance
 Isar? isar;
@@ -53,6 +54,7 @@ Future<void> bootstrap({required Widget child}) async {
         CustomerModelSchema,
         PromotionModelSchema,
         ReceiptTemplateModelSchema,
+        AuditEventModelSchema,
       ], directory: directory);
 
       // Seed Data

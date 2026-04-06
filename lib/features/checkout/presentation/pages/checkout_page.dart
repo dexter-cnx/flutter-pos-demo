@@ -26,6 +26,9 @@ import '../../../customer/domain/entities/promotion.dart';
 import '../../../customer/domain/services/points_calculator.dart';
 import '../../../customer/presentation/widgets/customer_search_widget.dart';
 import '../../../customer/presentation/providers/customer_providers.dart';
+import 'package:thai_pos_demo/shared/presentation/providers/audit_providers.dart' hide isar;
+import 'package:thai_pos_demo/shared/presentation/providers/access_providers.dart';
+import 'package:thai_pos_demo/shared/domain/enums/audit_event_source.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -85,14 +88,26 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
 
   Future<void> _simulateCardApproval(double amount) async {
     final edcService = ref.read(edcServiceProvider);
+    final auditService = ref.read(auditServiceProvider);
+    final userProfile = ref.read(userAccessProfileProvider);
     
     ref.read(paymentSimulationStateProvider.notifier).state =
         PaymentStatus.processing;
     
     // Listen to the stream for updates
-    edcService.processPayment(amount).listen((status) {
+    edcService.processPayment(amount).listen((status) async {
       if (!mounted) return;
       ref.read(paymentSimulationStateProvider.notifier).state = status;
+
+      if (status == PaymentStatus.declined || status == PaymentStatus.cancelled) {
+        await auditService.logPaymentFailure(
+          paymentId: 'card-sim-${DateTime.now().millisecondsSinceEpoch}',
+          failureReason: status == PaymentStatus.declined ? 'Declined' : 'Cancelled',
+          actorId: userProfile.userId,
+          actorLabel: userProfile.displayName,
+          source: AuditEventSource.staff,
+        );
+      }
     });
   }
 

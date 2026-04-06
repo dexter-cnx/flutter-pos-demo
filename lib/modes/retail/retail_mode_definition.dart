@@ -12,6 +12,8 @@ import '../../features/inventory/presentation/pages/inventory_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/receipt/domain/services/receipt_composer.dart';
 import '../../features/receipt/domain/services/retail_receipt_composer.dart';
+import 'package:thai_pos_demo/core/money/tax_calculator.dart';
+import 'package:thai_pos_demo/shared/domain/value_objects/tax_breakdown.dart';
 
 class RetailModeDefinition extends BusinessModeDefinition {
   @override
@@ -126,13 +128,20 @@ class RetailPricingEngine implements OrderPricingEngine {
 
   @override
   double calculateTax(double subtotal, double taxRate) {
-    // Standard Thai VAT 7%
-    return subtotal * taxRate;
+    // For Retail, subtotal usually refers to the sticker price sum.
+    // If sticker price is inclusive (standard in Thailand), tax is ALREADY inside subtotal.
+    return calculateTaxBreakdown(subtotal, taxRate).taxAmount;
   }
 
   @override
   double calculateTotal(double subtotal, double taxAmount) {
-    return subtotal + taxAmount;
+    // If inclusive, Total = Subtotal (sum of sticker prices)
+    return subtotal;
+  }
+
+  @override
+  TaxBreakdown calculateTaxBreakdown(double amount, double taxRate) {
+    return TaxCalculator.calculateFromInclusive(amount, rate: taxRate);
   }
 }
 

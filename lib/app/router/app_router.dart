@@ -7,6 +7,7 @@ import '../../features/checkout/presentation/pages/checkout_page.dart';
 import '../../features/receipt/presentation/pages/receipt_preview_page.dart';
 import '../../features/settings/presentation/pages/menu_management_page.dart';
 import '../../features/printer/presentation/screens/printer_settings_screen.dart';
+import '../../features/settings/presentation/pages/audit_log_viewer_page.dart';
 import '../mode/current_mode_provider.dart';
 import '../shell/app_shell.dart';
 
@@ -62,6 +63,11 @@ GoRouter appRouter(AppRouterRef ref) {
             path: '/settings/printer',
             name: 'printer_settings',
             builder: (context, state) => const PrinterSettingsScreen(),
+          ),
+          GoRoute(
+            path: '/settings/audit-log',
+            name: 'audit_log',
+            builder: (context, state) => const AuditLogViewerPage(),
           ),
         ],
       ),

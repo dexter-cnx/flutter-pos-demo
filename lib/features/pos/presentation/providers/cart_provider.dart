@@ -8,6 +8,8 @@ import '../../domain/entities/product.dart';
 import '../../../dining/presentation/providers/dining_providers.dart';
 import '../../../orders/data/models/order_model.dart';
 
+import 'package:thai_pos_demo/shared/domain/value_objects/tax_breakdown.dart';
+
 part 'cart_provider.freezed.dart';
 part 'cart_provider.g.dart';
 
@@ -25,6 +27,7 @@ class CartState with _$CartState {
     @Default(0.0) double subtotal,
     @Default(0.0) double taxAmount,
     @Default(0.0) double total,
+    @Default(TaxBreakdown(total: 0, subtotal: 0, taxAmount: 0)) TaxBreakdown taxBreakdown,
     int? sessionId,
   }) = _CartState;
 
@@ -167,13 +170,13 @@ class Cart extends _$Cart {
     }
 
     final subtotal = engine.calculateSubtotal(currentState.items, metadata: metadata);
-    final taxAmount = engine.calculateTax(subtotal, currentState.taxRate);
-    final total = engine.calculateTotal(subtotal, taxAmount);
+    final breakdown = engine.calculateTaxBreakdown(subtotal, currentState.taxRate);
 
     return currentState.copyWith(
       subtotal: subtotal,
-      taxAmount: taxAmount,
-      total: total,
+      taxAmount: breakdown.taxAmount,
+      total: breakdown.total,
+      taxBreakdown: breakdown,
     );
   }
 

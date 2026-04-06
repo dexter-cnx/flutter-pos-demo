@@ -15,7 +15,12 @@ import '../../data/models/receipt_template_model.dart';
 import '../../domain/services/thai_thermal_printer.dart';
 import '../../domain/services/kitchen_ticket_service.dart';
 import '../../domain/services/edc_service.dart';
+import 'package:thai_pos_demo/shared/domain/entities/app_permission.dart';
+import 'package:thai_pos_demo/shared/presentation/providers/access_providers.dart';
 import 'package:isar/isar.dart';
+import 'package:thai_pos_demo/shared/presentation/providers/audit_providers.dart' hide isar;
+import 'package:thai_pos_demo/shared/domain/enums/audit_event_type.dart';
+import 'package:thai_pos_demo/shared/domain/enums/audit_event_source.dart';
 
 part 'printer_providers.g.dart';
 
@@ -55,12 +60,13 @@ EdcService edcService(Ref ref) {
 }
 
 @riverpod
-ReceiptPrintService receiptPrintService(Ref ref) {
+ReceiptPrintService receiptPrintService(ReceiptPrintServiceRef ref) {
   final definition = ref.watch(currentModeDefinitionProvider);
 
   return ReceiptPrintService(
     printerRepository: ref.watch(printerRepositoryProvider),
     receiptComposer: definition.receiptComposer,
+    auditService: ref.watch(auditServiceProvider),
     renderer: ThermalReceiptRenderer(), // Default to thermal for now
   );
 }
@@ -105,6 +111,9 @@ Future<PrinterDevice?> defaultPrinter(Ref ref) async {
 /// Connects to [device] and updates status accordingly.
 Future<void> connectPrinter(WidgetRef ref, PrinterDevice device) async {
   final statusNotifier = ref.read(printerStatusNotifierProvider.notifier);
+  final userProfile = ref.read(userAccessProfileProvider);
+  final auditService = ref.read(auditServiceProvider);
+
   statusNotifier.setStatus(PrinterStatus.scanning);
   try {
     await ref.read(printerRepositoryProvider).connect(device.address);
@@ -112,6 +121,18 @@ Future<void> connectPrinter(WidgetRef ref, PrinterDevice device) async {
           device.copyWith(isConnected: true),
         );
     statusNotifier.setStatus(PrinterStatus.connected);
+    
+    await auditService.logEvent(
+      eventType: AuditEventType.printerSettingsChanged,
+      entityType: 'printer',
+      entityId: device.address,
+      action: 'connected',
+      actorId: userProfile.userId,
+      actorLabel: userProfile.displayName,
+      source: AuditEventSource.staff,
+      summary: 'Printer connected: ${device.name} (${device.address})',
+    );
+    
     ref.invalidate(pairedPrintersProvider);
   } catch (_) {
     statusNotifier.setStatus(PrinterStatus.error);
@@ -148,10 +169,30 @@ Future<void> testPrint(WidgetRef ref) async {
 
 /// Saves [device] as the system-wide default printer.
 Future<void> saveAsDefault(WidgetRef ref, PrinterDevice device) async {
+  final permissionService = ref.read(permissionServiceProvider);
+  final userProfile = ref.read(userAccessProfileProvider);
+  final auditService = ref.read(auditServiceProvider);
+
+  if (!permissionService.can(userProfile, AppPermission.printerChangeDefault)) {
+    throw Exception('Permission Denied: printer.change_default');
+  }
+
   await ref.read(printerRepositoryProvider).saveDefaultPrinter(
         address: device.address,
         name: device.name,
       );
+
+  await auditService.logEvent(
+    eventType: AuditEventType.printerSettingsChanged,
+    entityType: 'printer',
+    entityId: device.address,
+    action: 'set_default',
+    actorId: userProfile.userId,
+    actorLabel: userProfile.displayName,
+    source: AuditEventSource.staff,
+    summary: 'Printer set as default: ${device.name}',
+  );
+
   ref.invalidate(defaultPrinterProvider);
   ref.invalidate(pairedPrintersProvider);
 }

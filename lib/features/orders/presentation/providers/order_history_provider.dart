@@ -9,6 +9,12 @@ import '../../../pos/presentation/providers/cart_provider.dart';
 import '../../data/models/order_model.dart';
 import '../../data/services/web_order_storage.dart';
 
+import 'package:thai_pos_demo/shared/domain/entities/app_permission.dart';
+import 'package:thai_pos_demo/shared/presentation/providers/access_providers.dart';
+import 'package:thai_pos_demo/shared/presentation/providers/audit_providers.dart' hide isar;
+import 'package:thai_pos_demo/shared/domain/enums/audit_event_type.dart';
+import 'package:thai_pos_demo/shared/domain/enums/audit_event_source.dart';
+
 part 'order_history_provider.g.dart';
 
 @riverpod
@@ -98,6 +104,26 @@ class OrderHistory extends _$OrderHistory {
       orderId = await database.orderModels.put(order);
     });
 
+    final userProfile = ref.read(userAccessProfileProvider);
+    final auditService = ref.read(auditServiceProvider);
+    
+    await auditService.logEvent(
+      eventType: AuditEventType.transactionCompleted,
+      entityType: 'transaction',
+      entityId: orderId.toString(),
+      action: 'created_and_paid',
+      actorId: userProfile.userId,
+      actorLabel: userProfile.displayName,
+      source: AuditEventSource.staff,
+      summary: 'Order #$orderId completed via ${method.name}',
+      payload: {
+        'total': cartState.total,
+        'payment_method': method.name,
+        'received': receivedAmount,
+        'change': changeAmount,
+      },
+    );
+
     ref.invalidate(ordersProvider);
     ref.invalidate(orderCountProvider);
     ref.invalidate(orderReceiptProvider(orderId));
@@ -106,6 +132,14 @@ class OrderHistory extends _$OrderHistory {
   }
 
   Future<void> clearOrders() async {
+    final permissionService = ref.read(permissionServiceProvider);
+    final userProfile = ref.read(userAccessProfileProvider);
+
+    if (!permissionService.can(userProfile, AppPermission.transactionVoid)) {
+      state = AsyncError('Permission Denied: transaction.void', StackTrace.current);
+      return;
+    }
+
     final database = isar;
     if (database == null) {
       await WebOrderStorage.clear();
@@ -118,6 +152,18 @@ class OrderHistory extends _$OrderHistory {
     await database.writeTxn(() async {
       await database.orderModels.clear();
     });
+
+    final auditService = ref.read(auditServiceProvider);
+    await auditService.logEvent(
+      eventType: AuditEventType.transactionVoided,
+      entityType: 'transaction',
+      entityId: 'all',
+      action: 'clear_all',
+      actorId: userProfile.userId,
+      actorLabel: userProfile.displayName,
+      source: AuditEventSource.staff,
+      summary: 'All transaction history cleared by user',
+    );
 
     ref.invalidate(ordersProvider);
     ref.invalidate(orderCountProvider);

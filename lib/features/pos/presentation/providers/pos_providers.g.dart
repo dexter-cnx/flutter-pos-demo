@@ -126,7 +126,7 @@ final selectedCategoryIdProvider =
 );
 
 typedef _$SelectedCategoryId = AutoDisposeNotifier<String?>;
-String _$inventoryActionsHash() => r'f7933b5a7b9d8ef09e96d841eebfc64bf18b5e22';
+String _$inventoryActionsHash() => r'570c851a10830e2045e21c1353e924777507f107';
 
 /// See also [InventoryActions].
 @ProviderFor(InventoryActions)

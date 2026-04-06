@@ -39,6 +39,9 @@ _$ReceiptDocumentImpl _$$ReceiptDocumentImplFromJson(
       subtotal: (json['subtotal'] as num).toDouble(),
       taxAmount: (json['taxAmount'] as num).toDouble(),
       total: (json['total'] as num).toDouble(),
+      taxBreakdown: json['taxBreakdown'] == null
+          ? null
+          : TaxBreakdown.fromJson(json['taxBreakdown'] as Map<String, dynamic>),
       paymentMethod: json['paymentMethod'] as String,
       receivedAmount: (json['receivedAmount'] as num).toDouble(),
       changeAmount: (json['changeAmount'] as num).toDouble(),
@@ -58,6 +61,7 @@ Map<String, dynamic> _$$ReceiptDocumentImplToJson(
       'subtotal': instance.subtotal,
       'taxAmount': instance.taxAmount,
       'total': instance.total,
+      'taxBreakdown': instance.taxBreakdown,
       'paymentMethod': instance.paymentMethod,
       'receivedAmount': instance.receivedAmount,
       'changeAmount': instance.changeAmount,
