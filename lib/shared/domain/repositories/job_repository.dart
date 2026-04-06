@@ -7,4 +7,5 @@ abstract class JobRepository {
   Future<List<AppJob>> getJobsByStatus(JobStatus status);
   Future<List<AppJob>> getPendingJobs();
   Future<void> deleteJob(String id);
+  Future<void> deleteOldCompletedJobs(DateTime olderThan);
 }

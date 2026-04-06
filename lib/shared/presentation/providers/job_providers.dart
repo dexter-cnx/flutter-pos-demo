@@ -24,5 +24,8 @@ JobDispatcher jobDispatcher(JobDispatcherRef ref) {
   dispatcher.registerHandler(ReceiptReprintJobHandler(ref));
   dispatcher.registerHandler(ReportGenerateJobHandler(ref));
   
+  // Clean up old completed jobs on bootstrap (fire and forget)
+  dispatcher.autoPurgeOldJobs(retentionDays: 30);
+  
   return dispatcher;
 }

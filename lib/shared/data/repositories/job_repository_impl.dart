@@ -46,4 +46,15 @@ class JobRepositoryImpl implements JobRepository {
       await _isar.appJobModels.filter().jobIdEqualTo(id).deleteAll();
     });
   }
+
+  @override
+  Future<void> deleteOldCompletedJobs(DateTime olderThan) async {
+    await _isar.writeTxn(() async {
+      await _isar.appJobModels
+          .filter()
+          .statusEqualTo(JobStatus.completed.name)
+          .updatedAtLessThan(olderThan)
+          .deleteAll();
+    });
+  }
 }

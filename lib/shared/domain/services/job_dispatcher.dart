@@ -123,4 +123,11 @@ class JobDispatcher {
   Future<void> purgeJob(String jobId) async {
     await _repository.deleteJob(jobId);
   }
+
+  /// Automatically clears completed jobs older than 30 days to prevent DB growth.
+  Future<void> autoPurgeOldJobs({int retentionDays = 30}) async {
+    final olderThan = DateTime.now().subtract(Duration(days: retentionDays));
+    await _repository.deleteOldCompletedJobs(olderThan);
+    developer.log('Auto-purge: Completed jobs older than $retentionDays days cleared.', name: 'JobDispatcher');
+  }
 }
