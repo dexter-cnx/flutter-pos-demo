@@ -9,6 +9,7 @@ import '../../features/settings/presentation/pages/menu_management_page.dart';
 import '../../features/printer/presentation/screens/printer_settings_screen.dart';
 import '../../features/settings/presentation/pages/audit_log_viewer_page.dart';
 import '../../features/settings/presentation/pages/job_queue_viewer_page.dart';
+import '../../features/settings/presentation/pages/feature_overview_page.dart';
 import '../mode/current_mode_provider.dart';
 import '../shell/app_shell.dart';
 
@@ -74,6 +75,11 @@ GoRouter appRouter(AppRouterRef ref) {
             path: '/settings/job-queue',
             name: 'job_queue',
             builder: (context, state) => const JobQueueViewerPage(),
+          ),
+          GoRoute(
+            path: '/settings/feature-showcase',
+            name: 'feature_showcase',
+            builder: (context, state) => const FeatureOverviewPage(),
           ),
         ],
       ),

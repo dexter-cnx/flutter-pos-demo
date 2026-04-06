@@ -323,6 +323,11 @@ class SettingsPage extends ConsumerWidget {
                                 label: Text('settings.job_queue'.tr()),
                               ),
                             ),
+                            OutlinedButton.icon(
+                              onPressed: () => context.go('/settings/feature-showcase'),
+                              icon: const Icon(Icons.view_carousel_outlined),
+                              label: Text('demo.title'.tr()),
+                            ),
                           ],
                         ),
                         loading: () => const AppLoadingState(compact: true),

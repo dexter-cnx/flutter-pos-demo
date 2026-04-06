@@ -57,7 +57,9 @@
     "empty_products": "No products found."
   },
   "dashboard": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "export_pdf": "Export PDF",
+    "today": "Today: {}"
   },
   "pos": {
     "title": "Point of Sale",
@@ -148,7 +150,9 @@
     "business_mode_retail_desc": "Simple checkout flow for general products.",
     "business_mode_restaurant_desc": "Table-based ordering and restaurant-specific workflows.",
     "business_mode_switch_confirm": "Switching mode will restart the app navigation. Continue?",
-    "business_mode_active": "Active"
+    "business_mode_active": "Active",
+    "audit_log": "Audit Log",
+    "job_queue": "Job Queue"
   },
   "common": {
     "pay": "Pay Now",
@@ -228,7 +232,20 @@
     "share_failed": "Unable to share receipt PDF.",
     "footer": "This is a demo receipt for preview and printing flow.",
     "not_found": "Receipt not found",
-    "not_found_hint": "We could not find receipt {}."
+    "not_found_hint": "We could not find receipt {}.",
+    "designer_title": "Receipt Designer",
+    "header_section": "Header Section",
+    "content_section": "Content Options",
+    "footer_section": "Footer Section",
+    "page_settings": "Page Settings",
+    "show_sku": "Show SKU/Barcode",
+    "show_tax": "Show Tax Breakdown",
+    "show_payment": "Show Payment Details",
+    "show_customer": "Show Customer Info",
+    "show_table": "Show Table Info",
+    "footer_main": "Footer Text 1",
+    "footer_sub": "Footer Text 2",
+    "paper_width": "Paper Width"
   },
   "printer": {
     "title": "Bluetooth Printer",
@@ -260,5 +277,21 @@
     "print_receipt_confirm": "Would you like to print a receipt for this order?",
     "print": "Print",
     "print_failed": "Printing failed. Check printer connection."
+  },
+  "demo": {
+    "title": "Feature Showcase",
+    "rbac_title": "Role-Based Access Control (RBAC)",
+    "rbac_desc": "Current user session and dynamic permission checking.",
+    "thai_utils_title": "Thai Business Utilities",
+    "thai_utils_desc": "Formatting currencies",
+    "audit_title": "Audit Trail & Tracing",
+    "audit_desc": "Every critical action is logged for accountability and security.",
+    "queue_title": "Background Job Queue",
+    "queue_desc": "Deferred tasks like printing and syncing handled asynchronously.",
+    "test_rbac_button": "Admin-only Action",
+    "test_job_button": "Enqueue Test Job",
+    "utils_price_label": "Price (with VAT)",
+    "utils_date_label": "Thai Date Style",
+    "utils_money_label": "Thai Baht Format"
   }
 }
